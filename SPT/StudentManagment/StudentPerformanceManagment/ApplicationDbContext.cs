@@ -12,5 +12,7 @@ namespace StudentPerformanceManagment
         {
         }
 
+        public DbSet<Subject> Subjects { get; set; }
+
     }
 }
