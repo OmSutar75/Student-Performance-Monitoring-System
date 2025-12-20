@@ -12,9 +12,5 @@ namespace StudentPerformanceManagment
         {
         }
 
-       
-
-
-
     }
 }
