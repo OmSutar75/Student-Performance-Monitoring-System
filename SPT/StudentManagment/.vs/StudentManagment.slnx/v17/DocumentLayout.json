@@ -42,8 +42,7 @@
               "RelativeToolTip": "StudentPerformanceManagment\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-20T09:29:08.444Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-20T09:29:08.444Z"
             },
             {
               "$type": "Document",
@@ -55,8 +54,7 @@
               "RelativeToolTip": "StudentPerformanceManagment\\ApplicationDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-20T09:28:45.751Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-20T09:28:45.751Z"
             },
             {
               "$type": "Document",
@@ -68,8 +66,7 @@
               "RelativeToolTip": "StudentPerformanceManagment\\Models\\AppUser.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-20T09:28:42.672Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-20T09:28:42.672Z"
             },
             {
               "$type": "Document",
@@ -79,7 +76,7 @@
               "RelativeDocumentMoniker": "StudentPerformanceManagment\\Models\\CourseGroup.cs",
               "ToolTip": "D:\\sunbeam_training_dotnet_git\\Project_Work\\Student-Performance-Management-System\\Student-Performance-Monitoring-System\\SPT\\StudentManagment\\StudentPerformanceManagment\\Models\\CourseGroup.cs",
               "RelativeToolTip": "StudentPerformanceManagment\\Models\\CourseGroup.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwAoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-20T09:28:34.034Z",
               "EditorCaption": ""
@@ -94,8 +91,7 @@
               "RelativeToolTip": "StudentPerformanceManagment\\Models\\Course.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-20T09:27:01.749Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-20T09:27:01.749Z"
             }
           ]
         }
