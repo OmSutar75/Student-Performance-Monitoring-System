@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Project;
+using StudentPerformanceManagment.Models;
 
-namespace StudentPerformanceManagment.Models
+namespace StudentPerformanceManagment
 {
     public class Program
     {
