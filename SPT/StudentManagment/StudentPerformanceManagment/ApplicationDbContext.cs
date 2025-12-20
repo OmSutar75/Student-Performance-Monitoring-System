@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using StudentPerformanceManagment.Models;
 
 
-namespace Project
+namespace StudentPerformanceManagment
 {
     public class ApplicationDbContext:IdentityDbContext<AppUser>
     {
