@@ -16,6 +16,8 @@ namespace StudentPerformanceManagement.Models
         [MaxLength(10)]
         public string? MobileNo { get; set; }
 
+        public string ProfileImagePath { get; set; }
+
         public int CourseId { get; set; }
         public Course Course { get; set; }
 
