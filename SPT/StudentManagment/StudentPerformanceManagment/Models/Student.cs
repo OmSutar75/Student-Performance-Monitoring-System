@@ -15,6 +15,8 @@ namespace StudentPerformanceManagement.Models
         public string Email { get; set; }
         [MaxLength(10)]
         public string? MobileNo { get; set; }
+	public string? ProfileImage { get; set; }
+
 
         public string ProfileImagePath { get; set; }
 
