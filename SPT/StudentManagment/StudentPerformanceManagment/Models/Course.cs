@@ -1,5 +1,11 @@
+
+﻿using StudentPerformanceManagement.Models;
+using System.ComponentModel.DataAnnotations;
+
+
 ﻿using System.ComponentModel.DataAnnotations;
 using StudentPerformanceManagement.Models;
+
 namespace StudentPerformanceManagment.Models
 {
     public class Course

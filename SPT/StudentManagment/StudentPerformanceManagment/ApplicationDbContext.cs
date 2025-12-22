@@ -10,6 +10,7 @@ namespace StudentPerformanceManagment
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
           : base(options)
         {
+
         }
 
         public DbSet<Subject> Subjects { get; set; }

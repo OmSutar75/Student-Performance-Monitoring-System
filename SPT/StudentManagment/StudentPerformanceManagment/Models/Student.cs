@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using StudentPerformanceManagment.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace StudentPerformanceManagement.Models
 {
@@ -16,6 +17,8 @@ namespace StudentPerformanceManagement.Models
         public string? MobileNo { get; set; }
 	public string? ProfileImage { get; set; }
 
+
+        public string ProfileImagePath { get; set; }
 
         public int CourseId { get; set; }
         public Course Course { get; set; }
