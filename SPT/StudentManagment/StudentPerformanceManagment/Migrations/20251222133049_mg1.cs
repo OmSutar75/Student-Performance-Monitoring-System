@@ -216,7 +216,7 @@ namespace StudentPerformanceManagment.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Subject",
+                name: "Subjects",
                 columns: table => new
                 {
                     SubjectId = table.Column<int>(type: "int", nullable: false)
@@ -231,9 +231,9 @@ namespace StudentPerformanceManagment.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Subject", x => x.SubjectId);
+                    table.PrimaryKey("PK_Subjects", x => x.SubjectId);
                     table.ForeignKey(
-                        name: "FK_Subject_Courses_CourseId",
+                        name: "FK_Subjects_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "CourseId",
@@ -289,9 +289,7 @@ namespace StudentPerformanceManagment.Migrations
                     SubjectId = table.Column<int>(type: "int", nullable: false),
                     CourseGroupId = table.Column<int>(type: "int", nullable: false),
                     ValidFrom = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ValidTo = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CourseGroupId1 = table.Column<int>(type: "int", nullable: true),
-                    StaffId1 = table.Column<int>(type: "int", nullable: true)
+                    ValidTo = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -302,11 +300,7 @@ namespace StudentPerformanceManagment.Migrations
                         principalTable: "CourseGroups",
                         principalColumn: "CourseGroupId",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Tasks_CourseGroups_CourseGroupId1",
-                        column: x => x.CourseGroupId1,
-                        principalTable: "CourseGroups",
-                        principalColumn: "CourseGroupId");
+                    
                     table.ForeignKey(
                         name: "FK_Tasks_Courses_CourseId",
                         column: x => x.CourseId,
@@ -319,15 +313,11 @@ namespace StudentPerformanceManagment.Migrations
                         principalTable: "Staffs",
                         principalColumn: "StaffId",
                         onDelete: ReferentialAction.Restrict);
+                    
                     table.ForeignKey(
-                        name: "FK_Tasks_Staffs_StaffId1",
-                        column: x => x.StaffId1,
-                        principalTable: "Staffs",
-                        principalColumn: "StaffId");
-                    table.ForeignKey(
-                        name: "FK_Tasks_Subject_SubjectId",
+                        name: "FK_Tasks_Subjects_SubjectId",
                         column: x => x.SubjectId,
-                        principalTable: "Subject",
+                        principalTable: "Subjects",
                         principalColumn: "SubjectId",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -354,9 +344,9 @@ namespace StudentPerformanceManagment.Migrations
                         principalColumn: "StudentId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Marks_Subject_SubjectId",
+                        name: "FK_Marks_Subjects_SubjectId",
                         column: x => x.SubjectId,
-                        principalTable: "Subject",
+                        principalTable: "Subjects",
                         principalColumn: "SubjectId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -437,8 +427,8 @@ namespace StudentPerformanceManagment.Migrations
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Subject_CourseId",
-                table: "Subject",
+                name: "IX_Subjects_CourseId",
+                table: "Subjects",
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
@@ -446,10 +436,7 @@ namespace StudentPerformanceManagment.Migrations
                 table: "Tasks",
                 column: "CourseGroupId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Tasks_CourseGroupId1",
-                table: "Tasks",
-                column: "CourseGroupId1");
+            
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_CourseId",
@@ -461,10 +448,7 @@ namespace StudentPerformanceManagment.Migrations
                 table: "Tasks",
                 column: "StaffId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Tasks_StaffId1",
-                table: "Tasks",
-                column: "StaffId1");
+          
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_SubjectId",
@@ -506,7 +490,7 @@ namespace StudentPerformanceManagment.Migrations
                 name: "Staffs");
 
             migrationBuilder.DropTable(
-                name: "Subject");
+                name: "Subjects");
 
             migrationBuilder.DropTable(
                 name: "CourseGroups");

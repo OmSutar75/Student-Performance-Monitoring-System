@@ -12,7 +12,7 @@ using StudentPerformanceManagment;
 namespace StudentPerformanceManagment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251222081448_mg1")]
+    [Migration("20251222133049_mg1")]
     partial class mg1
     {
         /// <inheritdoc />
@@ -428,7 +428,7 @@ namespace StudentPerformanceManagment.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Subject");
+                    b.ToTable("Subjects");
                 });
 
             modelBuilder.Entity("StudentPerformanceManagment.Models.Tasks", b =>

@@ -426,7 +426,6 @@ namespace StudentPerformanceManagment.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("Subjects");
-
                 });
 
             modelBuilder.Entity("StudentPerformanceManagment.Models.Tasks", b =>
@@ -439,7 +438,6 @@ namespace StudentPerformanceManagment.Migrations
 
                     b.Property<int>("CourseGroupId")
                         .HasColumnType("int");
-
 
                     b.Property<int?>("CourseGroupId1")
                         .HasColumnType("int");
@@ -466,6 +464,7 @@ namespace StudentPerformanceManagment.Migrations
 
                     b.HasIndex("CourseGroupId");
 
+                    b.HasIndex("CourseGroupId1");
 
                     b.HasIndex("CourseId");
 
@@ -611,9 +610,9 @@ namespace StudentPerformanceManagment.Migrations
             modelBuilder.Entity("StudentPerformanceManagment.Models.Tasks", b =>
                 {
                     b.HasOne("StudentPerformanceManagment.Models.CourseGroup", "CourseGroup")
-                        .WithMany("Tasks")
+                        .WithMany()
                         .HasForeignKey("CourseGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("StudentPerformanceManagment.Models.CourseGroup", null)
