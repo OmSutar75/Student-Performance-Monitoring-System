@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 ﻿using StudentPerformanceManagement.Models;
 using System.ComponentModel.DataAnnotations;
 
+=======
+﻿using System.ComponentModel.DataAnnotations;
+using StudentPerformanceManagement.Models;
+>>>>>>> 65c72a2caed1e56d9f0fbcc88bc3d69c0c700f46
 namespace StudentPerformanceManagment.Models
 {
     public class Course
