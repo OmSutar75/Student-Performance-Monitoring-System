@@ -20,6 +20,7 @@ namespace StudentPerformanceManagment
         public DbSet<CourseGroup> CourseGroups { get; set; }
         public DbSet<Mark> Marks { get; set; }
         public DbSet<Tasks> Tasks { get; set; }
+        public DbSet<Subject> Subjects {  get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
