@@ -1,0 +1,18 @@
+﻿<h2>Enroll Student</h2>
+
+<form method="post">
+    <label>Name</label><br />
+    <input type="text" name="name" required /><br /><br />
+
+    <label>Email</label><br />
+    <input type="email" name="email" required /><br /><br />
+
+    <p>Default Password: <b>Student@123</b></p>
+
+    <button type="submit">Enroll</button>
+</form>
+
+@foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+{
+    <p style="color:red">@error.ErrorMessage</p>
+}

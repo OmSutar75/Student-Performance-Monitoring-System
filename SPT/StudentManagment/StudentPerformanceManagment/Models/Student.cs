@@ -1,9 +1,5 @@
 ﻿using StudentPerformanceManagment.Models;
 using System.ComponentModel.DataAnnotations;
-<<<<<<< HEAD
-
-=======
->>>>>>> 952afea3de38ad2a16470a218a5174c1dca355fd
 
 namespace StudentPerformanceManagement.Models
 {
@@ -24,8 +20,6 @@ namespace StudentPerformanceManagement.Models
 
         public int CourseId { get; set; }
         public Course Course { get; set; }
-
-        public string ProfileImagePath { get; set; }
 
         public int CourseGroupId { get; set; }
         public CourseGroup CourseGroup { get; set; } = null;

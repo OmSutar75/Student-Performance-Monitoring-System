@@ -1,10 +1,6 @@
-<<<<<<< HEAD
+
 ﻿using System.ComponentModel.DataAnnotations;
 using StudentPerformanceManagment.Models;
-=======
-﻿using StudentPerformanceManagment.Models;
-using System.ComponentModel.DataAnnotations;
->>>>>>> 952afea3de38ad2a16470a218a5174c1dca355fd
 
 namespace StudentPerformanceManagement.Models
 {

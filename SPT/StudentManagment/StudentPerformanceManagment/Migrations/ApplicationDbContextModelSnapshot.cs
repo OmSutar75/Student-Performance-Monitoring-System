@@ -425,11 +425,8 @@ namespace StudentPerformanceManagment.Migrations
 
                     b.HasIndex("CourseId");
 
-<<<<<<< HEAD
                     b.ToTable("Subjects");
-=======
-                    b.ToTable("Subject");
->>>>>>> 952afea3de38ad2a16470a218a5174c1dca355fd
+
                 });
 
             modelBuilder.Entity("StudentPerformanceManagment.Models.Tasks", b =>
@@ -443,12 +440,10 @@ namespace StudentPerformanceManagment.Migrations
                     b.Property<int>("CourseGroupId")
                         .HasColumnType("int");
 
-<<<<<<< HEAD
-=======
+
                     b.Property<int?>("CourseGroupId1")
                         .HasColumnType("int");
 
->>>>>>> 952afea3de38ad2a16470a218a5174c1dca355fd
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
@@ -471,11 +466,7 @@ namespace StudentPerformanceManagment.Migrations
 
                     b.HasIndex("CourseGroupId");
 
-<<<<<<< HEAD
-=======
-                    b.HasIndex("CourseGroupId1");
 
->>>>>>> 952afea3de38ad2a16470a218a5174c1dca355fd
                     b.HasIndex("CourseId");
 
                     b.HasIndex("StaffId");
@@ -620,23 +611,15 @@ namespace StudentPerformanceManagment.Migrations
             modelBuilder.Entity("StudentPerformanceManagment.Models.Tasks", b =>
                 {
                     b.HasOne("StudentPerformanceManagment.Models.CourseGroup", "CourseGroup")
-<<<<<<< HEAD
                         .WithMany("Tasks")
                         .HasForeignKey("CourseGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-=======
-                        .WithMany()
-                        .HasForeignKey("CourseGroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("StudentPerformanceManagment.Models.CourseGroup", null)
                         .WithMany("Tasks")
                         .HasForeignKey("CourseGroupId1");
 
->>>>>>> 952afea3de38ad2a16470a218a5174c1dca355fd
                     b.HasOne("StudentPerformanceManagment.Models.Course", "Course")
                         .WithMany()
                         .HasForeignKey("CourseId")

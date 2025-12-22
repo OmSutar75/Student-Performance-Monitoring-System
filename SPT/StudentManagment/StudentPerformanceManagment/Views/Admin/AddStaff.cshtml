@@ -1,0 +1,22 @@
+﻿<h2>Add Staff</h2>
+
+<form method="post">
+    <label>Name</label><br />
+    <input type="text" name="name" required /><br /><br />
+
+    <label>Email</label><br />
+    <input type="email" name="email" required /><br /><br />
+
+    <label>Mobile Number</label><br />
+    <input type="number" name="Mobile" required /><br /><br />
+
+    <label>Password</label><br />
+    <input type="password" name="password" required /><br /><br />
+
+    <button type="submit">Create Staff</button>
+</form>
+
+@foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+{
+    <p style="color:red">@error.ErrorMessage</p>
+}
