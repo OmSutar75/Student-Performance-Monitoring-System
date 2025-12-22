@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using StudentPerformanceManagement.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace StudentPerformanceManagment.Models
 {
