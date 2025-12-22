@@ -1,6 +1,9 @@
 ﻿using StudentPerformanceManagment.Models;
 using System.ComponentModel.DataAnnotations;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 952afea3de38ad2a16470a218a5174c1dca355fd
 
 namespace StudentPerformanceManagement.Models
 {
@@ -16,6 +19,8 @@ namespace StudentPerformanceManagement.Models
         public string Email { get; set; }
         [MaxLength(10)]
         public string? MobileNo { get; set; }
+	
+        public string ProfileImagePath { get; set; }
 
         public int CourseId { get; set; }
         public Course Course { get; set; }
