@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "D:\\Sunbeam(Training Program)\\Project\\Student-Performance-Monitoring-System\\SPT\\StudentManagment\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7C236CFC-2498-4449-A8D6-A812C956ECCB}|StudentPerformanceManagment\\StudentPerformanceManagment.csproj|d:\\sunbeam(training program)\\project\\student-performance-monitoring-system\\spt\\studentmanagment\\studentperformancemanagment\\models\\subject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7C236CFC-2498-4449-A8D6-A812C956ECCB}|StudentPerformanceManagment\\StudentPerformanceManagment.csproj|solutionrelative:studentperformancemanagment\\models\\subject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{7C236CFC-2498-4449-A8D6-A812C956ECCB}|StudentPerformanceManagment\\StudentPerformanceManagment.csproj|d:\\sunbeam(training program)\\project\\student-performance-monitoring-system\\spt\\studentmanagment\\studentperformancemanagment\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7C236CFC-2498-4449-A8D6-A812C956ECCB}|StudentPerformanceManagment\\StudentPerformanceManagment.csproj|solutionrelative:studentperformancemanagment\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7C236CFC-2498-4449-A8D6-A812C956ECCB}|StudentPerformanceManagment\\StudentPerformanceManagment.csproj|d:\\sunbeam(training program)\\project\\student-performance-monitoring-system\\spt\\studentmanagment\\studentperformancemanagment\\models\\subject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7C236CFC-2498-4449-A8D6-A812C956ECCB}|StudentPerformanceManagment\\StudentPerformanceManagment.csproj|solutionrelative:studentperformancemanagment\\models\\subject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7C236CFC-2498-4449-A8D6-A812C956ECCB}|StudentPerformanceManagment\\StudentPerformanceManagment.csproj|d:\\sunbeam(training program)\\project\\student-performance-monitoring-system\\spt\\studentmanagment\\studentperformancemanagment\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -42,20 +42,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Subject.cs",
               "DocumentMoniker": "D:\\Sunbeam(Training Program)\\Project\\Student-Performance-Monitoring-System\\SPT\\StudentManagment\\StudentPerformanceManagment\\Models\\Subject.cs",
               "RelativeDocumentMoniker": "StudentPerformanceManagment\\Models\\Subject.cs",
               "ToolTip": "D:\\Sunbeam(Training Program)\\Project\\Student-Performance-Monitoring-System\\SPT\\StudentManagment\\StudentPerformanceManagment\\Models\\Subject.cs",
               "RelativeToolTip": "StudentPerformanceManagment\\Models\\Subject.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAqAAAAAAAAAA==",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAQwBQAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-20T09:37:46.137Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-20T09:37:46.137Z"
             },
             {
               "$type": "Document",
@@ -83,13 +82,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "D:\\Sunbeam(Training Program)\\Project\\Student-Performance-Monitoring-System\\SPT\\StudentManagment\\StudentPerformanceManagment\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "StudentPerformanceManagment\\ApplicationDbContext.cs",
               "ToolTip": "D:\\Sunbeam(Training Program)\\Project\\Student-Performance-Monitoring-System\\SPT\\StudentManagment\\StudentPerformanceManagment\\ApplicationDbContext.cs",
               "RelativeToolTip": "StudentPerformanceManagment\\ApplicationDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-20T09:11:13.464Z",
               "EditorCaption": ""
