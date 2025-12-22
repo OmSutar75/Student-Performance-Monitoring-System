@@ -33,7 +33,7 @@ namespace IdentityDemo.Controllers
 
             // ADD STAFF (POST)
             [HttpPost]
-            public async Task<IActionResult> AddStaff(string name, string email, string password,string Mobile)
+            public async Task<IActionResult> AddStaff(string name, string email, string password,string mobile)
             {
             var user = new AppUser
             {
@@ -41,7 +41,7 @@ namespace IdentityDemo.Controllers
                 Email = email,
                 FullName = name,
                 EmailConfirmed = true,
-                //Mobile = Mobile
+                //Mobile = mobile
 
             };
 
@@ -55,7 +55,8 @@ namespace IdentityDemo.Controllers
                     {
                         Name = name,
                         Email = email,
-                        AppUserId = user.Id
+                        AppUserId = user.Id,
+                        Mobile = mobile
                     };
 
                     _context.Staffs.Add(staff);
@@ -79,7 +80,7 @@ namespace IdentityDemo.Controllers
 
             // ENROLL STUDENT (POST)
             [HttpPost]
-            public async Task<IActionResult> EnrollStudent(string name, string email)
+            public async Task<IActionResult> EnrollStudent(string name, string email,string mobile,int course,int groupid)
             {
                 string defaultPassword = "Student@123";
 
@@ -101,7 +102,11 @@ namespace IdentityDemo.Controllers
                     {
                         Name = name,
                         Email = email,
-                        AppUserId = user.Id
+                        AppUserId = user.Id,
+                        MobileNo = mobile,
+                        CourseId = course,
+                        CourseGroupId= groupid
+
                     };
 
                     _context.Students.Add(student);
