@@ -1,22 +1,20 @@
-<<<<<<< HEAD
-﻿using Microsoft.AspNetCore.Mvc;
-=======
+
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StudentPerformanceManagement.Models;
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
->>>>>>> 0ee03ff334cd27dbee18163464aa4c8cf208b970
 
 namespace StudentPerformanceManagment.Controllers
 {
     public class StaffController : Controller
     {
-<<<<<<< HEAD
+
         public IActionResult Dashboard()
         {
             return View();
-=======
+        }
+
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
 
@@ -39,7 +37,6 @@ namespace StudentPerformanceManagment.Controllers
 
               
             return View(model);
->>>>>>> 0ee03ff334cd27dbee18163464aa4c8cf208b970
         }
     }
 }
