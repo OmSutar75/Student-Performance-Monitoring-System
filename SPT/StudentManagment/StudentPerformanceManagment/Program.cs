@@ -42,7 +42,7 @@ namespace StudentPerformanceManagment
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Account}/{action=Login}/{id?}");
+                pattern: "{controller=Staff}/{action=AddMark}/{id?}");
 
             app.Run();
         }
