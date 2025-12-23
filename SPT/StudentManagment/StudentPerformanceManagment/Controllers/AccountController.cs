@@ -48,7 +48,7 @@ namespace IdentityDemo.Controllers
                     return View("AdminDashboard");
 
                 if (await _userManager.IsInRoleAsync(user, "Staff"))
-                    return View("StaffDashboard");
+                    return RedirectToAction("StaffDashboard","Staff");
 
                 return View("StudentDashboard");
             }

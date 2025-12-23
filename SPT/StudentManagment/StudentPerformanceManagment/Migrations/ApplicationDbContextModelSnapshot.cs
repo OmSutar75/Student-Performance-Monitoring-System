@@ -439,16 +439,10 @@ namespace StudentPerformanceManagment.Migrations
                     b.Property<int>("CourseGroupId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CourseGroupId1")
-                        .HasColumnType("int");
-
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
                     b.Property<int>("StaffId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("StaffId1")
                         .HasColumnType("int");
 
                     b.Property<int>("SubjectId")
@@ -464,13 +458,9 @@ namespace StudentPerformanceManagment.Migrations
 
                     b.HasIndex("CourseGroupId");
 
-                    b.HasIndex("CourseGroupId1");
-
                     b.HasIndex("CourseId");
 
                     b.HasIndex("StaffId");
-
-                    b.HasIndex("StaffId1");
 
                     b.HasIndex("SubjectId");
 
@@ -615,10 +605,6 @@ namespace StudentPerformanceManagment.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("StudentPerformanceManagment.Models.CourseGroup", null)
-                        .WithMany("Tasks")
-                        .HasForeignKey("CourseGroupId1");
-
                     b.HasOne("StudentPerformanceManagment.Models.Course", "Course")
                         .WithMany()
                         .HasForeignKey("CourseId")
@@ -626,14 +612,10 @@ namespace StudentPerformanceManagment.Migrations
                         .IsRequired();
 
                     b.HasOne("StudentPerformanceManagement.Models.Staff", "Staff")
-                        .WithMany()
+                        .WithMany("Tasks")
                         .HasForeignKey("StaffId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("StudentPerformanceManagement.Models.Staff", null)
-                        .WithMany("Tasks")
-                        .HasForeignKey("StaffId1");
 
                     b.HasOne("StudentPerformanceManagment.Models.Subject", "Subject")
                         .WithMany()
@@ -672,8 +654,6 @@ namespace StudentPerformanceManagment.Migrations
             modelBuilder.Entity("StudentPerformanceManagment.Models.CourseGroup", b =>
                 {
                     b.Navigation("Students");
-
-                    b.Navigation("Tasks");
                 });
 
             modelBuilder.Entity("StudentPerformanceManagment.Models.Subject", b =>

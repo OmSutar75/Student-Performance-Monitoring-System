@@ -20,7 +20,7 @@ namespace StudentPerformanceManagement.Models
 
         public ICollection<Tasks> Tasks { get; set; } = new List<Tasks>();
         public string AppUserId { get; set; }
-        public AppUser AppUser { get; set; }
+        public AppUser AppUser { get; set; } 
 
     }
 }
