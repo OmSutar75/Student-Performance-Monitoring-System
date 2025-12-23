@@ -17,6 +17,5 @@ namespace StudentPerformanceManagment.Models
 
 
         public ICollection<Student> Students { get; set; } = new List<Student>();
-        public ICollection<Tasks> Tasks { get; set; } = new List<Tasks>();
     }
 }

@@ -1,0 +1,11 @@
+﻿@model StudentPerformanceManagment.Models.AppUser
+<div class="topbar">
+    <strong>☰</strong>
+
+    <div>
+        🔔 👤 @Model.FullName
+        <button class="btn btn-sm btn-outline-dark ms-2" onclick="location.href='/Account/Logout'">
+            Logout
+        </button>
+    </div>
+</div>
