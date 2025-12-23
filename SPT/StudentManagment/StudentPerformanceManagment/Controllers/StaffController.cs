@@ -1,9 +1,10 @@
 
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using StudentPerformanceManagement.Models;
+using Microsoft.EntityFrameworkCore;
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
+using System.Security.Claims;
 
 namespace StudentPerformanceManagment.Controllers
 {
