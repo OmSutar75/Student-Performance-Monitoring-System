@@ -38,5 +38,20 @@ namespace StudentPerformanceManagment.Controllers
               
             return View(model);
         }
+
+         public async Task<IActionResult> StaffDashboard()
+        {
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var myTasks =await _context.Tasks
+           .Include(t => t.Course)
+           .Include(t => t.Subject)
+           .Include(t => t.CourseGroup)
+           .Where(t => t.Staff.AppUserId == userId)
+           .ToListAsync();
+
+            return View(myTasks);
+        }
     }
 }
