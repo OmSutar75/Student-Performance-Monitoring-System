@@ -2,8 +2,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using StudentPerformanceManagement.Models;
+// <<<<<<< ModelCreation/Task
+// using StudentPerformanceManagement.Models;
+// +using StudentPerformanceManagment.Models;
+// =======
 using StudentPerformanceManagment.Models;
+using StudentPerformanceManagment.Models.ViewModel;
+// >>>>>>> main
 using System.Security.Claims;
 
 namespace StudentPerformanceManagment.Controllers
