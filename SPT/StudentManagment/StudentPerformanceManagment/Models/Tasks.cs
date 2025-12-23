@@ -1,10 +1,12 @@
-﻿using StudentPerformanceManagement.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema; // Required for [ForeignKey]
+using StudentPerformanceManagement.Models;
 
 namespace StudentPerformanceManagment.Models
 {
     public class Tasks
     {
         public int TasksId { get; set; }
+
         public int StaffId { get; set; }
         public Staff Staff { get; set; }
 
@@ -20,9 +22,6 @@ namespace StudentPerformanceManagment.Models
         public DateTime ValidFrom { get; set; }
         public DateTime ValidTo { get; set; }
 
-        public bool IsActive(DateTime now)
-        {
-            return now >= ValidFrom && now <= ValidTo;
-        }
+        public bool IsActive(DateTime now) => now >= ValidFrom && now <= ValidTo;
     }
 }
