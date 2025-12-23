@@ -1,0 +1,80 @@
+﻿<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow-sm">
+
+                <!-- HEADER -->
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Edit Profile</h5>
+                    
+                </div>
+
+                <div class="card-body">
+
+                    <!-- ALERT -->
+                    <div class="alert alert-warning small">
+                        PRN and Email cannot be changed
+                    </div>
+
+                    <!-- FORM -->
+                    <form>
+
+                        <div class="mb-3">
+                            <label class="form-label">PRN (Read Only)</label>
+                            <input type="text" class="form-control" value="202500010001" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" value="Anurag Londhe">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email (Read Only)</label>
+                            <input type="email" class="form-control" value="anuraglondhe9052@gmail.com" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Mobile Number</label>
+                            <input type="text" class="form-control" value="+91 8669489052">
+                        </div>
+
+                        <hr>
+
+                        <h6 class="mb-3">Change Password</h6>
+
+                        <div class="mb-3">
+                            <label class="form-label">Current Password</label>
+                            <input type="password" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">New Password</label>
+                            <input type="password" class="form-control">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control">
+                        </div>
+
+                        <!-- BUTTONS -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="/Student/Dashboard" class="btn btn-secondary">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                Save Changes
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

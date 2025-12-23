@@ -10,7 +10,7 @@
                     <a class="nav-link active fw-bold" href="#">My Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Performance</a>
+                    <a class="nav-link" href="/Student/Performance">Performance</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Rankings</a>
@@ -56,9 +56,10 @@
                             <p class="mb-1"><strong>Mobile:</strong> +91 8669489052</p>
                             <p class="mb-3"><strong>Course:</strong> MBA</p>
 
-                            <button class="btn btn-primary btn-sm">
+                            <!-- EDIT PROFILE LINK -->
+                            <a href="/Student/EditProfile" class="btn btn-primary btn-sm">
                                 Edit Profile
-                            </button>
+                            </a>
                         </div>
 
                     </div>
@@ -93,7 +94,7 @@
             <a href="/Student/Performance" class="text-decoration-none text-dark">
                 <div class="card shadow-sm hover-card">
                     <div class="card-body text-center">
-                        <h5 class="mb-2">Performance Card</h5>
+                        <h5 class="mb-2">Performance</h5>
                         <p class="text-muted mb-3">
                             View detailed academic performance
                         </p>
@@ -107,3 +108,12 @@
         </div>
     </div>
 </div>
+
+<!-- OPTIONAL HOVER EFFECT -->
+<style>
+    .hover-card:hover {
+        transform: translateY(-4px);
+        transition: 0.3s ease;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    }
+</style>
