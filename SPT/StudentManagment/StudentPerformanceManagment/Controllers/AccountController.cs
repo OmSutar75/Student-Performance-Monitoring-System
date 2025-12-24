@@ -50,9 +50,14 @@ namespace IdentityDemo.Controllers
                 if (await _userManager.IsInRoleAsync(user, "Admin"))
                     return View("AdminDashboard");
 
+<<<<<<< HEAD
                 if (await _userManager.IsInRoleAsync(user, "Staff"))
                 return RedirectToRoute(new { controller = "Staff", action = "Dashboard" });
             //return View("StaffDashboard");
+=======
+                  if (await _userManager.IsInRoleAsync(user, "Staff"))
+                    return RedirectToAction("StaffDashboard","Staff");
+>>>>>>> main
 
             return View("StudentDashboard");
             }
