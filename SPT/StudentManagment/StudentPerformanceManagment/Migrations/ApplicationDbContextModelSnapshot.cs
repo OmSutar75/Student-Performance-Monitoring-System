@@ -384,7 +384,8 @@ namespace StudentPerformanceManagment.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.HasIndex("SubjectId");
+                    b.HasIndex("SubjectId")
+                        .IsUnique();
 
                     b.ToTable("Marks");
                 });

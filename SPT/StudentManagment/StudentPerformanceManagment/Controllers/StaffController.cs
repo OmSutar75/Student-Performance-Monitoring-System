@@ -1,19 +1,20 @@
-
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+<<<<<<< HEAD
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using StudentPerformanceManagement.Models;
+=======
+
+>>>>>>> main
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
 using System.Security.Claims;
-
 
 namespace StudentPerformanceManagment.Controllers
 {
     public class StaffController : Controller
     {
-
 
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
@@ -25,8 +26,26 @@ namespace StudentPerformanceManagment.Controllers
             _context = context;
         }
 
+        // ROLE BASED DASHBOARD - create and pass vm so partials that expect LayoutUserViewModel work
+        public async Task<IActionResult> Dashboard()
+        {
+            var user = await _userManager.GetUserAsync(User);
 
+            string role = "Student";
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
+                role = "Admin";
+            else if (await _userManager.IsInRoleAsync(user, "Staff"))
+                role = "Staff";
 
+            var vm = new LayoutUserViewModel
+            {
+                FullName = user?.FullName ?? "User",
+                Role = role
+            };
+
+            return View($"~/Views/{role}/Dashboard.cshtml", vm);
+
+        }
 
 
         public IActionResult AddMark(int subjectId)
@@ -74,6 +93,7 @@ namespace StudentPerformanceManagment.Controllers
 
             _context.SaveChanges();
 
+<<<<<<< HEAD
 
               
             return RedirectToAction("AddMark",new {subjectId=SubjectId});
@@ -93,6 +113,9 @@ namespace StudentPerformanceManagment.Controllers
 
             return View(myTasks);
 
+=======
+            return RedirectToAction("AddMark", new { subjectId = SubjectId });
+>>>>>>> main
         }
     }
 }

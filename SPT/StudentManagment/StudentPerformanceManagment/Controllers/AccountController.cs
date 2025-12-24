@@ -39,22 +39,35 @@ namespace IdentityDemo.Controllers
                 return View();
             }
 
-            // ROLE BASED DASHBOARD
-            public async Task<IActionResult> Dashboard()
+        // ROLE BASED DASHBOARD
+        public async Task<IActionResult> Dashboard()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            // Determine user role
+            string role = "Student";
+
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
+                role = "Admin";
+            else if (await _userManager.IsInRoleAsync(user, "Staff"))
+                role = "Staff";
+
+            // Build ViewModel
+            var vm = new LayoutUserViewModel
             {
-                var user = await _userManager.GetUserAsync(User);
+                FullName = user.FullName,
+                Role = role
+            };
 
-                if (await _userManager.IsInRoleAsync(user, "Admin"))
-                    return View("AdminDashboard");
+            // Return the appropriate dashboard
+            return View($"~/Views/{role}/Dashboard.cshtml", vm);
 
-                  if (await _userManager.IsInRoleAsync(user, "Staff"))
-                    return RedirectToAction("StaffDashboard","Staff");
+        }
 
-                return View("StudentDashboard");
-            }
 
-            // LOGOUT
-            public async Task<IActionResult> Logout()
+
+        // LOGOUT
+        public async Task<IActionResult> Logout()
             {
                 await _signInManager.SignOutAsync();
                 return RedirectToAction("Login");

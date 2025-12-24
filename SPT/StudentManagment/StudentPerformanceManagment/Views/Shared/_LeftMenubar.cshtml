@@ -1,8 +1,48 @@
-﻿<div class="sidebar">
-    <h6 class="fw-bold mb-3">SPMS Staff Portal</h6>
+﻿@model StudentPerformanceManagment.Models.LayoutUserViewModel
 
-    <div class="menu-item active"><a href="#">Dashboard</a></div>
-    <div class="menu-item"><a href="#">My Tasks</a></div>
-    <div class="menu-item">Late Requests</div>
-    <div class="menu-item">History</div>
+<div class="sidebar">
+    <h6 class="fw-bold mb-3">SPMS Portal</h6>
+
+    @* <div class="menu-item active">
+        <a href="/Home/Dashboard"></a>
+    </div> *@
+
+    
+
+    @* Staff Menu *@
+    @if (Model.Role == "Staff")
+    {
+        <div class="menu-item"><a href="">Dashboard</a></div>
+        <div class="menu-item"><a href="/Tasks">My Tasks</a></div>
+        <div class="menu-item"><a href="/LateRequests">Late Requests</a></div>
+
+    }
+
+    @* Admin Menu *@
+    @if (Model.Role == "Admin")
+    {
+        <div class="menu-item"><a href="">Dashboard</a></div>
+        <div class="menu-item"><a href="/Admin/AddStaff"> Add staff</a></div>
+        <div class="menu-item"><a href="/Admin/EnrollStudent">Enroll Student</a></div>
+        <div class="menu-item"><a href="/Admin/AddCourse">Courses</a></div>
+        <div class="menu-item"><a href="/Admin/AddSubject">Subjects</a></div>
+        <div class="menu-item"><a href="/Admin/AssignTask">Task Assign</a></div>
+
+
+
+
+    }
+
+    @* Student Menu *@
+    @if (Model.Role == "Student")
+    {
+        <div class="menu-item"><a href="">Dashboard</a></div>
+        <div class="menu-item"><a href="/Profile">Profile</a></div>
+        <div class="menu-item"><a href="/Performance">Performance</a></div>
+    }
+
+    @* Common Menu For All *@
+    <div class="menu-item">
+        <a href="/History">History</a>
+    </div>
 </div>

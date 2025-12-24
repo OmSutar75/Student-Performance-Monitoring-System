@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment;
 using StudentPerformanceManagement.Models;
@@ -23,9 +23,28 @@ namespace IdentityDemo.Controllers
                 _userManager = userManager;
                 _context = context;
             }
+        public async Task<IActionResult> Dashboard()
+        {
+            var user = await _userManager.GetUserAsync(User);
 
-            // ADD STAFF (GET)
-            [HttpGet]
+            string role = "Student";
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
+                role = "Admin";
+            else if (await _userManager.IsInRoleAsync(user, "Staff"))
+                role = "Staff";
+
+            var vm = new LayoutUserViewModel
+            {
+                FullName = user?.FullName ?? "User",
+                Role = role
+            };
+
+            return View($"~/Views/{role}/Dashboard.cshtml", vm);
+
+        }
+
+        // ADD STAFF (GET)
+        [HttpGet]
             public IActionResult AddStaff()
             {
                 return View();
