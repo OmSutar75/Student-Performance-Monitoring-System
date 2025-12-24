@@ -1,11 +1,12 @@
 
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using StudentPerformanceManagement.Models;
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
+using System.Security.Claims;
 
 
 namespace StudentPerformanceManagment.Controllers
@@ -75,7 +76,7 @@ namespace StudentPerformanceManagment.Controllers
 
 
               
-            return View(model);
+            return RedirectToAction("AddMark",new {subjectId=SubjectId});
         }
 
          public async Task<IActionResult> StaffDashboard()
