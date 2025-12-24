@@ -1,25 +1,18 @@
 
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-// <<<<<<< ModelCreation/Task
-// using StudentPerformanceManagement.Models;
-// +using StudentPerformanceManagment.Models;
-// =======
+
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using StudentPerformanceManagement.Models;
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
-// >>>>>>> main
-using System.Security.Claims;
+
 
 namespace StudentPerformanceManagment.Controllers
 {
     public class StaffController : Controller
     {
 
-        public IActionResult Dashboard()
-        {
-            return View();
-        }
 
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
@@ -31,15 +24,55 @@ namespace StudentPerformanceManagment.Controllers
             _context = context;
         }
 
-        public IActionResult AddMark()
-       {
-            //var model= _context.Students.Select(s => new MarkViewModel { Prn = s.PRN, Name = s.Name });
 
-            var model = new MarkViewModel
+
+
+
+        public IActionResult AddMark(int subjectId)
+        {
+            var viewModel = new MarkViewModel();
+
+            // 1. Fetch students (you might filter by class or department here)
+            viewModel.students = _context.Students.ToList();
+
+            // 2. Pass the SubjectId to the view using ViewBag
+            ViewBag.SubjectId = 1;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SaveMark(int StudentId, int SubjectId, int TheoryMarks, int LabMarks, int InternalMarks)
+        {
+            // 1. Check if marks already exist for this student in this subject
+            var existingMark = _context.Marks
+                .FirstOrDefault(m => m.StudentId == StudentId && m.SubjectId == SubjectId);
+
+            if (existingMark != null)
             {
-                students = _context.Students.ToList(),
+                // Update
+                existingMark.TheoryMarks = TheoryMarks;
+                existingMark.LabMarks = LabMarks;
+                existingMark.InternalMarks = InternalMarks;
+                _context.Marks.Update(existingMark);
+            }
+            else
+            {
+                // Insert
+                var newMark = new Mark
+                {
+                    StudentId = StudentId,
+                    SubjectId = SubjectId,
+                    TheoryMarks = TheoryMarks,
+                    LabMarks = LabMarks,
+                    InternalMarks = InternalMarks
+                };
+                _context.Marks.Add(newMark);
+            }
 
-            };
+            _context.SaveChanges();
+
 
               
             return View(model);
@@ -58,6 +91,7 @@ namespace StudentPerformanceManagment.Controllers
            .ToListAsync();
 
             return View(myTasks);
+
         }
     }
 }
