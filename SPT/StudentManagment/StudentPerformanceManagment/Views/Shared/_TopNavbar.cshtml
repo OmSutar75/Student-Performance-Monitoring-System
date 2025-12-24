@@ -1,9 +1,9 @@
-﻿@model StudentPerformanceManagment.Models.AppUser
+﻿@model StudentPerformanceManagment.Models.ViewModel.StaffDashViewModel
 <div class="topbar">
     <strong>☰</strong>
 
     <div>
-        🔔 👤 @Model.FullName
+        🔔 👤 @Model.StaffName
         <button class="btn btn-sm btn-outline-dark ms-2" onclick="location.href='/Account/Logout'">
             Logout
         </button>

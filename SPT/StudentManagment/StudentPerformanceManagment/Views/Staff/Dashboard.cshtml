@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@model StudentPerformanceManagment.Models.ViewModel.StaffDashViewModel
+<!DOCTYPE html>
 <html>
 <head>
     <title>@ViewData["Title"]</title>
@@ -53,14 +54,14 @@
 <body>
 
     <!-- SIDEBAR -->
-    @Html.Partial("_Sidebar")
+    @Html.Partial("_LeftMenubar")
 
     <!-- TOPBAR -->
-    @Html.Partial("_Topbar")
+    @Html.Partial("_TopNavbar")
 
     <!-- MAIN CONTENT -->
     <div class="content">
-        @Html.Partial("_StaffDashboard")
+        @Html.Partial("_StaffDashboard",Model)
     </div>
 
 </body>

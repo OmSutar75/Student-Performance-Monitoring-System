@@ -18,6 +18,9 @@ namespace StudentPerformanceManagment.Models
         public int LabMarks { get; set; }
         public int InternalMarks { get; set; }
 
+        public int TasksId { get; set; }
+        public Tasks Tasks { get; set; }
+
         public int TotalObtained => this.TheoryMarks + this.LabMarks + this.InternalMarks;
 
         public int MaxTotal => Subject.MaxTheoryMarks + Subject.MaxLabMarks + Subject.MaxInternalMarks; // Returns 100

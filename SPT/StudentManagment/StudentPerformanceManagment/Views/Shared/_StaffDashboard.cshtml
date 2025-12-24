@@ -1,10 +1,10 @@
-﻿@model StudentPerformanceManagment.Models.AppUser
+﻿@model StudentPerformanceManagment.Models.ViewModel.StaffDashViewModel
 <!-- MAIN CONTENT -->
 
 <div class="content">
 
     <h4 class="fw-bold">STAFF DASHBOARD</h4>
-    <p>Welcome, @Model.FullName! (1234)</p>
+    <p>Welcome, @Model.StaffName! (@Model.StaffId)</p>
 
     <!-- STAT CARDS -->
     <div class="row mb-4">
@@ -13,7 +13,7 @@
                 <div class="stat-icon">📋</div>
                 <div>
                     <small>Total Tasks</small>
-                    <h5 class="fw-bold">8</h5>
+                    <h5 class="fw-bold">@Model.TotalTask</h5>
                 </div>
             </div>
         </div>
@@ -47,16 +47,18 @@
 
     <div class="row mb-4">
         <div class="col-md-6">
-            <div class="task-card">
-                <h6 class="fw-bold">DBMS Marks Entry</h6>
-                <p class="mb-1">Batch: MCA-2024-A | Subject: DBMS</p>
-                <p class="mb-1">Deadline:</p>
-                <p>Status:</p>
-                <button class="btn btn-outline-dark btn-sm">＋ ADD MARKS</button>
-            </div>
+            @foreach(var t in Model.Tasks){
+                <div class="task-card">
+                    <h6 class="fw-bold">DBMS Marks Entry</h6>
+                    <p class="mb-1">Batch: MCA-2024-A | Subject: DBMS (@t.SubjectId)</p>
+                    <p class="mb-1">Deadline: @t.ValidTo</p>
+                    <p>Status:</p>
+                    <button class="btn btn-outline-dark btn-sm">＋ ADD MARKS</button>
+                </div>
+            }
         </div>
 
-        <div class="col-md-6">
+        @* <div class="col-md-6">
             <div class="task-card">
                 <h6 class="fw-bold">Data Structures Evaluation</h6>
                 <p class="mb-1">Batch: MCA-2024-B | Subject: DS</p>
@@ -64,7 +66,7 @@
                 <p>Status:</p>
                 <button class="btn btn-outline-dark btn-sm">＋ ADD MARKS</button>
             </div>
-        </div>
+        </div> *@
     </div>
 
     <!-- OVERDUE TASKS -->
