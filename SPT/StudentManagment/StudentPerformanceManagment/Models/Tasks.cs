@@ -1,11 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema; // Required for [ForeignKey]
 using StudentPerformanceManagement.Models;
 
+public enum Status
+{
+    Pending = 0,
+    Completed = 1,
+    Overdue = 2
+}
+
+
 namespace StudentPerformanceManagment.Models
 {
     public class Tasks
     {
         public int TasksId { get; set; }
+        public string TasksTitle { get; set; }
+        public string TasksDescription { get; set; }
+
+        public Status Status { get; set; }
 
         public int StaffId { get; set; }
         public Staff Staff { get; set; }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudentPerformanceManagment;
 
@@ -11,9 +12,11 @@ using StudentPerformanceManagment;
 namespace StudentPerformanceManagment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251224061038_TasksModelUpdated")]
+    partial class TasksModelUpdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -377,6 +380,9 @@ namespace StudentPerformanceManagment.Migrations
                     b.Property<int>("SubjectId")
                         .HasColumnType("int");
 
+                    b.Property<int>("TasksId")
+                        .HasColumnType("int");
+
                     b.Property<int>("TheoryMarks")
                         .HasColumnType("int");
 
@@ -384,8 +390,9 @@ namespace StudentPerformanceManagment.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.HasIndex("SubjectId")
-                        .IsUnique();
+                    b.HasIndex("SubjectId");
+
+                    b.HasIndex("TasksId");
 
                     b.ToTable("Marks");
                 });
@@ -592,9 +599,17 @@ namespace StudentPerformanceManagment.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("StudentPerformanceManagment.Models.Tasks", "Tasks")
+                        .WithMany()
+                        .HasForeignKey("TasksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Student");
 
                     b.Navigation("Subject");
+
+                    b.Navigation("Tasks");
                 });
 
             modelBuilder.Entity("StudentPerformanceManagment.Models.Subject", b =>
