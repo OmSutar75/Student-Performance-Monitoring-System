@@ -62,10 +62,16 @@ namespace StudentPerformanceManagment
                 .WithMany(t => t.Tasks)
                 .HasForeignKey(t => t.StaffId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Mark>()
+                   .HasIndex(t => t.SubjectId)
+                   .IsUnique(false);
+                   
+        }
         }
 
 
-    }
+    
 
    
 }

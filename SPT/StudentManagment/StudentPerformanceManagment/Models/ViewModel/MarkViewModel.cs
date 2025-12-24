@@ -17,8 +17,7 @@ namespace StudentPerformanceManagment.Models.ViewModel
 
         public int Total {  get; set; }
 
-        public string Status { get; set; } 
-
-
+        public string Status { get; set; }
+        public int SubjectId { get;  set; }
     }
 }
