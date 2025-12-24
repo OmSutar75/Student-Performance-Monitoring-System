@@ -1,0 +1,159 @@
+﻿@model StudentPerformanceManagment.Models.LayoutUserViewModel
+
+<div class="content">
+
+    <h4 class="fw-bold">ADMIN DASHBOARD</h4>
+    <p>Welcome, @Model.FullName!</p>
+
+
+
+    <!-- TOP STAT CARDS -->
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">📘</div>
+                <div>
+                    <small>Courses</small>
+                    <h5 class="fw-bold">12</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">📗</div>
+                <div>
+                    <small>Subjects</small>
+                    <h5 class="fw-bold">42</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">🎓</div>
+                <div>
+                    <small>Students</small>
+                    <h5 class="fw-bold">380</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">👨‍🏫</div>
+                <div>
+                    <small>Staff</small>
+                    <h5 class="fw-bold">25</h5>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TASK STATS -->
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">📝</div>
+                <div>
+                    <small>Total Tasks</small>
+                    <h5 class="fw-bold">18</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div>
+                    <small>Pending</small>
+                    <h5 class="fw-bold">6</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">✔</div>
+                <div>
+                    <small>Completed</small>
+                    <h5 class="fw-bold">12</h5>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RECENT ACTIVITIES -->
+    <h6 class="fw-bold mt-4">RECENT ACTIVITIES</h6>
+
+    <div class="task-card mb-4">
+        <ul>
+            <li>Staff STF001 submitted marks for MCA Sem-1</li>
+            <li>New student enrolled: PRN 202500010001</li>
+            <li>Task deadline extended for Subject: DBMS</li>
+            <li>Batch MCA-2025 created successfully</li>
+        </ul>
+    </div>
+   
+    <!-- QUICK ACTIONS -->
+    <h6 class="fw-bold mt-3">QUICK ACTIONS</h6>
+
+    <div class="d-flex gap-3 mt-2">
+        <a href="/Admin/EnrollStudent" class="btn btn-outline-dark btn-sm">＋ Add Student</a>
+        <a href="/Admin/AddStaff" class="btn btn-outline-dark btn-sm">＋ Add Staff</a>
+        <a href="/Tasks/Assign" class="btn btn-outline-dark btn-sm">＋ Assign Task</a>
+    </div>
+
+</div>
+
+<style>
+    body {
+        background-color: #f7f7f7;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    /* MAIN CONTENT */
+    .content {
+        margin-left: 220px;
+        padding: 20px;
+    }
+
+    .stat-card {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 15px;
+        background: #f0f0f0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .stat-icon {
+        width: 45px;
+        height: 45px;
+        border: 1px solid #000;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .task-card {
+        border: 1px solid #000;
+        border-radius: 12px;
+        padding: 15px;
+        background: #fff;
+    }
+
+    .overdue {
+        background: #f8c9c9;
+        border: 1px solid #cc0000;
+        padding: 15px;
+        border-radius: 10px;
+    }
+</style>

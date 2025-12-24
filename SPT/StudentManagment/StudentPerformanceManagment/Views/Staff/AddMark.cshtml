@@ -1,38 +1,55 @@
 ﻿@model StudentPerformanceManagment.Models.ViewModel.MarkViewModel
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>PRN</th>
-            <th>Name</th>
-            <th>Theory</th>
-            <th>Lab</th>
-            <th>Internal</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.students)
-        {
-            <tr>
-                <form asp-action="SaveMark" method="post">
-                    @Html.AntiForgeryToken()
+@{
+    ViewData["Title"] = "AddMark";
+}
 
-                <td>@item.PRN</td>
-                <td>@item.Name</td>
+<h1>AddMark</h1>
 
-                <input type="hidden" name="StudentId" value="@item.StudentId" />
-                <input type="hidden" name="SubjectId" value="@ViewBag.SubjectId" />
+<h4>MarkViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddMark">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <table>
+                <thead>
+                <th>StudentPRN</th>
+                <th>Name</th>
+                    <th>TheoryMarks</th>
+                <th>LabMarks</th>
+                <th>InternalMarks</th>
+                
+                </thead>
 
-                <td><input name="TheoryMarks" class="form-control" type="number" /></td>
-                <td><input name="LabMarks" class="form-control" type="number" /></td>
-                <td><input name="InternalMarks" class="form-control" type="number" /></td>
+                <tbody>
+                    @foreach(var item in Model.students)
+                    {
+                        <tr>
+                           <td> @item.PRN</td>
+                            <td> @item.Name</td>
+                            <td><input asp-for="TheoryMarks" class="form-control" /></td>
+                            <td><input asp-for="LabMarks" class="form-control" /></td>
+                            <td><input asp-for="InternalMarks" class="form-control" /></td>
+                            <td><input asp-for="Total" class="form-control" /></td>
+                            <td><button type="submit" value="update" class="btn btn-primary" />Update</td>
 
-                <td>
-                    <button type="submit" class="btn btn-primary">Save Mark</button>
-                </td>
-                </form>
-            </tr>
-        }
-    </tbody>
-</table>
+
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            
+            
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

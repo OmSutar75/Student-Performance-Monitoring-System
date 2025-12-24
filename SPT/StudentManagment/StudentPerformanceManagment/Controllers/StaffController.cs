@@ -1,13 +1,8 @@
-
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using StudentPerformanceManagement.Models;
+
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
-using System.Security.Claims;
-
 
 namespace StudentPerformanceManagment.Controllers
 {
@@ -24,20 +19,27 @@ namespace StudentPerformanceManagment.Controllers
             _context = context;
         }
 
-        public IActionResult Dashboard()
+        // ROLE BASED DASHBOARD - create and pass vm so partials that expect LayoutUserViewModel work
+        public async Task<IActionResult> Dashboard()
         {
-            StaffDashViewModel staffDashViewModel = new StaffDashViewModel();
-            List<Tasks> tasks = _context.Tasks.ToList();
-            staffDashViewModel.Tasks = tasks;
+            var user = await _userManager.GetUserAsync(User);
 
-            staffDashViewModel.TotalTask = tasks.Count();
+            string role = "Student";
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
+                role = "Admin";
+            else if (await _userManager.IsInRoleAsync(user, "Staff"))
+                role = "Staff";
 
-            staffDashViewModel.StaffName = _userManager.GetUserName(User);
-            staffDashViewModel.StaffId = _userManager.GetUserId(User);
-            
+            var vm = new LayoutUserViewModel
+            {
+                FullName = user?.FullName ?? "User",
+                Role = role
+            };
 
-            return View(staffDashViewModel);
+            return View($"~/Views/{role}/Dashboard.cshtml", vm);
+
         }
+
 
         public IActionResult AddMark(int subjectId)
         {
@@ -84,23 +86,7 @@ namespace StudentPerformanceManagment.Controllers
 
             _context.SaveChanges();
 
-            return RedirectToAction("AddMark", new {subjectId = SubjectId});
-        }
-
-         public async Task<IActionResult> StaffDashboard()
-        {
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var myTasks =await _context.Tasks
-           .Include(t => t.Course)
-           .Include(t => t.Subject)
-           .Include(t => t.CourseGroup)
-           .Where(t => t.Staff.AppUserId == userId)
-           .ToListAsync();
-
-            return View(myTasks);
-
+            return RedirectToAction("AddMark", new { subjectId = SubjectId });
         }
     }
 }

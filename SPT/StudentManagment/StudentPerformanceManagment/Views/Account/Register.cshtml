@@ -1,4 +1,12 @@
-﻿<form method="post">
+﻿@model StudentPerformanceManagment.Models.LayoutUserViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+<link href="~/css/layout.css" rel="stylesheet" />
+<script src="~/js/site.js"></script>
+<link href="~/css/site.css" rel="stylesheet" />
+
+<form method="post">
     Full Name: <input name="fullName" /><br />
     Email: <input name="email" /><br />
     Password: <input name="password" type="password" /><br />

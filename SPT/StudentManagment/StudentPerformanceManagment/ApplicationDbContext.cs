@@ -66,12 +66,10 @@ namespace StudentPerformanceManagment
             builder.Entity<Mark>()
                 .HasIndex(t => t.SubjectId)
                 .IsUnique(false);
-                   
-        }
         }
 
 
-    
+    }
 
    
 }
