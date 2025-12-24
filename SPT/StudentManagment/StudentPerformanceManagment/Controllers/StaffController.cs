@@ -71,7 +71,6 @@ namespace StudentPerformanceManagment.Controllers
 
             _context.SaveChanges();
 
-            // Redirect back to the list so the staff can continue with the next student
             return RedirectToAction("AddMark", new { subjectId = SubjectId });
         }
     }
