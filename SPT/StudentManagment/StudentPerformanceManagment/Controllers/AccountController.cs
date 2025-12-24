@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using StudentPerformanceManagment;
 using StudentPerformanceManagment.Models;
+using StudentPerformanceManagment.Models.ViewModel;
 
 namespace IdentityDemo.Controllers
-{
+{ 
         public class AccountController : Controller
         {
             private readonly SignInManager<AppUser> _signInManager;
@@ -42,15 +44,17 @@ namespace IdentityDemo.Controllers
             // ROLE BASED DASHBOARD
             public async Task<IActionResult> Dashboard()
             {
+            
                 var user = await _userManager.GetUserAsync(User);
 
                 if (await _userManager.IsInRoleAsync(user, "Admin"))
                     return View("AdminDashboard");
 
                 if (await _userManager.IsInRoleAsync(user, "Staff"))
-                    return View("StaffDashboard",user);
+                return RedirectToRoute(new { controller = "Staff", action = "Dashboard" });
+            //return View("StaffDashboard");
 
-                return View("StudentDashboard");
+            return View("StudentDashboard");
             }
 
             // LOGOUT

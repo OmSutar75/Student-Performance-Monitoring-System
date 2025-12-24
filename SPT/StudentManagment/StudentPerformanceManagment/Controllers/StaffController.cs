@@ -10,11 +10,6 @@ namespace StudentPerformanceManagment.Controllers
     public class StaffController : Controller
     {
 
-        public IActionResult Dashboard()
-        {
-            return View();
-        }
-
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
 
@@ -23,6 +18,21 @@ namespace StudentPerformanceManagment.Controllers
         {
             _userManager = userManager;
             _context = context;
+        }
+
+        public IActionResult Dashboard()
+        {
+            StaffDashViewModel staffDashViewModel = new StaffDashViewModel();
+            List<Tasks> tasks = _context.Tasks.ToList();
+            staffDashViewModel.Tasks = tasks;
+
+            staffDashViewModel.TotalTask = tasks.Count();
+
+            staffDashViewModel.StaffName = _userManager.GetUserName(User);
+            staffDashViewModel.StaffId = _userManager.GetUserId(User);
+            
+
+            return View(staffDashViewModel);
         }
 
         public IActionResult AddMark()
