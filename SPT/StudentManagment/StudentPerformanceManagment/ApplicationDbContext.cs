@@ -64,15 +64,10 @@ namespace StudentPerformanceManagment
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Mark>()
-<<<<<<< HEAD
                 .HasIndex(t => t.SubjectId)
                 .IsUnique(false);
-=======
-                   .HasIndex(t => t.SubjectId)
-                   .IsUnique(false);
                    
         }
->>>>>>> main
         }
 
 

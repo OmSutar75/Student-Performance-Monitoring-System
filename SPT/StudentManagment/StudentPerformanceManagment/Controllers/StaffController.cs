@@ -1,11 +1,12 @@
 
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using StudentPerformanceManagement.Models;
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
+using System.Security.Claims;
 
 
 namespace StudentPerformanceManagment.Controllers
@@ -13,10 +14,6 @@ namespace StudentPerformanceManagment.Controllers
     public class StaffController : Controller
     {
 
-<<<<<<< HEAD
-=======
-
->>>>>>> main
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
 
@@ -27,7 +24,6 @@ namespace StudentPerformanceManagment.Controllers
             _context = context;
         }
 
-<<<<<<< HEAD
         public IActionResult Dashboard()
         {
             StaffDashViewModel staffDashViewModel = new StaffDashViewModel();
@@ -42,15 +38,6 @@ namespace StudentPerformanceManagment.Controllers
 
             return View(staffDashViewModel);
         }
-
-        public IActionResult AddMark()
-       {
-            //var model= _context.Students.Select(s => new MarkViewModel { Prn = s.PRN, Name = s.Name });
-=======
->>>>>>> main
-
-
-
 
         public IActionResult AddMark(int subjectId)
         {
@@ -97,9 +84,7 @@ namespace StudentPerformanceManagment.Controllers
 
             _context.SaveChanges();
 
-
-              
-            return View(model);
+            return RedirectToAction("AddMark", new {subjectId = SubjectId});
         }
 
          public async Task<IActionResult> StaffDashboard()
