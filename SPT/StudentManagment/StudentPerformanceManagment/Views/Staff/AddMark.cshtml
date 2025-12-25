@@ -1,37 +1,110 @@
-﻿
+﻿@using System.Linq
+@model List<StudentPerformanceManagment.Models.ViewModel.MarkViewModel>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>PRN</th>
-            <th>Name</th>
-            <th>Theory</th>
-            <th>Lab</th>
-            <th>Internal</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+@{
+    // Safely extract the first item to use for the TaskId in the footer
+    var firstStudent = Model?.FirstOrDefault();
+}
+
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead style="background-color: #f8f9fa; border-bottom: 2px solid #edf2f7;">
+                <tr>
+                    <th class="ps-4 py-3 text-muted fw-bold small text-uppercase" style="letter-spacing: 0.05em;">PRN</th>
+                    <th class="py-3 text-muted fw-bold small text-uppercase" style="letter-spacing: 0.05em;">Student Name</th>
+                    <th class="py-3 text-muted fw-bold small text-uppercase text-center" style="width: 130px;">Theory</th>
+                    <th class="py-3 text-muted fw-bold small text-uppercase text-center" style="width: 130px;">Lab</th>
+                    <th class="py-3 text-muted fw-bold small text-uppercase text-center" style="width: 130px;">Internal</th>
+                    <th class="py-3 text-muted fw-bold small text-uppercase text-center">Final Score</th>
+                    <th class="pe-4 py-3 text-muted fw-bold small text-uppercase text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="row-hover">
+                        <form asp-action="SaveMark" method="post">
+                            <input type="hidden" name="CourseGroupId" value="@item.CourseGroupId" />
+                            <input type="hidden" name="TaskId" value="@item.TaskId" />
+                            <input type="hidden" name="StudentId" value="@item.StudentId" />
+                            <input type="hidden" name="SubjectId" value="@item.SubjectId" />
+
+                        <td class="ps-4 fw-medium text-dark">@item.PRN</td>
+                        <td class="fw-semibold" style="color: #2d3748;">@item.Name</td>
+
+                        <td>
+                            <input name="TheoryMarks" class="form-control form-control-sm text-center custom-input" type="number" value="@item.TheoryMarks" />
+                        </td>
+                        <td>
+                            <input name="LabMarks" class="form-control form-control-sm text-center custom-input" type="number" value="@item.LabMarks" />
+                        </td>
+                        <td>
+                            <input name="InternalMarks" class="form-control form-control-sm text-center custom-input" type="number" value="@item.InternalMarks" />
+                        </td>
+
+                        <td class="text-center">
+                            <div class="d-inline-block px-3 py-1 rounded-pill fw-bold" style="background-color: #f0fff4; color: #38a169; border: 1px solid #c6f6d5;">
+                                @item.TotalMark(item.TheoryMarks, item.LabMarks, item.InternalMarks)
+                            </div>
+                        </td>
+
+                        <td class="pe-4 text-center">
+                            <button type="submit" class="btn btn-sm btn-dark rounded-3 px-3 py-1 fw-bold shadow-sm save-btn">
+                                <i class="bi bi-check2-circle me-1"></i> Save
+                            </button>
+                        </td>
+                        </form>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card-footer bg-white border-0 py-4 text-center">
+        @if (firstStudent != null)
         {
-            <tr>
-                <form asp-action="SaveMark" method="post">
-
-                    @* <input type="hidden" name="CourseId" vlaue="@item.CourseId" /> *@
-                    <input type="hidden" name="CourseGroupId" value="@item.CourseGroupId" />
-                    <input type="hidden" name="TaskId" value="@item.TaskId" />
-                    <input type="hidden" name="StudentId" value="@item.StudentId" />
-                    <input type="hidden" name="SubjectId" value="@item.SubjectId" />
-                <td>@item.PRN</td>
-                <td>@item.Name</td>
-                <td><input name="TheoryMarks" class="form-control" type="number" value="@item.TheoryMarks" /></td>
-                <td><input name="LabMarks" class="form-control" type="number" value="@item.LabMarks" /></td>
-                <td><input name="InternalMarks" class="form-control" type="number" value="@item.InternalMarks" /></td>
-                <td><button type="submit" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">Update</button></td>
-
-                </form>
-            </tr>
+            <form asp-action="CompleteTask" method="post">
+                <input type="hidden" name="taskId" value="@firstStudent.TaskId" />
+                <button type="submit" class="btn btn-lg btn-success rounded-pill px-5 fw-bold shadow-sm transition-all hover-lift">
+                    <i class="bi bi-check-all me-2"></i> Finalize & Mark Task as Completed
+                </button>
+            </form>
         }
-        
-    </tbody>
-</table>
+    </div>
+</div>
+
+<style>
+    /* Styling for the UI components */
+    .custom-input {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+        .custom-input:focus {
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+            outline: none;
+        }
+
+    .row-hover:hover {
+        background-color: #f7fafc;
+    }
+
+    .save-btn {
+        background-color: #2d3748;
+        border: none;
+        transition: transform 0.1s ease;
+    }
+
+        .save-btn:hover {
+            background-color: #1a202c;
+            transform: scale(1.05);
+        }
+
+    .hover-lift:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    }
+</style>

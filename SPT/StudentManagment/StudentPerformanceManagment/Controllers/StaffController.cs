@@ -113,6 +113,7 @@ namespace StudentPerformanceManagment.Controllers
                 // Insert
                 var newMark = new Mark
                 {
+                    TasksId = markviewmodel.TaskId,
                     StudentId = markviewmodel.StudentId,
                     SubjectId = markviewmodel.SubjectId,
                     TheoryMarks = markviewmodel.TheoryMarks,
@@ -131,6 +132,17 @@ namespace StudentPerformanceManagment.Controllers
 
         }
 
+        public IActionResult CompleteTask(int taskId)
+        {
+            var task = _context.Tasks.Find(taskId);
+            if (task != null)
+            {
+                task.Status = Status.Completed;
+                _context.SaveChanges();
+                return RedirectToAction("Dashboard");
+            }
+            return RedirectToAction("AddMark",new { taskId });
+        }
         public async Task<IActionResult> MyTasks()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
