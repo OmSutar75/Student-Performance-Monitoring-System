@@ -68,14 +68,14 @@ namespace StudentPerformanceManagment.Controllers
                     PRN = s.PRN,
                     Name = s.Name,
                     TaskId = task.TasksId,
-                    TheoryMarks = _context.Marks.Where(m => m.TaskId == task.TasksId && m.StudentId == s.StudentId)
+                    TheoryMarks = _context.Marks.Where(m => m.TasksId == task.TasksId && m.StudentId == s.StudentId)
                                     .Select(m => m.TheoryMarks).FirstOrDefault(),
 
 
-                    LabMarks = _context.Marks.Where(m => m.TaskId == task.TasksId && m.StudentId == s.StudentId)
+                    LabMarks = _context.Marks.Where(m => m.TasksId == task.TasksId && m.StudentId == s.StudentId)
                                     .Select(m => m.LabMarks).FirstOrDefault(),
 
-                    InternalMarks = _context.Marks.Where(m => m.TaskId == task.TasksId && m.StudentId == s.StudentId)
+                    InternalMarks = _context.Marks.Where(m => m.TasksId == task.TasksId && m.StudentId == s.StudentId)
                                     .Select(m => m.InternalMarks).FirstOrDefault(),
                 }).ToList();
 
