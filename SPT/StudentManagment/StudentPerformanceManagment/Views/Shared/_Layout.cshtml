@@ -1,49 +1,82 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - StudentPerformanceManagment</title>
+    <title>@ViewData["Title"] - SPMS</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="cdn.jsdelivr.net">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/StudentPerformanceManagment.styles.css" asp-append-version="true" />
+    <style>
+        /* Desktop Sidebar Fix */
+        @@media (min-width: 768px) {
+            .main-wrapper {
+                display: flex;
+                min-height: 100vh;
+            }
+
+            .sidebar-container {
+                width: 280px;
+                flex-shrink: 0;
+                position: sticky;
+                top: 0;
+                height: 100vh;
+            }
+
+            .offcanvas-md {
+                transform: none !important;
+                visibility: visible !important;
+                display: flex !important;
+                position: relative !important;
+                width: 100% !important;
+            }
+
+            .offcanvas-backdrop {
+                display: none !important;
+            }
+        }
+
+        .content-area {
+            flex-grow: 1;
+            overflow-x: hidden;
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom shadow-sm">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">StudentPerformanceManagment</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <!-- Mobile Toggle (3 Dots/Lines) -->
+                <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+
+                <a class="navbar-brand fw-bold text-primary" asp-controller="Home" asp-action="Index">SPMS Portal</a>
+
+                <div class="ms-auto d-none d-md-block">
+                    <small class="text-muted">Academic Session 2025</small>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <div class="main-wrapper">
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <div class="sidebar-container">
+                @await Html.PartialAsync("_Sidebar")
+            </div>
+        }
+
+        <main role="main" class="content-area p-3 p-md-4">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - StudentPerformanceManagment - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

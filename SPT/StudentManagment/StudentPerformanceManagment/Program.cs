@@ -16,6 +16,7 @@ namespace StudentPerformanceManagment
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer("Server=(LocalDB)\\MSSQLLocalDB;Database=SPMSDB;Trusted_Connection=True;"));
 
+
             builder.Services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -42,7 +43,7 @@ namespace StudentPerformanceManagment
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=login}/{id?}");
 
             app.Run();
         }

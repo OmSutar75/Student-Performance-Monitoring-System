@@ -1,0 +1,36 @@
+﻿
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>PRN</th>
+            <th>Name</th>
+            <th>Theory</th>
+            <th>Lab</th>
+            <th>Internal</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <form asp-action="SaveMark" method="post">
+
+                    <input type="hidden" name="CourseId" vlaue="@item.CourseId" />
+                    <input type="hidden" name="CourseGroupId" vlaue="@item.CourseGroupId" />
+                    <input type="hidden" name="TaskId" vlaue="@item.TaskId" />
+                    <input type="hidden" name="StudentId" value="@item.StudentId" />
+                    <input type="hidden" name="SubjectId" value="@item.SubjectId" />
+                <td>@item.PRN</td>
+                <td>@item.Name</td>
+                <td><input name="TheoryMarks" class="form-control" type="number" value="@item.TheoryMarks" /></td>
+                <td><input name="LabMarks" class="form-control" type="number" value="@item.LabMarks" /></td>
+                <td><input name="InternalMarks" class="form-control" type="number" value="@item.InternalMarks" /></td>
+
+
+                </form>
+            </tr>
+        }
+    </tbody>
+</table>

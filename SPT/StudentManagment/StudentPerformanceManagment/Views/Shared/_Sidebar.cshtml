@@ -1,0 +1,87 @@
+﻿
+
+<div class="offcanvas-md offcanvas-start bg-light border-end h-100" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+
+    <div class="offcanvas-header border-bottom d-md-none">
+        <h5 class="offcanvas-title" id="sidebarMenuLabel">SPMS Menu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu"></button>
+    </div>
+
+    <div class="offcanvas-body flex-column p-3">
+        <!-- User Profile Section -->
+        <div class="mb-4 p-3 bg-white rounded border text-center shadow-sm">
+            <div class="bi bi-person-circle fs-1 text-primary mb-2"></div>
+            <h6 class="mb-0 fw-bold text-truncate">@User.Identity.Name</h6>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle mt-1">
+                @(User.IsInRole("Admin") ? "Administrator" : User.IsInRole("Staff") ? "Staff Member" : "Student")
+            </span>
+        </div>
+
+        <nav class="nav nav-pills flex-column mb-auto">
+            @if (User.IsInRole("Staff"))
+            {
+                <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Staff" asp-action="Dashboard">
+                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                </a>
+                <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Staff" asp-action="MyTasks">
+                    <i class="bi bi-list-check me-2"></i> My Tasks
+                </a>
+                <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Staff" asp-action="Late Requests">
+                    <i class="bi bi-list-check me-2"></i> Late Requests
+                </a>
+            }
+
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Admin" asp-action="Dashboard">
+                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                </a>
+                <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Admin" asp-action="AddStaff">
+                    <i class="bi bi-person-plus me-2"></i> Add Staff
+                </a>
+                <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Admin" asp-action="EnrollStudent">
+                    <i class="bi bi-person-plus me-2"></i> Enroll Student
+                </a>
+                <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Admin" asp-action="Add Courses">
+                    <i class="bi bi-person-plus me-2"></i> Add Courses
+                </a>
+                <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Admin" asp-action="AddSubject">
+                    <i class="bi bi-person-plus me-2"></i> Add Subject
+                </a>
+                <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Admin" asp-action="AssignTask">
+                    <i class="bi bi-person-plus me-2"></i> Assign Task
+                </a>
+
+            }
+
+            @if (User.IsInRole("Student"))
+            {
+                <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Student" asp-action="Dashboard">
+                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                </a>
+                <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Student" asp-action="Profile">
+                    <i class="bi bi-person-circle me-2"></i> Profile
+                </a>
+                <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Student" asp-action="Performance">
+                    <i class="bi bi-person-circle me-2"></i> Performance
+                </a>
+                <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Student" asp-action="Ranking">
+                    <i class="bi bi-person-circle me-2"></i> Ranking
+                </a>
+            }
+        </nav>
+
+        <!-- Logout Section at Bottom -->
+        <div class="mt-auto pt-3">
+            <hr>
+            <form asp-controller="Account" asp-action="Logout" method="post">
+                <button type="submit" class="btn btn-danger w-100 d-flex align-items-center justify-content-center shadow-sm">
+                    <i class="bi bi-box-arrow-left me-2"></i> <span>Sign Out</span>
+                </button>
+            </form>
+            <div class="text-center mt-3 small text-muted">
+                <i class="bi bi-shield-check"></i> SPMS v1.0 2025
+            </div>
+        </div>
+    </div>
+</div>

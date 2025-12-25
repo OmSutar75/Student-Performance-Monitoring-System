@@ -1,0 +1,42 @@
+﻿
+
+<h2>Add Staff</h2>
+<style>
+    .add-staff-wrapper {
+        background: #ffffff;
+        padding: 20px 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        max-width: 450px;
+    }
+
+    .staff-form label {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .staff-form input {
+        border-radius: 6px;
+    }
+
+</style>
+<form method="post">
+    <label>Name</label><br />
+    <input type="text" name="name" required /><br /><br />
+
+    <label>Email</label><br />
+    <input type="email" name="email" required /><br /><br />
+
+    <label>Mobile Number</label><br />
+    <input type="number" name="Mobile" required /><br /><br />
+
+    <label>Password</label><br />
+    <input type="password" name="password" required /><br /><br />
+
+    <button type="submit">Create Staff</button>
+</form>
+
+@foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+{
+    <p style="color:red">@error.ErrorMessage</p>
+}
