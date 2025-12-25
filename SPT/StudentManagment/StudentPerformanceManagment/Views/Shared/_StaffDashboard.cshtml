@@ -1,10 +1,11 @@
-﻿@model StudentPerformanceManagment.Models.LayoutUserViewModel
-<!-- MAIN CONTENT -->
+﻿@using StudentPerformanceManagment.Models.ViewModel
+@model StaffDashViewModel
+
 
 <div class="content">
 
     <h4 class="fw-bold">STAFF DASHBOARD</h4>
-    <p>Welcome, @Model.FullName! (1234)</p>
+    <p>Welcome, @Model.FullName!</p>
 
     <!-- STAT CARDS -->
     <div class="row mb-4">
@@ -13,7 +14,7 @@
                 <div class="stat-icon">📋</div>
                 <div>
                     <small>Total Tasks</small>
-                    <h5 class="fw-bold">8</h5>
+                    <h5 class="fw-bold">@Model.TaskCount</h5>
                 </div>
             </div>
         </div>
@@ -90,7 +91,7 @@
 
     /* MAIN CONTENT */
     .content {
-        margin-left: 220px;
+        margin-left: 10px;
         padding: 20px;
     }
 

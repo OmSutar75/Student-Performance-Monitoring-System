@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment;
 using StudentPerformanceManagement.Models;
+using StudentPerformanceManagment.Models.ViewModel;
 
 namespace IdentityDemo.Controllers
 {
@@ -27,19 +28,13 @@ namespace IdentityDemo.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-            string role = "Student";
-            if (await _userManager.IsInRoleAsync(user, "Admin"))
-                role = "Admin";
-            else if (await _userManager.IsInRoleAsync(user, "Staff"))
-                role = "Staff";
-
             var vm = new LayoutUserViewModel
             {
                 FullName = user?.FullName ?? "User",
-                Role = role
+                Role = "Admin"
             };
 
-            return View($"~/Views/{role}/Dashboard.cshtml", vm);
+            return View(vm);
 
         }
 

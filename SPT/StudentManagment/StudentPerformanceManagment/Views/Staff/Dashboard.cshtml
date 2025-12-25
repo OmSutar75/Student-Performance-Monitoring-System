@@ -1,65 +1,96 @@
-﻿@model StudentPerformanceManagment.Models.LayoutUserViewModel
+﻿@using StudentPerformanceManagment.Models.ViewModel
+@model StaffDashViewModel
 
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>@ViewData["Title"]</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        body {
-            background-color: #f7f7f7;
-            font-family: "Segoe UI", sans-serif;
-        }
-
-        .sidebar {
-            width: 220px;
-            min-height: 100vh;
-            background: #e9e9e9;
-            padding: 15px;
-            position: fixed;
-        }
-
-        .menu-item {
-            padding: 10px 12px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            background: #fff;
-            border: 1px solid #ccc;
-            cursor: pointer;
-        }
-
-            .menu-item.active {
-                background: #dcdcdc;
-                font-weight: 600;
-            }
-
-        .topbar {
-            height: 55px;
-            background: #d9d9d9;
-            padding: 10px 20px;
-            margin-left: 220px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-align: right;
-        }
-
-        .content {
-            margin-left: 220px;
-            padding: 20px;
-        }
-    </style>
-</head>
-
-<body>
-
-    <!-- MAIN CONTENT -->
-    <div class="content">
-        @Html.Partial("_StaffDashboard")
+<div class="container-fluid py-4 animate-fade-in">
+    <!-- Top Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="p-4 bg-white rounded-4 shadow-sm border-0 d-flex align-items-center justify-content-between">
+                <div>
+                    <h3 class="fw-bold text-dark mb-1">Staff Dashboard</h3>
+                    <p class="text-muted mb-0">Welcome back! Here is what's happening with your tasks today.</p>
+                </div>
+                <div class="d-none d-md-block text-end">
+                    <div class="h5 fw-bold mb-0">@DateTime.Now.ToString("dd MMM yyyy")</div>
+                    <small class="text-muted">Academic Session 2025-26</small>
+                </div>
+            </div>
+        </div>
     </div>
 
-</body>
-</html>
+    <!-- Quick Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon bg-primary-subtle text-primary rounded-3 p-3 me-3">
+                        <i class="bi bi-list-task fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Total Tasks</small>
+                        <h4 class="fw-bold mb-0">@Model.TaskCount</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+                <div class="d-flex align-items-center">
+                    <div class="stats-icon bg-success-subtle text-success rounded-3 p-3 me-3">
+                        <i class="bi bi-check2-circle fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Active Now</small>
+                        <h4 class="fw-bold mb-0">@Model.Tasks.Count(t => t.IsActive(DateTime.Now))</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area: Active Tasks Table -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-clock-history me-2 text-primary"></i>Current Active Tasks</h5>
+            <a href="/Staff/MyTasks" class="btn btn-sm btn-light border text-primary fw-semibold">View All</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4 border-0">Subject & Course</th>
+                        <th class="border-0">Group</th>
+                        <th class="border-0">Validity</th>
+                        <th class="border-0 text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var task in Model.Tasks.Where(t => t.IsActive(DateTime.Now)).Take(5))
+                    {
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold">@task.Subject.SubjectName</div>
+                                <div class="small text-muted">@task.Course.CourseName</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border fw-medium px-3">@task.CourseGroup.GroupName</span>
+                            </td>
+                            <td>
+                                <div class="small fw-semibold">Exp: @task.ValidTo.ToShortDateString()</div>
+                                <div class="progress mt-1" style="height: 4px;">
+                                    <div class="progress-bar bg-primary" style="width: 70%"></div>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <a href="/Staff/AddMark/@task.TasksId" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
+                                    <i class="bi bi-plus-circle me-1"></i> Add Marks
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

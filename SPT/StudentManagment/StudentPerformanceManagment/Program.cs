@@ -16,6 +16,7 @@ namespace StudentPerformanceManagment
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer("Server=(LocalDB)\\MSSQLLocalDB;Database=SPMSDB;Trusted_Connection=True;"));
 
+
             builder.Services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 

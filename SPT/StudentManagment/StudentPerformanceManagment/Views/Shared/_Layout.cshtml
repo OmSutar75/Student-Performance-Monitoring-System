@@ -1,44 +1,82 @@
-﻿@model StudentPerformanceManagment.Models.LayoutUserViewModel
+﻿@model StudentPerformanceManagment.Models.ViewModel.LayoutUserViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - StudentPerformanceManagment</title>
+    <title>@ViewData["Title"] - SPMS</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/layout.css" />
+    <link rel="stylesheet" href="cdn.jsdelivr.net">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/StudentPerformanceManagment.styles.css" asp-append-version="true" />
-</head>
-<body>
+    <style>
+        /* Desktop Sidebar Fix */
+        @@media (min-width: 768px) {
+            .main-wrapper {
+                display: flex;
+                min-height: 100vh;
+            }
 
-    <!-- TOP NAVBAR -->
-    <div style="text-align:right">
-    @if (Model != null)
-    {
-        @await Html.PartialAsync("_TopNavbar", Model)
-    }
-    </div>
+            .sidebar-container {
+                width: 280px;
+                flex-shrink: 0;
+                position: sticky;
+                top: 0;
+                height: 100vh;
+            }
 
-    <div class="d-flex">
-        <!-- SIDEBAR -->
-        @if (Model != null)
-        {
-            @await Html.PartialAsync("_LeftMenubar", Model)
+            .offcanvas-md {
+                transform: none !important;
+                visibility: visible !important;
+                display: flex !important;
+                position: relative !important;
+                width: 100% !important;
+            }
+
+            .offcanvas-backdrop {
+                display: none !important;
+            }
         }
 
+        .content-area {
+            flex-grow: 1;
+            overflow-x: hidden;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom shadow-sm">
+            <div class="container-fluid">
+                <!-- Mobile Toggle (3 Dots/Lines) -->
+                <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-        <!-- MAIN CONTENT -->
-        <main role="main" class="flex-grow-1 p-3">
+                <a class="navbar-brand fw-bold text-primary" asp-controller="Home" asp-action="Index">SPMS Portal</a>
+
+                <div class="ms-auto d-none d-md-block">
+                    <small class="text-muted">Academic Session 2025</small>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-wrapper">
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <div class="sidebar-container">
+                @await Html.PartialAsync("_Sidebar", Model ?? new StudentPerformanceManagment.Models.ViewModel.LayoutUserViewModel())
+            </div>
+        }
+
+        <main role="main" class="content-area p-3 p-md-4">
             @RenderBody()
         </main>
-        
-
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

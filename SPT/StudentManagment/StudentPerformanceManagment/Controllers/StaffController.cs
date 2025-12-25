@@ -1,11 +1,16 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using StudentPerformanceManagement.Models;
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
+using System.Security.Claims;
 
 namespace StudentPerformanceManagment.Controllers
 {
+    [Authorize(Roles = "Staff")]
     public class StaffController : Controller
     {
 
@@ -18,40 +23,35 @@ namespace StudentPerformanceManagment.Controllers
             _userManager = userManager;
             _context = context;
         }
-
-        // ROLE BASED DASHBOARD - create and pass vm so partials that expect LayoutUserViewModel work
         public async Task<IActionResult> Dashboard()
         {
-            StaffDashViewModel staffDashViewModel = new StaffDashViewModel();
-            Staff staff = (from s in _context.Staffs
-                           where s.Email == _userManager.GetUserName(User)
-                           select s).FirstOrDefault();
 
-            staffDashViewModel.StaffId = staff.StaffId;
-            staffDashViewModel.StaffName = staff.Name;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userId);
 
-            List < Tasks > tasks = _context.Tasks.ToList();
-            staffDashViewModel.Tasks = (from tsk in tasks
-                                     where tsk.StaffId == staffDashViewModel.StaffId
-                                     select tsk ).ToList();
+            var myTasks = await _context.Tasks
+                .Include(t => t.Course)
+                .Include(t => t.Subject)
+                .Include(t => t.CourseGroup)
+                .Where(t => t.Staff.AppUserId == userId)
+                .ToListAsync();
 
-            staffDashViewModel.TotalTask = tasks.Count();
-
-            //COUNT PENDING TASKS
-            foreach (var task in staffDashViewModel.Tasks)
+            var vm = new StaffDashViewModel
             {
-                if (task.Status == Status.Pending)
-                    staffDashViewModel.PendingTask++;
-            }
+                // base (LayoutUserViewModel) properties
+                FullName = user?.FullName ?? "User",
+                Role = "Staff",
 
-            //COUNT COMPLETED TASKS
-            foreach (var task in staffDashViewModel.Tasks)
-            {
-                if (task.Status == Status.Completed)
-                    staffDashViewModel.CompletedTasks++;
-            }
-
+                // StaffDashViewModel properties
+                StaffId = userId,
+                StaffName = user?.UserName,
+                TaskCount = myTasks.Count,
+                Tasks = myTasks
+            };
+           return View("Dashboard", vm);   // YAHAN StaffDashViewModel hi return karo
         }
+
+
 
 
         public IActionResult AddMark(int subjectId)
@@ -99,42 +99,38 @@ namespace StudentPerformanceManagment.Controllers
 
             _context.SaveChanges();
 
-            return RedirectToAction("AddMark", new { subjectId = SubjectId });
+
+
+              
+            return RedirectToAction("AddMark",new {subjectId=SubjectId});
         }
 
-        public IActionResult PerformTask()
+        public async Task<IActionResult> MyTasks()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userId);
 
-            int taskid = 2;
-            var task = _context.Tasks.Include(c => c.Course).Include(cg => cg.CourseGroup).Where(t => t.TasksId == taskid).FirstOrDefault();
+            var myTasks = await _context.Tasks
+                .Include(t => t.Course)
+                .Include(t => t.Subject)
+                .Include(t => t.CourseGroup)
+                .Where(t => t.Staff.AppUserId == userId)
+                .ToListAsync();
 
+            var vm = new StaffDashViewModel
+            {
+                // base properties (LayoutUserViewModel)
+                FullName = user?.FullName ?? "User",
+                Role = "Staff",
 
-            var students = _context.Students.Where(s => s.CourseGroupId == task.CourseGroupId)
-                .Select(s => new MarkViewModel
-                {
-                    SubjectId = task.SubjectId,
-                    CourseGroupId = task.CourseGroupId,
-                    CourseId = task.CourseId,
-                    PRN = s.PRN,
-                    Name = s.Name,                   TaskId = task.TasksId,
-                    TheoryMarks = _context.Marks.Where(m => m.TasksId == task.TasksId && m.StudentId == s.StudentId)
-                                    .Select(m => m.TheoryMarks).FirstOrDefault(),
+                // StaffDashViewModel properties
+                StaffId = userId,
+                StaffName = user?.UserName,
+                TaskCount = myTasks.Count,
+                Tasks = myTasks
+            };
 
-
-                    LabMarks = _context.Marks.Where(m => m.TasksId == task.TasksId && m.StudentId == s.StudentId)
-                                    .Select(m => m.LabMarks).FirstOrDefault(),
-
-                    InternalMarks = _context.Marks.Where(m => m.TasksId == task.TasksId && m.StudentId == s.StudentId)
-                                    .Select(m => m.InternalMarks).FirstOrDefault(),
-                }).ToList();
-
-
-
-
-
-
-
-            return View(students);
+            return View("MyTasks", vm);  // ya sirf return View(vm);
         }
 
     }

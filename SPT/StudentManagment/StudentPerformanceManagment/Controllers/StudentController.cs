@@ -1,12 +1,17 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StudentPerformanceManagment;
 using StudentPerformanceManagment.Models;
+using StudentPerformanceManagment.Models.ViewModel;
+using System.Security.Claims;
 
 
 
 namespace StudentPerformanceManagement.Controllers
 {
+    [Authorize(Roles = "Student")]
     public class StudentController : Controller
     {
 
@@ -19,24 +24,22 @@ namespace StudentPerformanceManagement.Controllers
             _userManager = userManager;
             _context = context;
         }
-        
+
         public async Task<IActionResult> Dashboard()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userId);
 
-            string role = "Student";
-            if (await _userManager.IsInRoleAsync(user, "Admin"))
-                role = "Admin";
-            else if (await _userManager.IsInRoleAsync(user, "Staff"))
-                role = "Staff";
 
-            var vm = new LayoutUserViewModel
+            var vm = new StaffDashViewModel
             {
+                // base (LayoutUserViewModel) properties
                 FullName = user?.FullName ?? "User",
-                Role = role
+                Role = "Student",
+
             };
 
-            return View($"~/Views/{role}/Dashboard.cshtml", vm);
+            return View(vm);
 
         }
     }
