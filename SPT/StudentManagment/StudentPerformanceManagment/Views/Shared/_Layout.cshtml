@@ -1,4 +1,4 @@
-﻿@model StudentPerformanceManagment.Models.ViewModel.LayoutUserViewModel
+﻿
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,7 +66,7 @@
         @if (User.Identity?.IsAuthenticated == true)
         {
             <div class="sidebar-container">
-                @await Html.PartialAsync("_Sidebar", Model ?? new StudentPerformanceManagment.Models.ViewModel.LayoutUserViewModel())
+                @await Html.PartialAsync("_Sidebar")
             </div>
         }
 
