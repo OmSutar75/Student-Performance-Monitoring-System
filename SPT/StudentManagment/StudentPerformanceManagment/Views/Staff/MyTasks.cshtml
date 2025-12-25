@@ -3,14 +3,33 @@
 
 @{
     ViewData["Title"] = "My Active Tasks";
+    var today = DateTime.Now;
+
+    // Advanced Priority Logic for Active Tasks:
+    // 1. Sirf Active tasks filter karein.
+    // 2. Unhe sort karein Time-Elapsed ratio ke hisaab se (Jinka deadline paas hai wo upar).
+    var prioritizedTasks = Model.Tasks
+        .Where(t => today >= t.ValidFrom && today <= t.ValidTo)
+        .OrderByDescending(t =>
+        {
+            var totalDuration = (t.ValidTo - t.ValidFrom).TotalMinutes;
+            var timePassed = (today - t.ValidFrom).TotalMinutes;
+            return totalDuration > 0 ? (timePassed / totalDuration) : 0;
+        })
+        .ToList();
 }
 
-<div class="container-fluid py-4">
+<div class="container-fluid py-4 animate-fade-in">
     <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-dark mb-1">My Active Tasks</h2>
-            <p class="text-muted small">Showing only currently active assignments for @DateTime.Now.Year</p>
+            <p class="text-muted small">
+                Showing <span class="badge bg-primary">@prioritizedTasks.Count</span> assignments active for @today.ToString("MMMM yyyy")
+            </p>
+        </div>
+        <div class="d-none d-md-block">
+            <span class="text-muted small">Last Updated: @today.ToString("HH:mm")</span>
         </div>
     </div>
 
@@ -20,64 +39,133 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light">
                     <tr>
-                        <th class="ps-4">Course & Subject</th>
+                        <th class="ps-4 py-3">Course & Subject</th>
                         <th>Group</th>
-                        <th>Duration</th>
-                        <th>Status</th>
-                        <th class="text-center">Actions</th>
+                        <th style="width: 280px;">Timeline & Progress</th>
+                        <th class="text-center">Action Priority</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.Tasks)
+                    @if (!prioritizedTasks.Any())
                     {
-                        @* --- Filter: Sirf Active tasks dikhane ke liye --- *@
-                        if (item.IsActive(DateTime.Now))
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">
+                                <i class="bi bi-clipboard-check fs-1 d-block mb-2 text-success"></i>
+                                <h5>No Active Tasks</h5>
+                                <p class="small">You don't have any pending assignments for the current duration.</p>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in prioritizedTasks)
                         {
+                            // Days calculation
+                            var totalDuration = (item.ValidTo - item.ValidFrom).TotalDays;
+                            var daysLeft = Math.Max(0, (item.ValidTo - today).TotalDays);
+
+                            // Progress percentage
+                            var percentPassed = totalDuration > 0 ? ((today - item.ValidFrom).TotalDays / totalDuration) * 100 : 0;
+                            percentPassed = Math.Min(100, Math.Max(0, percentPassed));
+
+                            // Color & Label Logic based on Urgency
+                            string urgencyColor = daysLeft <= 2 ? "danger" : (daysLeft <= 5 ? "warning" : "success");
+                            string urgencyLabel = daysLeft <= 2 ? "Urgent" : (daysLeft <= 5 ? "Closing Soon" : "Active");
+
                             <tr>
                                 <td class="ps-4">
                                     <div class="fw-bold text-primary">@item.Course.CourseName</div>
-                                    <div class="small text-muted">@item.Subject.SubjectName</div>
+                                    <div class="small text-muted mb-1">@item.Subject.SubjectName</div>
+                                    <span class="badge bg-@urgencyColor-subtle text-@urgencyColor border border-@urgencyColor-subtle" style="font-size: 0.7rem;">
+                                        <i class="bi bi-lightning-fill me-1"></i> @urgencyLabel
+                                    </span>
                                 </td>
                                 <td>
-                                    <span class="badge bg-info-subtle text-info border border-info-subtle px-3">
+                                    <span class="badge bg-light text-dark border px-3">
                                         @item.CourseGroup.GroupName
                                     </span>
                                 </td>
                                 <td>
-                                    <div class="small fw-semibold text-dark">To: @item.ValidTo.ToShortDateString()</div>
-                                    <div class="text-muted" style="font-size: 0.75rem;">From: @item.ValidFrom.ToShortDateString()</div>
-                                </td>
-                                <td>
-                                    <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-2">
-                                        <i class="bi bi-check-circle-fill me-1"></i> Active
-                                    </span>
+                                    <div class="d-flex justify-content-between small mb-1">
+                                        <span class="text-muted">Start: @item.ValidFrom.ToString("dd MMM")</span>
+                                        <span class="fw-bold text-@urgencyColor">Due: @item.ValidTo.ToString("dd MMM")</span>
+                                    </div>
+                                    <div class="progress mb-1" style="height: 6px;">
+                                        <div class="progress-bar bg-@urgencyColor shadow-sm"
+                                             role="progressbar"
+                                             style="width: @percentPassed%"></div>
+                                    </div>
+                                    <div class="d-flex justify-content-between" style="font-size: 0.7rem;">
+                                        <span class="text-muted">@Math.Round(percentPassed)% Time Elapsed</span>
+                                        <span class="fw-bold">@Math.Ceiling(daysLeft) days left</span>
+                                    </div>
                                 </td>
                                 <td class="text-center">
-                                    <div class="btn-group gap-2">
-                                        <a href="/Staff/AddMark/@item.TasksId" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
-                                            <i class="bi bi-plus-lg"></i> Add Marks
+                                    <div class="d-flex flex-column gap-2 align-items-center">
+                                        <a href="/Staff/AddMark/@item.TasksId" class="btn btn-sm btn-@urgencyColor rounded-pill px-4 shadow-sm w-75 hover-up">
+                                            <i class="bi bi-plus-circle me-1"></i> Add Marks
                                         </a>
-                                        <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
-                                            <i class="bi bi-envelope"></i> Request
+                                        <a href="#" class="text-decoration-none small text-secondary fw-semibold">
+                                            <i class="bi bi-envelope me-1"></i> Request Extension
                                         </a>
                                     </div>
                                 </td>
                             </tr>
                         }
                     }
-
-                    @* --- Agar koi bhi active task na ho toh message dikhaye --- *@
-                    @if (!Model.Tasks.Any(t => t.IsActive(DateTime.Now)))
-                    {
-                        <tr>
-                            <td colspan="5" class="text-center py-5 text-muted">
-                                <i class="bi bi-info-circle fs-2 d-block mb-2"></i>
-                                No active tasks found for today.
-                            </td>
-                        </tr>
-                    }
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+<style>
+    /* 2025 Modern Styling Enhancements */
+    .rounded-4 {
+        border-radius: 1rem !important;
+    }
+
+    .bg-danger-subtle {
+        background-color: #f8d7da !important;
+        color: #842029 !important;
+    }
+
+    .bg-warning-subtle {
+        background-color: #fff3cd !important;
+        color: #664d03 !important;
+    }
+
+    .bg-success-subtle {
+        background-color: #d1e7dd !important;
+        color: #0f5132 !important;
+    }
+
+    .hover-up {
+        transition: all 0.2s ease;
+    }
+
+        .hover-up:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+        }
+
+    .animate-fade-in {
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(13, 110, 253, 0.02);
+    }
+</style>
