@@ -1,5 +1,4 @@
-﻿@using StudentPerformanceManagment.Models.ViewModel
-@model StudentViewModel
+﻿
 
 @{
     ViewData["Title"] = "Student Dashboard";
@@ -28,11 +27,11 @@
                 </div>
 
                 <div class="col-md-9">
-                    <h5 class="mb-2">@Model.Name</h5>
-                    <p class="mb-1"><strong>PRN:</strong>@Model.PRN</p>
-                    <p class="mb-1"><strong>Email:</strong> @Model.Email</p>
-                    <p class="mb-1"><strong>Mobile:</strong>@Model.MobileNo</p>
-                    <p class="mb-3"><strong>Course:</strong> @Model.CourseName</p>
+                    <h5 class="mb-2">Anurag Londhe</h5>
+                    <p class="mb-1"><strong>PRN:</strong> 202500010001</p>
+                    <p class="mb-1"><strong>Email:</strong> anuraglondhe9052@email.com</p>
+                    <p class="mb-1"><strong>Mobile:</strong> +91 8669489052</p>
+                    <p class="mb-3"><strong>Course:</strong> MBA</p>
 
                     <a href="/Student/EditProfile" class="btn btn-primary btn-sm">
                         Edit Profile
@@ -50,7 +49,7 @@
                 <div class="stat-icon">📚</div>
                 <div>
                     <small>Subjects</small>
-                    <h5 class="fw-bold">@Model.SubjectCount</h5>
+                    <h5 class="fw-bold">6</h5>
                 </div>
             </div>
         </div>
@@ -59,8 +58,8 @@
             <div class="stat-card text-center">
                 <div class="stat-icon">🏆</div>
                 <div>
-                    <small>Group Name</small>
-                    <h5 class="fw-bold">@Model.CourseGroupName</h5>
+                    <small>Batch Rank</small>
+                    <h5 class="fw-bold">12</h5>
                 </div>
             </div>
         </div>

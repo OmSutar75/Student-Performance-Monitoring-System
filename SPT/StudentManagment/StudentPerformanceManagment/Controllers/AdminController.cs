@@ -28,13 +28,8 @@ namespace IdentityDemo.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var vm = new LayoutUserViewModel
-            {
-                FullName = user?.FullName ?? "User",
-                Role = "Admin"
-            };
-
-            return View(vm);
+       
+            return View();
 
         }
 

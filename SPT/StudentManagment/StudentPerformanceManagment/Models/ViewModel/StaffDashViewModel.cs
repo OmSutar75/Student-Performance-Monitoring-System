@@ -2,7 +2,7 @@
 
 namespace StudentPerformanceManagment.Models.ViewModel
 {
-    public class StaffDashViewModel : LayoutUserViewModel
+    public class StaffDashViewModel
     {
         public string StaffId { get; set; }
         public string StaffName { get; set; }
