@@ -31,15 +31,9 @@ namespace StudentPerformanceManagement.Controllers
             var user = await _userManager.FindByIdAsync(userId);
 
 
-            var vm = new StaffDashViewModel
-            {
-                // base (LayoutUserViewModel) properties
-                FullName = user?.FullName ?? "User",
-                Role = "Student",
 
-            };
 
-            return View(vm);
+            return View();
 
         }
     }

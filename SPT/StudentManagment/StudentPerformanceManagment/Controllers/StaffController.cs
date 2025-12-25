@@ -38,9 +38,6 @@ namespace StudentPerformanceManagment.Controllers
 
             var vm = new StaffDashViewModel
             {
-                // base (LayoutUserViewModel) properties
-                FullName = user?.FullName ?? "User",
-                Role = "Staff",
 
                 // StaffDashViewModel properties
                 StaffId = userId,
@@ -48,39 +45,62 @@ namespace StudentPerformanceManagment.Controllers
                 TaskCount = myTasks.Count,
                 Tasks = myTasks
             };
-           return View("Dashboard", vm);   // YAHAN StaffDashViewModel hi return karo
+            return View("Dashboard", vm);   // YAHAN StaffDashViewModel hi return karo
         }
 
 
 
 
-        public IActionResult AddMark(int subjectId)
+        public IActionResult AddMark(int id)
+
         {
-            var viewModel = new MarkViewModel();
 
-            // 1. Fetch students (you might filter by class or department here)
-            viewModel.Students = _context.Students.ToList();
+            // id = 3;
+            var task = _context.Tasks.Include(c => c.Course).Include(cg => cg.CourseGroup).Where(t => t.TasksId == id).FirstOrDefault();
 
-            // 2. Pass the SubjectId to the view using ViewBag
-            ViewBag.SubjectId = 1;
 
-            return View(viewModel);
+            var students = _context.Students.Where(s => s.CourseGroupId == task.CourseGroupId)
+                .Select(s => new MarkViewModel
+                {
+                    SubjectId = task.SubjectId,
+                    CourseGroupId = task.CourseGroupId,
+                    CourseId = task.CourseId,
+                    PRN = s.PRN,
+                    Name = s.Name,
+                    TaskId = task.TasksId,
+                    TheoryMarks = _context.Marks.Where(m => m.TaskId == task.TasksId && m.StudentId == s.StudentId)
+                                    .Select(m => m.TheoryMarks).FirstOrDefault(),
+
+
+                    LabMarks = _context.Marks.Where(m => m.TaskId == task.TasksId && m.StudentId == s.StudentId)
+                                    .Select(m => m.LabMarks).FirstOrDefault(),
+
+                    InternalMarks = _context.Marks.Where(m => m.TaskId == task.TasksId && m.StudentId == s.StudentId)
+                                    .Select(m => m.InternalMarks).FirstOrDefault(),
+                }).ToList();
+
+
+
+
+
+
+
+            return View(students);
         }
+
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult SaveMark(int StudentId, int SubjectId, int TheoryMarks, int LabMarks, int InternalMarks)
+        public IActionResult SaveMark(MarkViewModel markviewmodel)
         {
-            // 1. Check if marks already exist for this student in this subject
             var existingMark = _context.Marks
-                .FirstOrDefault(m => m.StudentId == StudentId && m.SubjectId == SubjectId);
+                .FirstOrDefault(m => m.StudentId == markviewmodel.StudentId && m.SubjectId == markviewmodel.SubjectId);
 
             if (existingMark != null)
             {
                 // Update
-                existingMark.TheoryMarks = TheoryMarks;
-                existingMark.LabMarks = LabMarks;
-                existingMark.InternalMarks = InternalMarks;
+                existingMark.TheoryMarks = markviewmodel.TheoryMarks;
+                existingMark.LabMarks = markviewmodel.LabMarks;
+                existingMark.InternalMarks = markviewmodel.InternalMarks;
                 _context.Marks.Update(existingMark);
             }
             else
@@ -88,11 +108,11 @@ namespace StudentPerformanceManagment.Controllers
                 // Insert
                 var newMark = new Mark
                 {
-                    StudentId = StudentId,
-                    SubjectId = SubjectId,
-                    TheoryMarks = TheoryMarks,
-                    LabMarks = LabMarks,
-                    InternalMarks = InternalMarks
+                    StudentId = markviewmodel.StudentId,
+                    SubjectId = markviewmodel.SubjectId,
+                    TheoryMarks = markviewmodel.TheoryMarks,
+                    LabMarks = markviewmodel.LabMarks,
+                    InternalMarks = markviewmodel.InternalMarks
                 };
                 _context.Marks.Add(newMark);
             }
@@ -101,8 +121,8 @@ namespace StudentPerformanceManagment.Controllers
 
 
 
-              
-            return RedirectToAction("AddMark",new {subjectId=SubjectId});
+            return RedirectToAction("AddMark");
+
         }
 
         public async Task<IActionResult> MyTasks()
@@ -119,9 +139,6 @@ namespace StudentPerformanceManagment.Controllers
 
             var vm = new StaffDashViewModel
             {
-                // base properties (LayoutUserViewModel)
-                FullName = user?.FullName ?? "User",
-                Role = "Staff",
 
                 // StaffDashViewModel properties
                 StaffId = userId,

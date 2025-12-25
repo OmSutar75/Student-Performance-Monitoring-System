@@ -66,7 +66,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var task in Model.Tasks.Where(t => t.IsActive(DateTime.Now)).Take(5))
+                    @foreach (var task in Model.Tasks)
                     {
                         <tr>
                             <td class="ps-4">

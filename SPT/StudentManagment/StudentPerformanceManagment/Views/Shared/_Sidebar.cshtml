@@ -1,4 +1,4 @@
-﻿@model StudentPerformanceManagment.Models.ViewModel.LayoutUserViewModel
+﻿
 
 <div class="offcanvas-md offcanvas-start bg-light border-end h-100" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
 
@@ -11,7 +11,7 @@
         <!-- User Profile Section -->
         <div class="mb-4 p-3 bg-white rounded border text-center shadow-sm">
             <div class="bi bi-person-circle fs-1 text-primary mb-2"></div>
-            <h6 class="mb-0 fw-bold text-truncate">@(Model?.FullName ?? User.Identity.Name)</h6>
+            <h6 class="mb-0 fw-bold text-truncate">@User.Identity.Name</h6>
             <span class="badge bg-primary-subtle text-primary border border-primary-subtle mt-1">
                 @(User.IsInRole("Admin") ? "Administrator" : User.IsInRole("Staff") ? "Staff Member" : "Student")
             </span>
@@ -26,7 +26,7 @@
                 <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Staff" asp-action="MyTasks">
                     <i class="bi bi-list-check me-2"></i> My Tasks
                 </a>
-                 <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Staff" asp-action="Late Requests">
+                <a class="nav-link link-dark mb-1 d-flex align-items-center" asp-controller="Staff" asp-action="Late Requests">
                     <i class="bi bi-list-check me-2"></i> Late Requests
                 </a>
             }
