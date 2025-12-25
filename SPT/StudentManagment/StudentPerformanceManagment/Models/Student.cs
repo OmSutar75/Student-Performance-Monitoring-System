@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using StudentPerformanceManagment.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace StudentPerformanceManagement.Models
 {
@@ -8,12 +9,14 @@ namespace StudentPerformanceManagement.Models
 
         [Required]
         [MaxLength(12)]
-        public string PRN { get; set; }
+        public string PRN { get; set; } = "11111111";
         public string Name { get; set; }
         [EmailAddress(ErrorMessage ="Invalid Email!")]
         public string Email { get; set; }
         [MaxLength(10)]
         public string? MobileNo { get; set; }
+
+        public string ProfileImagePath { get; set; } = "URL";
 
         public int CourseId { get; set; }
         public Course Course { get; set; }
