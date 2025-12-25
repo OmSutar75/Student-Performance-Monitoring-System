@@ -1,13 +1,8 @@
-
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using StudentPerformanceManagement.Models;
+
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
-using System.Security.Claims;
-
 
 namespace StudentPerformanceManagment.Controllers
 {
@@ -24,7 +19,8 @@ namespace StudentPerformanceManagment.Controllers
             _context = context;
         }
 
-        public IActionResult Dashboard()
+        // ROLE BASED DASHBOARD - create and pass vm so partials that expect LayoutUserViewModel work
+        public async Task<IActionResult> Dashboard()
         {
             StaffDashViewModel staffDashViewModel = new StaffDashViewModel();
             Staff staff = (from s in _context.Staffs
@@ -55,8 +51,8 @@ namespace StudentPerformanceManagment.Controllers
                     staffDashViewModel.CompletedTasks++;
             }
 
-            return View(staffDashViewModel);
         }
+
 
         public IActionResult AddMark(int subjectId)
         {
@@ -103,23 +99,7 @@ namespace StudentPerformanceManagment.Controllers
 
             _context.SaveChanges();
 
-            return RedirectToAction("AddMark", new {subjectId = SubjectId});
-        }
-
-         public async Task<IActionResult> StaffDashboard()
-        {
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var myTasks =await _context.Tasks
-           .Include(t => t.Course)
-           .Include(t => t.Subject)
-           .Include(t => t.CourseGroup)
-           .Where(t => t.Staff.AppUserId == userId)
-           .ToListAsync();
-
-            return View(myTasks);
-
+            return RedirectToAction("AddMark", new { subjectId = SubjectId });
         }
 
         public IActionResult PerformTask()

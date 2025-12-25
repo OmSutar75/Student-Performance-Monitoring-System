@@ -2,9 +2,7 @@
 {
     public class StaffDashViewModel
     {
-        public int TotalTask {get ; set;}
-        public int PendingTask { get; set; }
-        public int CompletedTasks { get; set; }
+        public int TaskCount {get ; set;}
 
         public string StaffEmail { get; set; }
         public string StaffName { get; set;}

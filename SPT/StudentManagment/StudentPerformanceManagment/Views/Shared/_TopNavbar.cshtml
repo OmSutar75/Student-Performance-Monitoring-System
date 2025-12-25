@@ -1,11 +1,16 @@
-﻿@model StudentPerformanceManagment.Models.ViewModel.StaffDashViewModel
+﻿@model StudentPerformanceManagment.Models.LayoutUserViewModel
 <div class="topbar">
-    <strong>☰</strong>
+    
 
-    <div>
-        🔔 👤 @Model.StaffName
-        <button class="btn btn-sm btn-outline-dark ms-2" onclick="location.href='/Account/Logout'">
+    <div class="left-section">
+        <strong></strong>
+    </div>
+
+    <div class="right-section user-info">
+        👤 @Model.FullName
+        <button class="btn btn-light btn-sm ms-2" onclick="location.href='/Account/Logout'">
             Logout
         </button>
     </div>
+
 </div>

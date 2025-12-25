@@ -1,4 +1,6 @@
-﻿@model StudentPerformanceManagment.Models.ViewModel.StaffDashViewModel
+﻿@model StudentPerformanceManagment.Models.LayoutUserViewModel
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,6 +44,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            text-align: right;
         }
 
         .content {
@@ -53,15 +56,9 @@
 
 <body>
 
-    <!-- SIDEBAR -->
-    @Html.Partial("_LeftMenubar")
-
-    <!-- TOPBAR -->
-    @Html.Partial("_TopNavbar")
-
     <!-- MAIN CONTENT -->
     <div class="content">
-        @Html.Partial("_StaffDashboard",Model)
+        @Html.Partial("_StaffDashboard")
     </div>
 
 </body>
