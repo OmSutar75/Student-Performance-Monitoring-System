@@ -17,9 +17,9 @@
             <tr>
                 <form asp-action="SaveMark" method="post">
 
-                    <input type="hidden" name="CourseId" vlaue="@item.CourseId" />
-                    <input type="hidden" name="CourseGroupId" vlaue="@item.CourseGroupId" />
-                    <input type="hidden" name="TaskId" vlaue="@item.TaskId" />
+                    @* <input type="hidden" name="CourseId" vlaue="@item.CourseId" /> *@
+                    <input type="hidden" name="CourseGroupId" value="@item.CourseGroupId" />
+                    <input type="hidden" name="TaskId" value="@item.TaskId" />
                     <input type="hidden" name="StudentId" value="@item.StudentId" />
                     <input type="hidden" name="SubjectId" value="@item.SubjectId" />
                 <td>@item.PRN</td>
@@ -27,10 +27,11 @@
                 <td><input name="TheoryMarks" class="form-control" type="number" value="@item.TheoryMarks" /></td>
                 <td><input name="LabMarks" class="form-control" type="number" value="@item.LabMarks" /></td>
                 <td><input name="InternalMarks" class="form-control" type="number" value="@item.InternalMarks" /></td>
-                <td><button type="submit">Update</button></td>
+                <td><button type="submit" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">Update</button></td>
 
                 </form>
             </tr>
         }
+        
     </tbody>
 </table>

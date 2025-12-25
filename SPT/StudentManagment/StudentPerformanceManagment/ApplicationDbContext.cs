@@ -64,6 +64,12 @@ namespace StudentPerformanceManagment
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Mark>()
+                .HasOne(m=>m.Tasks)
+                .WithMany()
+                .HasForeignKey(m=>m.TasksId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Mark>()
                 .HasIndex(t => t.SubjectId)
                 .IsUnique(false);
         }
