@@ -56,15 +56,20 @@ namespace StudentPerformanceManagment.Controllers
         {
 
             // id = 3;
-            var task = _context.Tasks.Include(c => c.Course).Include(cg => cg.CourseGroup).Where(t => t.TasksId == id).FirstOrDefault();
+            var task = _context.Tasks.Include(c => c.Course)
+                .Include(cg => cg.CourseGroup)
+                .Include(s=>s.Subject)
+                .Where(t => t.TasksId == id).FirstOrDefault();
 
 
             var students = _context.Students.Where(s => s.CourseGroupId == task.CourseGroupId)
                 .Select(s => new MarkViewModel
                 {
+
+                    StudentId = s.StudentId,
                     SubjectId = task.SubjectId,
                     CourseGroupId = task.CourseGroupId,
-                    CourseId = task.CourseId,
+                   // CourseId = task.CourseId,
                     PRN = s.PRN,
                     Name = s.Name,
                     TaskId = task.TasksId,
@@ -90,10 +95,10 @@ namespace StudentPerformanceManagment.Controllers
 
 
         [HttpPost]
-        public IActionResult SaveMark(MarkViewModel markviewmodel)
+        public IActionResult SaveMark(UpdateStudentViewModel markviewmodel)
         {
             var existingMark = _context.Marks
-                .FirstOrDefault(m => m.StudentId == markviewmodel.StudentId && m.SubjectId == markviewmodel.SubjectId);
+                .FirstOrDefault(m => m.StudentId == markviewmodel.StudentId && m.TasksId == markviewmodel.TaskId);
 
             if (existingMark != null)
             {
@@ -101,7 +106,7 @@ namespace StudentPerformanceManagment.Controllers
                 existingMark.TheoryMarks = markviewmodel.TheoryMarks;
                 existingMark.LabMarks = markviewmodel.LabMarks;
                 existingMark.InternalMarks = markviewmodel.InternalMarks;
-                _context.Marks.Update(existingMark);
+               
             }
             else
             {
@@ -115,13 +120,14 @@ namespace StudentPerformanceManagment.Controllers
                     InternalMarks = markviewmodel.InternalMarks
                 };
                 _context.Marks.Add(newMark);
+               
             }
+
+
 
             _context.SaveChanges();
 
-
-
-            return RedirectToAction("AddMark");
+            return RedirectToAction("AddMark",new {id= markviewmodel.TaskId});
 
         }
 
