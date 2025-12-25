@@ -17,7 +17,7 @@ namespace StudentPerformanceManagment.Models
         public string TasksTitle { get; set; }
         public string TasksDescription { get; set; }
 
-        public Status Status { get; set; }
+        public Status Status { get; set; } = Status.Pending;
 
         public int StaffId { get; set; }
         public Staff Staff { get; set; }
@@ -34,6 +34,6 @@ namespace StudentPerformanceManagment.Models
         public DateTime ValidFrom { get; set; }
         public DateTime ValidTo { get; set; }
 
-        public bool IsActive(DateTime now) => now >= ValidFrom && now <= ValidTo;
+        public bool IsActive(DateTime now) => now >= ValidFrom && now <= ValidTo ; 
     }
 }
