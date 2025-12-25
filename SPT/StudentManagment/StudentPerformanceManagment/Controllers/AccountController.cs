@@ -18,15 +18,19 @@ namespace IdentityDemo.Controllers
                 _userManager = userManager;
             }
 
-            // LOGIN PAGE
-            [HttpGet]
-            public IActionResult Login()
+        [HttpGet]
+        public IActionResult Login()
+        {
+            // Redirect authenticated users away from the login page
+            if (User.Identity.IsAuthenticated)
             {
-                return View();
+                return RedirectToAction("Dashboard");
             }
+            return View();
+        }
 
-            // LOGIN POST
-            [HttpPost]
+        // LOGIN POST
+        [HttpPost]
             public async Task<IActionResult> Login(string email, string password)
             {
                 var result = await _signInManager.PasswordSignInAsync(
@@ -56,13 +60,11 @@ namespace IdentityDemo.Controllers
 
         }
 
-
-
         // LOGOUT
         public async Task<IActionResult> Logout()
             {
                 await _signInManager.SignOutAsync();
-                return RedirectToAction("Login");
+            return RedirectToAction("Login");
             }
         }
     }

@@ -4,80 +4,76 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Student Performance</title>
+    <title>@ViewData["Title"] - SPMS</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="cdn.jsdelivr.net">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>
-        /* Ensures the sidebar and content fill the screen */
-        .main-wrapper {
-            display: flex;
-            min-height: 100vh;
+        /* Desktop Sidebar Fix */
+        @@media (min-width: 768px) {
+            .main-wrapper {
+                display: flex;
+                min-height: 100vh;
+            }
+
+            .sidebar-container {
+                width: 280px;
+                flex-shrink: 0;
+                position: sticky;
+                top: 0;
+                height: 100vh;
+            }
+
+            .offcanvas-md {
+                transform: none !important;
+                visibility: visible !important;
+                display: flex !important;
+                position: relative !important;
+                width: 100% !important;
+            }
+
+            .offcanvas-backdrop {
+                display: none !important;
+            }
         }
 
         .content-area {
             flex-grow: 1;
-            padding: 20px;
+            overflow-x: hidden;
+            background-color: #f8f9fa;
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow">
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom shadow-sm">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">SPMS Portal</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <!-- Mobile Toggle (3 Dots/Lines) -->
+                <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse" id="navbarContent">
-                    <!-- Right-aligned user section -->
-                    <ul class="navbar-nav ms-auto align-items-center">
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <li class="nav-item me-3">
-                                <span class="navbar-text fw-bold">
-                                    Welcome, @(Model?.FullName ?? User.Identity.Name)
-                                </span>
-                            </li>
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post" class="form-inline">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
-                                </form>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
-                        }
-                    </ul>
+                <a class="navbar-brand fw-bold text-primary" asp-controller="Home" asp-action="Index">SPMS Portal</a>
+
+                <div class="ms-auto d-none d-md-block">
+                    <small class="text-muted">Academic Session 2025</small>
                 </div>
             </div>
         </nav>
     </header>
 
-
     <div class="main-wrapper">
-        @* 1. Check if user is logged in first *@
         @if (User.Identity?.IsAuthenticated == true)
         {
-            @* 2. Only show sidebar if they belong to one of the authorized roles *@
-            if (User.IsInRole("Staff") || User.IsInRole("Admin") || User.IsInRole("Student"))
-            {
-                @* 3. Pass the Model. If the Model is null, pass a new instance to prevent NullReferenceException *@
+            <div class="sidebar-container">
                 @await Html.PartialAsync("_Sidebar", Model ?? new StudentPerformanceManagment.Models.ViewModel.LayoutUserViewModel())
-            }
+            </div>
         }
 
-        <main role="main" class="content-area">
+        <main role="main" class="content-area p-3 p-md-4">
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted bg-white text-center py-3">
-        &copy; 2025 - StudentPerformanceMonitoringSystem
-    </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

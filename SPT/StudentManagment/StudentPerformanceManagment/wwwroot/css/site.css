@@ -1,0 +1,247 @@
+﻿namespace StudentPerformanceManagment.wwwroot.css {
+    @media (min-width: 768px) {
+        .main-wrapper {
+            display: flex;
+        }
+        /* Desktop par sidebar fixed rahega */
+        .offcanvas-md {
+            position: sticky;
+            top: 0;
+            height: calc(100vh - 56px); /* Navbar height minus karke */
+            z-index: 1000;
+            transform: none !important;
+            visibility: visible !important;
+        }
+
+        .content-area {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+    }
+
+
+    @media (min-width: 992px) {
+        /* Desktop par offcanvas ko static sidebar mein badal dega */
+        #sidebarMenu.offcanvas-lg {
+            transform: none !important;
+            visibility: visible !important;
+            position: relative !important; /* Fixed ki jagah relative taake content ko push kare */
+            display: flex !important;
+            height: 100vh;
+            top: 0;
+        }
+        /* Backdrop ko desktop par hide karega */
+        .offcanvas-backdrop.show {
+            display: none !important;
+        }
+    }
+    /* Nav links hover effect */
+    .nav-link:hover {
+        background-color: #e9ecef;
+    }
+
+    .nav-link.active {
+        background-color: #0d6efd !important;
+    }
+}
+
+
+//login page
+/* Background setup */
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 20px 0;
+}
+
+/* Card Styling */
+.login-card {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Icon Design */
+.login-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    background: #0d6efd;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 2rem;
+    box-shadow: 0 10px 20px rgba(13, 110, 253, 0.2);
+}
+
+/* Input Fields */
+.input-group-text {
+    color: #6c757d;
+    border-radius: 10px 0 0 10px;
+}
+
+.form-control {
+    border-radius: 0 10px 10px 0;
+    padding: 10px;
+}
+
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #dee2e6;
+    }
+
+/* Button hover effect */
+.btn-primary {
+    border-radius: 12px;
+    background: #0d6efd;
+    transition: all 0.3s ease;
+}
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+    }
+
+/* Animations */
+.animate-fade-in {
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 576px) {
+    .login-card {
+        padding: 1.5rem;
+        margin: 0 15px;
+    }
+
+    .login-icon-wrapper {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+}
+
+//staff dashbaord
+
+
+/* Rounded Cards */
+.rounded-4 {
+    border-radius: 1rem !important;
+}
+
+/* Stats Icon Backgrounds */
+.bg-primary-subtle {
+    background-color: rgba(13, 110, 253, 0.1) !important;
+}
+
+.bg-success-subtle {
+    background-color: rgba(25, 135, 84, 0.1) !important;
+}
+
+/* Table Styling */
+.table thead th {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    color: #64748b;
+    padding: 1rem;
+}
+
+.table tbody td {
+    padding: 1.25rem 1rem;
+}
+
+/* Button Animations */
+.btn-primary {
+    transition: all 0.3s ease;
+}
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25);
+    }
+
+/* Animations */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
+//mytask
+/* Card & Table Styling */
+.card {
+    border-radius: 15px;
+    transition: transform 0.2s ease;
+}
+
+.table thead th {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+    font-weight: 700;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9ff;
+}
+
+/* Custom Badges */
+.badge {
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+/* Button Mobile Responsive */
+@media (max-width: 768px) {
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .btn-sm {
+        font-size: 0.7rem;
+        padding: 5px 10px;
+    }
+
+    h1, h2 {
+        font-size: 1.5rem;
+    }
+}
