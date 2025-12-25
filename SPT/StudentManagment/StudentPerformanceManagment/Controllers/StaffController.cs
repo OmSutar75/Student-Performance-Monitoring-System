@@ -25,6 +25,7 @@ namespace StudentPerformanceManagment.Controllers
         }
         public async Task<IActionResult> Dashboard()
         {
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userManager.FindByIdAsync(userId);
 
@@ -47,8 +48,7 @@ namespace StudentPerformanceManagment.Controllers
                 TaskCount = myTasks.Count,
                 Tasks = myTasks
             };
-
-            return View("Dashboard", vm);   // YAHAN StaffDashViewModel hi return karo
+           return View("Dashboard", vm);   // YAHAN StaffDashViewModel hi return karo
         }
 
 
@@ -59,7 +59,7 @@ namespace StudentPerformanceManagment.Controllers
             var viewModel = new MarkViewModel();
 
             // 1. Fetch students (you might filter by class or department here)
-            viewModel.students = _context.Students.ToList();
+            viewModel.Students = _context.Students.ToList();
 
             // 2. Pass the SubjectId to the view using ViewBag
             ViewBag.SubjectId = 1;
