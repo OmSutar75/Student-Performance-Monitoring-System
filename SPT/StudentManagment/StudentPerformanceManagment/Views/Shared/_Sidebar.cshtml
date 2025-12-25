@@ -1,0 +1,55 @@
+﻿@model StudentPerformanceManagment.Models.ViewModel.LayoutUserViewModel
+
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-light border-end" style="width: 250px; min-height: 100vh;">
+    <div class="mb-4 text-center">
+        <h6 class="text-uppercase fw-bold text-muted" style="font-size: 0.8rem;">
+            @(User.IsInRole("Admin") ? "Administrator" : User.IsInRole("Staff") ? "Staff Member" : "Student Portal")
+        </h6>
+        <hr />
+    </div>
+
+    <nav class="nav nav-pills flex-column mb-auto">
+        @* Shared Home Link *@
+
+
+        @* Staff Section *@
+        @if (User.IsInRole("Staff"))
+        {
+            <a class="nav-link link-dark mb-1" asp-controller="Staff" asp-action="Dashboard"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+            <a class="nav-link link-dark mb-1" asp-controller="Staff" asp-action="MyTasks"><i class="bi bi-list-check me-2"></i> My Tasks</a>
+            <a class="nav-link link-dark mb-1" asp-controller="Staff" asp-action="LateRequests"><i class="bi bi-clock-history me-2"></i> Late Requests</a>
+            <a class="nav-link link-dark mb-1" asp-controller="Staff" asp-action="History"><i class="bi bi-clock me-2"></i> History</a>
+        }
+
+        @* Admin Section *@
+        @if (User.IsInRole("Admin"))
+        {
+            <a class="nav-link link-dark mb-1" asp-controller="Admin" asp-action="Dashboard"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+            <a class="nav-link link-dark mb-1" asp-controller="Admin" asp-action="AddStaff"><i class="bi bi-person-plus me-2"></i> Add Staff</a>
+            <a class="nav-link link-dark mb-1" asp-controller="Admin" asp-action="EnrollStudent"><i class="bi bi-person-check me-2"></i> Enroll Student</a>
+            <a class="nav-link link-dark mb-1" asp-controller="Admin" asp-action="AddCourse"><i class="bi bi-journal-text me-2"></i> Courses</a>
+            <a class="nav-link link-dark mb-1" asp-controller="Admin" asp-action="AddSubject"><i class="bi bi-book me-2"></i> Subjects</a>
+            <a class="nav-link link-dark mb-1" asp-controller="Admin" asp-action="AssignTask"><i class="bi bi-send-check me-2"></i> Task Assign</a>
+        }
+
+        @* Student Section *@
+        @if (User.IsInRole("Student"))
+        {
+            <a class="nav-link link-dark mb-1" asp-controller="Student" asp-action="Dashboard"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+            <a class="nav-link link-dark mb-1" asp-controller="Profile" asp-action="Index"><i class="bi bi-person-circle me-2"></i> Profile</a>
+            <a class="nav-link link-dark mb-1" asp-controller="Student" asp-action="Performance"><i class="bi bi-graph-up-arrow me-2"></i> Performance</a>
+        }
+    </nav>
+
+    @* Bottom Sidebar Section *@
+    <div class="mt-auto">
+        <hr>
+        <div class="px-3 py-2 small text-muted">
+            <i class="bi bi-info-circle me-1"></i> 2025 SPMS v1.0
+        </div>
+    </div>
+</div>
+
+@* Ensure Bootstrap Icons are in your _Layout.cshtml head: 
+   <link rel="stylesheet" href="cdn.jsdelivr.net"> 
+*@

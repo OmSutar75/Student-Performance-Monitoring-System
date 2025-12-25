@@ -1,44 +1,86 @@
-﻿@model StudentPerformanceManagment.Models.LayoutUserViewModel
+﻿@model StudentPerformanceManagment.Models.ViewModel.LayoutUserViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - StudentPerformanceManagment</title>
+    <title>@ViewData["Title"] - Student Performance</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/layout.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/StudentPerformanceManagment.styles.css" asp-append-version="true" />
-</head>
-<body>
-
-    <!-- TOP NAVBAR -->
-    <div style="text-align:right">
-    @if (Model != null)
-    {
-        @await Html.PartialAsync("_TopNavbar", Model)
-    }
-    </div>
-
-    <div class="d-flex">
-        <!-- SIDEBAR -->
-        @if (Model != null)
-        {
-            @await Html.PartialAsync("_LeftMenubar", Model)
+    <style>
+        /* Ensures the sidebar and content fill the screen */
+        .main-wrapper {
+            display: flex;
+            min-height: 100vh;
         }
 
+        .content-area {
+            flex-grow: 1;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">SPMS Portal</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-        <!-- MAIN CONTENT -->
-        <main role="main" class="flex-grow-1 p-3">
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <!-- Right-aligned user section -->
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item me-3">
+                                <span class="navbar-text fw-bold">
+                                    Welcome, @(Model?.FullName ?? User.Identity.Name)
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="form-inline">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+    <div class="main-wrapper">
+        @* 1. Check if user is logged in first *@
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            @* 2. Only show sidebar if they belong to one of the authorized roles *@
+            if (User.IsInRole("Staff") || User.IsInRole("Admin") || User.IsInRole("Student"))
+            {
+                @* 3. Pass the Model. If the Model is null, pass a new instance to prevent NullReferenceException *@
+                @await Html.PartialAsync("_Sidebar", Model ?? new StudentPerformanceManagment.Models.ViewModel.LayoutUserViewModel())
+            }
+        }
+
+        <main role="main" class="content-area">
             @RenderBody()
         </main>
-        
-
     </div>
+
+    <footer class="border-top footer text-muted bg-white text-center py-3">
+        &copy; 2025 - StudentPerformanceMonitoringSystem
+    </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

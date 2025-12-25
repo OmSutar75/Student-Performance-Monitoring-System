@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StudentPerformanceManagment.Models;
+using StudentPerformanceManagment.Models.ViewModel;
+
 
 namespace IdentityDemo.Controllers
 {
@@ -43,24 +45,14 @@ namespace IdentityDemo.Controllers
         public async Task<IActionResult> Dashboard()
         {
             var user = await _userManager.GetUserAsync(User);
-
-            // Determine user role
-            string role = "Student";
-
             if (await _userManager.IsInRoleAsync(user, "Admin"))
-                role = "Admin";
-            else if (await _userManager.IsInRoleAsync(user, "Staff"))
-                role = "Staff";
+                            return RedirectToAction("Dashboard", "Admin"); ;
 
-            // Build ViewModel
-            var vm = new LayoutUserViewModel
-            {
-                FullName = user.FullName,
-                Role = role
-            };
+                        if (await _userManager.IsInRoleAsync(user, "Staff"))
+                            return RedirectToAction("Dashboard","Staff");
 
-            // Return the appropriate dashboard
-            return View($"~/Views/{role}/Dashboard.cshtml", vm);
+            return RedirectToAction("Dashboard", "Student");
+
 
         }
 

@@ -1,13 +1,14 @@
-﻿namespace StudentPerformanceManagment.Models.ViewModel
+﻿
+
+namespace StudentPerformanceManagment.Models.ViewModel
 {
-    public class StaffDashViewModel
+    public class StaffDashViewModel : LayoutUserViewModel
     {
-        public int TaskCount {get ; set;}
+        public string StaffId { get; set; }
+        public string StaffName { get; set; }
+        public int TaskCount { get; set; }
 
-        public string SaffName { get; set;}
-        public string StaffId { get; set;}
-        public List<Tasks> Tasks { get; set;}
-
-
+        // yeh tumhari Task entity ka type hoga (jo _context.Tasks se aata hai)
+        public List<Tasks> Tasks { get; set; } = new List<Tasks>();
     }
 }
