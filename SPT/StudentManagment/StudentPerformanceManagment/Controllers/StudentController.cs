@@ -30,11 +30,15 @@ namespace StudentPerformanceManagement.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userManager.FindByIdAsync(userId);
 
-
-
-
             return View();
 
+        }
+        public IActionResult EditProfile() {
+            return View();
+        }
+        public IActionResult StudentPerformance()
+        {
+            return View();
         }
     }
 }
