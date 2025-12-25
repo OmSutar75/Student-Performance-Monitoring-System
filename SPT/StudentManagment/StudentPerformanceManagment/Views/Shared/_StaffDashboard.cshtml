@@ -23,7 +23,7 @@
                 <div class="stat-icon">⏳</div>
                 <div>
                     <small>Pending Tasks</small>
-                    <h5 class="fw-bold">3</h5>
+                    <h5 class="fw-bold">@Model.PendingTask</h5>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
                 <div class="stat-icon">✔</div>
                 <div>
                     <small>Completed Tasks</small>
-                    <h5 class="fw-bold">5</h5>
+                    <h5 class="fw-bold">@Model.CompletedTasks</h5>
                 </div>
             </div>
         </div>
@@ -47,13 +47,15 @@
 
     <div class="row mb-4">
         <div class="col-md-6">
-            <div class="task-card">
-                <h6 class="fw-bold">DBMS Marks Entry</h6>
-                <p class="mb-1">Batch: MCA-2024-A | Subject: DBMS</p>
-                <p class="mb-1">Deadline:</p>
-                <p>Status:</p>
-                <button class="btn btn-outline-dark btn-sm">＋ ADD MARKS</button>
-            </div>
+            @foreach(var t in Model.Tasks){
+                <div class="task-card">
+                    <h6 class="fw-bold">@t.TasksDescription</h6>
+                    <p class="mb-1">Batch: MCA-2024-A | Subject: DBMS (@t.SubjectId)</p>
+                    <p class="mb-1">Deadline: @t.ValidTo</p>
+                    <p>Status: @t.Status</p>
+                    <button class="btn btn-outline-dark btn-sm">＋ ADD MARKS</button>
+                </div>
+            }
         </div>
 
         <div class="col-md-6">
