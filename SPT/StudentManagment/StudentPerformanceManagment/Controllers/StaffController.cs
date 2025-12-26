@@ -95,25 +95,42 @@ namespace StudentPerformanceManagment.Controllers
         }
 
 
+        //    }
+
         [HttpPost]
         public IActionResult SaveMark(UpdateStudentViewModel markviewmodel)
         {
-           
+            var subject = _context.Subjects.Find(markviewmodel.SubjectId);
 
             var existingMark = _context.Marks
                 .FirstOrDefault(m => m.StudentId == markviewmodel.StudentId && m.TasksId == markviewmodel.TaskId);
 
+
+
+            if (subject == null)
+            {
+                TempData["Error"] = "Subject not found.";
+                return RedirectToAction("AddMark", new { id = markviewmodel.TaskId });
+            }
+
+            if (markviewmodel.TheoryMarks < 0 || markviewmodel.TheoryMarks > subject.MaxTheoryMarks ||
+                markviewmodel.LabMarks < 0 || markviewmodel.LabMarks > subject.MaxLabMarks ||
+                markviewmodel.InternalMarks < 0 || markviewmodel.InternalMarks > subject.MaxInternalMarks)
+            {
+                TempData["Error"] = $"Invalid Marks! Marks Cannot Above than Theory({subject.MaxTheoryMarks}), Lab({subject.MaxLabMarks}), Internal({subject.MaxInternalMarks})";
+
+                return RedirectToAction("AddMark", new { id = markviewmodel.TaskId });
+            }
+
+
             if (existingMark != null)
             {
-                // Update
                 existingMark.TheoryMarks = markviewmodel.TheoryMarks;
                 existingMark.LabMarks = markviewmodel.LabMarks;
                 existingMark.InternalMarks = markviewmodel.InternalMarks;
-               
             }
             else
             {
-                // Insert
                 var newMark = new Mark
                 {
                     TasksId = markviewmodel.TaskId,
@@ -124,34 +141,11 @@ namespace StudentPerformanceManagment.Controllers
                     InternalMarks = markviewmodel.InternalMarks
                 };
                 _context.Marks.Add(newMark);
-               
             }
-
-
 
             _context.SaveChanges();
-
-            return RedirectToAction("AddMark",new {id= markviewmodel.TaskId});
-
-        }
-
-        private bool Validate(UpdateStudentViewModel markviewmodel)
-        {
-            Subject s = _context.Subjects.Find(markviewmodel.SubjectId);
-
-            int passingTheoryMarks = (markviewmodel.TheoryMarks / s.MaxTheoryMarks) * 100;
-            int passingLabMarks = (markviewmodel.LabMarks / s.MaxLabMarks) * 100;
-            int passingInternalMarks = (markviewmodel.InternalMarks / s.MaxInternalMarks) * 100;
-
-
-            if (passingTheoryMarks < s.PassingPercentEachComponent && passingLabMarks < s.PassingPercentEachComponent &&
-                passingInternalMarks < s.PassingPercentEachComponent )
-            {
-                return false;
-            }
-
-            return true;
-
+            TempData["Success"] = "Marks saved successfully!";
+            return RedirectToAction("AddMark", new { id = markviewmodel.TaskId });
         }
 
         public IActionResult CompleteTask(int taskId)
