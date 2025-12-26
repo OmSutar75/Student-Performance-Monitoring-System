@@ -20,7 +20,7 @@ namespace StudentPerformanceManagment.Models
 
         public int CourseId { get; set; }
         public Course Course { get; set; }
-        public Mark Mark { get; set; }
+        public ICollection<Mark> Mark { get; set; } = new List<Mark>();
 
 
         

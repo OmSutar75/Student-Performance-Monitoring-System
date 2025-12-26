@@ -6,6 +6,7 @@ using StudentPerformanceManagement.Models;
 using StudentPerformanceManagment;
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
+using System.Collections.Immutable;
 using System.Security.Claims;
 
 
@@ -106,6 +107,15 @@ namespace StudentPerformanceManagement.Controllers
 
         public IActionResult StudentPerformance()
         {
+            return View();
+        }
+
+        public IActionResult Ranking()
+        {
+            List<Mark> Marks = _context.Marks.ToList();
+
+            //Marks = Marks.OrderBy(m => m.TotalObtained());
+            //return View(SortedMarks);
             return View();
         }
     }
