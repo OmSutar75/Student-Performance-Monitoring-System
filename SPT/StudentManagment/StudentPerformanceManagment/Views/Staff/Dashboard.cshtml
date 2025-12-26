@@ -7,7 +7,7 @@
     // Dynamic Academic Session Logic (e.g., 2025-26)
     int startYear = today.Month >= 6 ? today.Year : today.Year - 1;
     string dynamicSession = $"{startYear}-{(startYear + 1) % 100}";
-
+  
     var dashboardTasks = Model.Tasks
         .OrderBy(t => t.Status == Status.Completed) // Completed tasks ko niche bhejein
         .ThenBy(t => t.ValidTo) // Jinki deadline paas hai wo upar
@@ -118,15 +118,24 @@
                                 </div>
                             </td>
                             <td class="text-center">
-                                @if (task.Status != Status.Completed)
+                                @if (task.Status != Status.Pending)
                                 {
-                                    <a href="/Staff/AddMark/@task.TasksId" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm hover-up">
-                                        Add Marks
+                                    <button class="btn btn-sm btn-light rounded-pill px-3 border" disabled>
+                                        <i class="bi bi-lock-fill"></i> Locked
+                                    </button>
+                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                                        <i class="bi bi-envelope"></i> Request
                                     </a>
+
+
                                 }
                                 else
                                 {
-                                    <span class="text-success small fw-bold"><i class="bi bi-check-all"></i> Submitted</span>
+                                    
+                                    <a href="/Staff/AddMark/task.TasksId" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
+                                        <i class="bi bi-plus-lg"></i> Add Marks
+                                    </a>
+
                                 }
                             </td>
                         </tr>

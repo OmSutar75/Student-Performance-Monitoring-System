@@ -12,8 +12,8 @@ using StudentPerformanceManagment;
 namespace StudentPerformanceManagment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251226052540_StudentMarkManyToOne")]
-    partial class StudentMarkManyToOne
+    [Migration("20251226072522_mg")]
+    partial class mg
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
