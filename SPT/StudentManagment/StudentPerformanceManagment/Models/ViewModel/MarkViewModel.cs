@@ -9,6 +9,7 @@ namespace StudentPerformanceManagment.Models.ViewModel
         /*public string Prn {  get; set; }
         public string Name { get; set; }*/
 
+        public int TotalMark(int i, int j, int k) => i + j + k;
         public List<Student> Students { get; set; }
 
         public int TheoryMarks { get; set; }
