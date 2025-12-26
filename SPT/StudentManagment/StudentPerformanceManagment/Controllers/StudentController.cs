@@ -129,7 +129,7 @@ namespace StudentPerformanceManagement.Controllers
                 await _signInManager.RefreshSignInAsync(user);
                 TempData["Success"] = "Password updated successfully!";
                 return RedirectToAction("Dashboard", "Student");
-            }u
+            }
         
             foreach (var error in result.Errors)
             {
