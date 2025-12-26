@@ -31,43 +31,43 @@
                     @foreach (var item in Model.Tasks)
                     {
                         @* --- Filter: Sirf Active tasks dikhane ke liye --- *@
-                        if (item.IsActive(DateTime.Now))
-                        {
-                            <tr>
-                                <td class="ps-4">
-                                    <div class="fw-bold text-primary">@item.Course.CourseName</div>
-                                    <div class="small text-muted">@item.Subject.SubjectName</div>
-                                </td>
-                                <td>
-                                    <span class="badge bg-info-subtle text-info border border-info-subtle px-3">
-                                        @item.CourseGroup.GroupName
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="small fw-semibold text-dark">To: @item.ValidTo.ToShortDateString()</div>
-                                    <div class="text-muted" style="font-size: 0.75rem;">From: @item.ValidFrom.ToShortDateString()</div>
-                                </td>
-                                <td>
-                                    <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-2">
-                                        <i class="bi bi-check-circle-fill me-1"></i> Active
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group gap-2">
-                                        <a href="/Staff/AddMark/@item.TasksId" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
-                                            <i class="bi bi-plus-lg"></i> Add Marks
-                                        </a>
-                                        <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
-                                            <i class="bi bi-envelope"></i> Request
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
+                        @* if (item.IsActive(DateTime.Now)) *@
+                        @* { *@
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold text-primary">@item.Course.CourseName</div>
+                                <div class="small text-muted">@item.Subject.SubjectName</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-info-subtle text-info border border-info-subtle px-3">
+                                    @item.CourseGroup.GroupName
+                                </span>
+                            </td>
+                            <td>
+                                <div class="small fw-semibold text-dark">To: @item.ValidTo.ToShortDateString()</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">From: @item.ValidFrom.ToShortDateString()</div>
+                            </td>
+                            <td>
+                                <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-2">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Active
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group gap-2">
+                                    <a href="/Staff/AddMark/@item.TasksId" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
+                                        <i class="bi bi-plus-lg"></i> Add Marks
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                                        <i class="bi bi-envelope"></i> Request
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        @* } *@
                     }
 
                     @* --- Agar koi bhi active task na ho toh message dikhaye --- *@
-                    @if (!Model.Tasks.Any(t => t.IsActive(DateTime.Now)))
+                    @* @if (!Model.Tasks.Any(t => t.IsActive(DateTime.Now)))
                     {
                         <tr>
                             <td colspan="5" class="text-center py-5 text-muted">
@@ -75,7 +75,7 @@
                                 No active tasks found for today.
                             </td>
                         </tr>
-                    }
+                    } *@
                 </tbody>
             </table>
         </div>

@@ -11,6 +11,10 @@ namespace StudentPerformanceManagment.Models
         public int StudentId { get; set; }
         public Student Student { get; set; } = null!;
 
+        public int TasksId { get; set; }
+
+        public Tasks Tasks { get; set; }
+
         public int SubjectId { get; set; }
         public Subject Subject { get; set; } = null!;
 
