@@ -1,6 +1,20 @@
 ﻿@using StudentPerformanceManagment.Models.ViewModel
 @model StaffDashViewModel
 
+@{
+    var today = DateTime.Now;
+
+    // Dynamic Academic Session Logic (e.g., 2025-26)
+    int startYear = today.Month >= 6 ? today.Year : today.Year - 1;
+    string dynamicSession = $"{startYear}-{(startYear + 1) % 100}";
+
+    var dashboardTasks = Model.Tasks
+        .OrderBy(t => t.Status == Status.Completed) // Completed tasks ko niche bhejein
+        .ThenBy(t => t.ValidTo) // Jinki deadline paas hai wo upar
+        .Take(6)
+        .ToList();
+}
+
 <div class="container-fluid py-4 animate-fade-in">
     <!-- Top Welcome Section -->
     <div class="row mb-4">
@@ -8,11 +22,11 @@
             <div class="p-4 bg-white rounded-4 shadow-sm border-0 d-flex align-items-center justify-content-between">
                 <div>
                     <h3 class="fw-bold text-dark mb-1">Staff Dashboard</h3>
-                    <p class="text-muted mb-0">Welcome back! Here is what's happening with your tasks today.</p>
+                    <p class="text-muted mb-0">Welcome back! Manage your subject marks and task deadlines here.</p>
                 </div>
                 <div class="d-none d-md-block text-end">
-                    <div class="h5 fw-bold mb-0">@DateTime.Now.ToString("dd MMM yyyy")</div>
-                    <small class="text-muted">Academic Session 2025-26</small>
+                    <div class="h5 fw-bold mb-0 text-primary">@today.ToString("dd MMM yyyy")</div>
+                    <small class="badge bg-primary-subtle text-primary rounded-pill">Academic Session @dynamicSession</small>
                 </div>
             </div>
         </div>
@@ -24,7 +38,7 @@
             <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
                 <div class="d-flex align-items-center">
                     <div class="stats-icon bg-primary-subtle text-primary rounded-3 p-3 me-3">
-                        <i class="bi bi-list-task fs-4"></i>
+                        <i class="bi bi-journal-text fs-4"></i>
                     </div>
                     <div>
                         <small class="text-muted d-block">Total Tasks</small>
@@ -37,55 +51,83 @@
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
                 <div class="d-flex align-items-center">
-                    <div class="stats-icon bg-success-subtle text-success rounded-3 p-3 me-3">
-                        <i class="bi bi-check2-circle fs-4"></i>
+                    <div class="stats-icon bg-danger-subtle text-danger rounded-3 p-3 me-3">
+                        <i class="bi bi-exclamation-circle fs-4"></i>
                     </div>
                     <div>
-                        <small class="text-muted d-block">Active Now</small>
-                        <h4 class="fw-bold mb-0">@Model.Tasks.Count(t => t.IsActive(DateTime.Now))</h4>
+                        <small class="text-muted d-block">Pending/Overdue</small>
+                        <h4 class="fw-bold mb-0">@Model.Tasks.Count(t => t.Status != Status.Completed)</h4>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Main Content Area: Active Tasks Table -->
+    <!-- Main Content Area: Priority Tasks Table -->
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
         <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
-            <h5 class="mb-0 fw-bold"><i class="bi bi-clock-history me-2 text-primary"></i>Current Active Tasks</h5>
-            <a href="/Staff/MyTasks" class="btn btn-sm btn-light border text-primary fw-semibold">View All</a>
+            <h5 class="mb-0 fw-bold"><i class="bi bi-lightning-charge me-2 text-warning"></i>Priority Action Items</h5>
+            <a href="/Staff/MyTasks" class="btn btn-sm btn-outline-primary rounded-pill fw-semibold">View All Tasks</a>
         </div>
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light">
                     <tr>
                         <th class="ps-4 border-0">Subject & Course</th>
-                        <th class="border-0">Group</th>
-                        <th class="border-0">Validity</th>
+                        <th class="border-0">Task Status</th>
+                        <th class="border-0" style="width: 250px;">Deadline Progress</th>
                         <th class="border-0 text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var task in Model.Tasks)
+                    @foreach (var task in dashboardTasks)
                     {
+                        // Progress Calculation
+                        var totalTime = (task.ValidTo - task.ValidFrom).TotalSeconds;
+                        var timeUsed = (today - task.ValidFrom).TotalSeconds;
+                        var percent = totalTime > 0 ? Math.Min(100, Math.Max(0, (timeUsed / totalTime) * 100)) : 0;
+
+                        // Priority Color based on Status and Progress
+                        string barColor = percent > 80 ? "bg-danger" : (percent > 50 ? "bg-warning" : "bg-primary");
+
                         <tr>
                             <td class="ps-4">
-                                <div class="fw-bold">@task.Subject.SubjectName</div>
-                                <div class="small text-muted">@task.Course.CourseName</div>
+                                <div class="fw-bold text-dark">@task.Subject.SubjectName</div>
+                                <div class="small text-muted">@task.Course.CourseName • <span class="fw-semibold">@task.CourseGroup.GroupName</span></div>
                             </td>
                             <td>
-                                <span class="badge bg-light text-dark border fw-medium px-3">@task.CourseGroup.GroupName</span>
+                                @switch (task.Status)
+                                {
+                                    case Status.Pending:
+                                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 rounded-pill">Pending</span>
+                                        break;
+                                    case Status.Completed:
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 rounded-pill">Completed</span>
+                                        break;
+                                    case Status.Overdue:
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 rounded-pill">Overdue</span>
+                                        break;
+                                }
                             </td>
                             <td>
-                                <div class="small fw-semibold">Exp: @task.ValidTo.ToShortDateString()</div>
-                                <div class="progress mt-1" style="height: 4px;">
-                                    <div class="progress-bar bg-primary" style="width: 70%"></div>
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span class="text-muted">Exp: @task.ValidTo.ToString("dd MMM")</span>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar @(task.Status == Status.Completed ? "bg-success" : barColor)" style="width: @(task.Status == Status.Completed ? "100" : percent)%"></div>
                                 </div>
                             </td>
                             <td class="text-center">
-                                <a href="/Staff/AddMark/@task.TasksId" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
-                                    <i class="bi bi-plus-circle me-1"></i> Add Marks
-                                </a>
+                                @if (task.Status != Status.Completed)
+                                {
+                                    <a href="/Staff/AddMark/@task.TasksId" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm hover-up">
+                                        Add Marks
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-success small fw-bold"><i class="bi bi-check-all"></i> Submitted</span>
+                                }
                             </td>
                         </tr>
                     }
