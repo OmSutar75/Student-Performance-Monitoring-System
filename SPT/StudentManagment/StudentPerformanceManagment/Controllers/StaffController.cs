@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using StudentPerformanceManagement.Models;
@@ -97,6 +98,8 @@ namespace StudentPerformanceManagment.Controllers
         [HttpPost]
         public IActionResult SaveMark(UpdateStudentViewModel markviewmodel)
         {
+           
+
             var existingMark = _context.Marks
                 .FirstOrDefault(m => m.StudentId == markviewmodel.StudentId && m.TasksId == markviewmodel.TaskId);
 
@@ -129,6 +132,25 @@ namespace StudentPerformanceManagment.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("AddMark",new {id= markviewmodel.TaskId});
+
+        }
+
+        private bool Validate(UpdateStudentViewModel markviewmodel)
+        {
+            Subject s = _context.Subjects.Find(markviewmodel.SubjectId);
+
+            int passingTheoryMarks = (markviewmodel.TheoryMarks / s.MaxTheoryMarks) * 100;
+            int passingLabMarks = (markviewmodel.LabMarks / s.MaxLabMarks) * 100;
+            int passingInternalMarks = (markviewmodel.InternalMarks / s.MaxInternalMarks) * 100;
+
+
+            if (passingTheoryMarks < s.PassingPercentEachComponent && passingLabMarks < s.PassingPercentEachComponent &&
+                passingInternalMarks < s.PassingPercentEachComponent )
+            {
+                return false;
+            }
+
+            return true;
 
         }
 

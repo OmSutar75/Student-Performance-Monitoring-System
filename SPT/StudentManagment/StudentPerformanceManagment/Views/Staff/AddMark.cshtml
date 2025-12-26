@@ -6,6 +6,41 @@
     var firstStudent = Model?.FirstOrDefault();
 }
 
+<style>
+    /* Styling for the UI components */
+    .custom-input {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+        .custom-input:focus {
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+            outline: none;
+        }
+
+    .row-hover:hover {
+        background-color: #f7fafc;
+    }
+
+    .save-btn {
+        background-color: #2d3748;
+        border: none;
+        transition: transform 0.1s ease;
+    }
+
+        .save-btn:hover {
+            background-color: #1a202c;
+            transform: scale(1.05);
+        }
+
+    .hover-lift:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    }
+</style>
+
 <div class="card border-0 shadow-sm rounded-4">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -73,38 +108,7 @@
         }
     </div>
 </div>
+<script>
 
-<style>
-    /* Styling for the UI components */
-    .custom-input {
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        transition: all 0.2s ease;
-    }
 
-        .custom-input:focus {
-            border-color: #3182ce;
-            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
-            outline: none;
-        }
-
-    .row-hover:hover {
-        background-color: #f7fafc;
-    }
-
-    .save-btn {
-        background-color: #2d3748;
-        border: none;
-        transition: transform 0.1s ease;
-    }
-
-        .save-btn:hover {
-            background-color: #1a202c;
-            transform: scale(1.05);
-        }
-
-    .hover-lift:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-    }
-</style>
+</script>
