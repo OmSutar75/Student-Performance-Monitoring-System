@@ -83,19 +83,17 @@ namespace StudentPerformanceManagment.Controllers
 
                     InternalMarks = _context.Marks.Where(m => m.TasksId == task.TasksId && m.StudentId == s.StudentId)
                                     .Select(m => m.InternalMarks).FirstOrDefault(),
+                   
                 }).ToList();
 
-
-
-
-
+            UpdateStudentViewModel.markcount = _context.Marks.Where(m => m.TasksId == task.TasksId).Count();
+            UpdateStudentViewModel.studcount = students.Count();
 
 
             return View(students);
         }
 
 
-        //    }
 
         [HttpPost]
         public IActionResult SaveMark(UpdateStudentViewModel markviewmodel)
@@ -140,8 +138,11 @@ namespace StudentPerformanceManagment.Controllers
                     LabMarks = markviewmodel.LabMarks,
                     InternalMarks = markviewmodel.InternalMarks
                 };
+
+
                 _context.Marks.Add(newMark);
             }
+
 
             _context.SaveChanges();
             TempData["Success"] = "Marks saved successfully!";

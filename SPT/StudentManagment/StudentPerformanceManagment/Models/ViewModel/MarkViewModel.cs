@@ -27,5 +27,6 @@ namespace StudentPerformanceManagment.Models.ViewModel
         public int StudentId { get; internal set; }
         public string PRN { get; set; }
         public string Name { get; internal set; }
+
     }
 }
