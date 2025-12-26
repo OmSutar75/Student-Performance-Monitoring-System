@@ -16,13 +16,15 @@ namespace StudentPerformanceManagement.Controllers
     public class StudentController : Controller
     {
 
+        private readonly SignInManager<AppUser> _signInManager;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
 
-        public StudentController(UserManager<AppUser> userManager,
+        public StudentController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
         ApplicationDbContext context)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
             _context = context;
         }
 
@@ -103,6 +105,48 @@ namespace StudentPerformanceManagement.Controllers
         }
 
 
+     
+        public IActionResult ChangePassword()
+        {
+            
+            return View(new PasswordViewModel());
+        }
+
+    
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdatePassword(PasswordViewModel model)
+        {
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("Login", "Account");
+
+           
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+            if (result.Succeeded)
+            {
+                await _signInManager.RefreshSignInAsync(user);
+                TempData["Success"] = "Password updated successfully!";
+                return RedirectToAction("Dashboard", "Student");
+            }
+        
+            foreach (var error in result.Errors)
+            {
+              
+                if (error.Code.Contains("PasswordMismatch"))
+                {
+                    ModelState.AddModelError("CurrentPassword", "The current password you entered is incorrect.");
+                }
+                else
+                {
+                 
+                    ModelState.AddModelError("NewPassword", error.Description);
+                }
+            }
+
+            return View("ChangePassword", model);
+        }
 
         public IActionResult StudentPerformance()
         {
