@@ -1,80 +1,91 @@
-﻿<div class="container mt-5">
+﻿@using StudentPerformanceManagment.Models.ViewModel
+@model StudentViewModel
+
+<div class="container mt-4 mb-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-12 col-md-8 col-lg-6">
 
-            <div class="card shadow-sm">
-
+            <div class="card shadow-sm border-0 rounded-3">
                 <!-- HEADER -->
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Edit Profile</h5>
-                    
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-person-gear me-2"></i>Edit Profile</h5>
                 </div>
 
-                <div class="card-body">
-
+                <div class="card-body p-4">
                     <!-- ALERT -->
-                    <div class="alert alert-warning small">
-                        PRN and Email cannot be changed
+                    <div class="alert alert-info border-0 shadow-sm small mb-4">
+                        <i class="bi bi-info-circle me-2"></i>PRN and Email are fixed for security reasons.
                     </div>
 
-                    <!-- FORM -->
-                    <form>
+                    <!-- FORM: POST method aur Tag Helpers ka use karein -->
+                    <form asp-controller="Student" asp-action="AfterEditProfile" method="post">
+                        @Html.AntiForgeryToken()
 
+                        <!-- Read Only Fields -->
                         <div class="mb-3">
-                            <label class="form-label">PRN (Read Only)</label>
-                            <input type="text" class="form-control" value="202500010001" readonly>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Full Name *</label>
-                            <input type="text" class="form-control" value="Anurag Londhe">
+                            <label class="form-label fw-semibold text-muted">PRN (Read Only)</label>
+                            <input asp-for="PRN" class="form-control bg-light" readonly>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Email (Read Only)</label>
-                            <input type="email" class="form-control" value="anuraglondhe9052@gmail.com" readonly>
+                            <label class="form-label fw-semibold">Full Name *</label>
+                            <input asp-for="Name" class="form-control" placeholder="Enter your full name">
+                            <span asp-validation-for="Name" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Mobile Number</label>
-                            <input type="text" class="form-control" value="+91 8669489052">
-                        </div>
-
-                        <hr>
-
-                        <h6 class="mb-3">Change Password</h6>
-
-                        <div class="mb-3">
-                            <label class="form-label">Current Password</label>
-                            <input type="password" class="form-control">
+                            <label class="form-label fw-semibold text-muted">Email (Read Only)</label>
+                            <input asp-for="Email" class="form-control bg-light" readonly>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">New Password</label>
-                            <input type="password" class="form-control">
+                            <label class="form-label fw-semibold">Mobile Number *</label>
+                            <input asp-for="MobileNo" class="form-control" placeholder="10-digit mobile number">
+                            <span asp-validation-for="MobileNo" class="text-danger small"></span>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="form-label">Confirm New Password</label>
-                            <input type="password" class="form-control">
-                        </div>
+                        <hr class="my-4">
+
+                        <h6 class="mb-3 fw-bold text-dark"><i class="bi bi-shield-lock me-2"></i>Change Password</h6>
+                        <p class="text-muted small mb-3">Leave blank if you don't want to change password.</p>
+
+                        @*  <div class="mb-3">
+                            <label class="form-label fw-semibold">Current Password</label>
+                            <input asp-for="CurrentPassword" type="password" class="form-control" placeholder="Required for password change">
+                            <span asp-validation-for="CurrentPassword" class="text-danger small"></span>
+                        </div> *@
+
+                        @* <div class="row g-3">
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label fw-semibold">New Password</label>
+                                <input asp-for="NewPassword" type="password" class="form-control" placeholder="Min 6 characters">
+                                <span asp-validation-for="NewPassword" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label fw-semibold">Confirm New Password</label>
+                                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Repeat new password">
+                                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                            </div>
+                        </div>  *@
 
                         <!-- BUTTONS -->
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="/Student/Dashboard" class="btn btn-secondary">
+                        <div class="d-flex justify-content-end gap-2 mt-5">
+                            <a asp-controller="Student" asp-action="Dashboard" class="btn btn-light px-4 border">
                                 Cancel
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary px-4 shadow-sm">
                                 Save Changes
                             </button>
                         </div>
-
                     </form>
-
                 </div>
-
             </div>
-
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @* Client-side validation ke liye ye zaroori hai *@
+    <partial name="_ValidationScriptsPartial" />
+}
