@@ -117,7 +117,7 @@ namespace StudentPerformanceManagment.Controllers
                 markviewmodel.LabMarks < 0 || markviewmodel.LabMarks > subject.MaxLabMarks ||
                 markviewmodel.InternalMarks < 0 || markviewmodel.InternalMarks > subject.MaxInternalMarks)
             {
-                TempData["Error"] = $"Invalid Marks! Limits are: Theory({subject.MaxTheoryMarks}), Lab({subject.MaxLabMarks}), Internal({subject.MaxInternalMarks})";
+                TempData["Error"] = $"Invalid Marks! Marks Cannot Above than Theory({subject.MaxTheoryMarks}), Lab({subject.MaxLabMarks}), Internal({subject.MaxInternalMarks})";
 
                 return RedirectToAction("AddMark", new { id = markviewmodel.TaskId });
             }
