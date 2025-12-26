@@ -43,38 +43,53 @@
         </div>
     </div>
 
-    <!-- STATS CARDS -->
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="stat-card text-center">
-                <div class="stat-icon">📚</div>
-                <div>
-                    <small>Subjects</small>
-                    <h5 class="fw-bold">@Model.SubjectCount</h5>
+    <div class="row g-3 mb-4">
+        <!-- Subjects -->
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm p-3 bg-white rounded-3">
+                <div class="d-flex align-items-center">
+                    <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-circle me-3">
+                        <i class="bi bi-journal-text fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Total Subjects</small>
+                        <h5 class="fw-bold mb-0">@Model.SubjectCount</h5>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="stat-card text-center">
-                <div class="stat-icon">🏆</div>
-                <div>
-                    <small>Group Name</small>
-                    <h5 class="fw-bold">@Model.CourseGroupName</h5>
+        <!-- Group Name -->
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm p-3 bg-white rounded-3">
+                <div class="d-flex align-items-center">
+                    <div class="p-3 bg-success bg-opacity-10 text-success rounded-circle me-3">
+                        <i class="bi bi-people fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Batch Group</small>
+                        <h5 class="fw-bold mb-0">@Model.CourseGroupName</h5>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="stat-card text-center">
-                <div class="stat-icon">📈</div>
-                <div>
-                    <small>Overall %</small>
-                    <h5 class="fw-bold">78%</h5>
+        <!-- Performance -->
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm p-3 bg-white rounded-3">
+                <div class="d-flex align-items-center">
+                    <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-circle me-3">
+                        <i class="bi bi-graph-up fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Overall Rank</small>
+                        <h5 class="fw-bold mb-0">53</h5>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- PERFORMANCE CARD -->
     <a href="/Student/Performance" class="text-decoration-none">
@@ -115,6 +130,19 @@
         align-items: center;
         gap: 15px;
         justify-content: center;
+    }
+
+    .card {
+        transition: transform 0.2s;
+        border: 1px solid #f0f0f0 !important;
+    }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+    .bg-opacity-10 {
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
     }
 
     .stat-icon {
