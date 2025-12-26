@@ -1,4 +1,5 @@
-﻿@using System.Linq
+﻿@using System.Linq;
+@using StudentPerformanceManagment.Models.ViewModel;
 @model List<StudentPerformanceManagment.Models.ViewModel.MarkViewModel>
 
 @{
@@ -41,6 +42,7 @@
     }
 </style>
 
+
 <div class="card border-0 shadow-sm rounded-4">
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -58,6 +60,7 @@
             <tbody>
                 @foreach (var item in Model)
                 {
+                    
                     <tr class="row-hover">
                         <form asp-action="SaveMark" method="post">
                             <input type="hidden" name="CourseGroupId" value="@item.CourseGroupId" />
@@ -85,7 +88,7 @@
                         </td>
 
                         <td class="pe-4 text-center">
-                            <button type="submit" class="btn btn-sm btn-dark rounded-3 px-3 py-1 fw-bold shadow-sm save-btn" onclick="func(@item.TheoryMarks,@item.LabMarks,@item.InternalMarks)">
+                            <button type="submit" class="btn btn-sm btn-dark rounded-3 px-3 py-1 fw-bold shadow-sm save-btn" )">
                                 <i class="bi bi-check2-circle me-1"></i> Save
                             </button>
                         </td>
@@ -97,15 +100,28 @@
     </div>
 
     <div class="card-footer bg-white border-0 py-4 text-center">
+        
         @if (firstStudent != null)
         {
-            <form asp-action="CompleteTask" method="post">
-                <input type="hidden" name="taskId" value="@firstStudent.TaskId" />
-                <button type="submit" class="btn btn-lg btn-success rounded-pill px-5 fw-bold shadow-sm transition-all hover-lift">
+            @if (UpdateStudentViewModel.markcount == UpdateStudentViewModel.studcount)
+            {
+                <form asp-action="CompleteTask" method="post">
+                    <input type="hidden" name="taskId" value="@firstStudent.TaskId" />
+                <button type="submit" class="btn btn-lg btn-success rounded-pill px-5 fw-bold shadow-sm transition-all hover-lift" >
                     <i class="bi bi-check-all me-2"></i> Finalize & Mark Task as Completed
                 </button>
             </form>
-        }
+            }
+        @* else 
+             {
+                <form asp-action="CompleteTask" method="post">
+                    <input type="hidden" name="taskId" value="@firstStudent.TaskId" />
+                    <button type="submit" class="btn btn-lg btn-success rounded-pill px-5 fw-bold shadow-sm transition-all hover-lift" >
+                        <i class="bi bi-check-all me-2"></i> Finalize & Mark Task as Completed
+                    </button>
+                </form>
+              } *@
+     }
     </div>
 </div>
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
