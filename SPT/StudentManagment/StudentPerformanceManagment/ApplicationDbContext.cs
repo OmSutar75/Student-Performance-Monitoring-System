@@ -72,6 +72,10 @@ namespace StudentPerformanceManagment
             builder.Entity<Mark>()
                 .HasIndex(t => t.SubjectId)
                 .IsUnique(false);
+
+            builder.Entity<Mark>()
+                .HasIndex(m => new { m.SubjectId, m.StudentId })
+                .IsUnique();
         }
 
 

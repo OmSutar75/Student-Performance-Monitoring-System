@@ -4,7 +4,7 @@
 
 @{
     // Safely extract the first item to use for the TaskId in the footer
-    var firstStudent = Model?.FirstOrDefault();
+    var firstStudent = Model != null ? Model.FirstOrDefault() : null;
 }
 
 <style>
@@ -60,39 +60,39 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    
                     <tr class="row-hover">
-                        <form asp-action="SaveMark" method="post">
-                            <input type="hidden" name="CourseGroupId" value="@item.CourseGroupId" />
-                            <input type="hidden" name="TaskId" value="@item.TaskId" />
-                            <input type="hidden" name="StudentId" value="@item.StudentId" />
-                            <input type="hidden" name="SubjectId" value="@item.SubjectId" />
+                        @using (Html.BeginForm("SaveMark", null, FormMethod.Post))
+                        {
+                            @Html.Hidden("CourseGroupId", item.CourseGroupId)
+                            @Html.Hidden("TaskId", item.TaskId)
+                            @Html.Hidden("StudentId", item.StudentId)
+                            @Html.Hidden("SubjectId", item.SubjectId)
 
-                        <td class="ps-4 fw-medium text-dark">@item.PRN</td>
-                        <td class="fw-semibold" style="color: #2d3748;">@item.Name</td>
+                            <td class="ps-4 fw-medium text-dark">@item.PRN</td>
+                            <td class="fw-semibold" style="color: #2d3748;">@item.Name</td>
 
-                        <td>
-                            <input name="TheoryMarks" class="form-control form-control-sm text-center custom-input" min="0" type="number" value="@item.TheoryMarks" default="0"/>
-                        </td>
-                        <td>
-                            <input name="LabMarks" class="form-control form-control-sm text-center custom-input" min="0" type="number" value="@item.LabMarks" default="0" />
-                        </td>
-                        <td>
-                            <input name="InternalMarks" class="form-control form-control-sm text-center custom-input" min="0" type="number" value="@item.InternalMarks" default="0" />
-                        </td>
+                            <td>
+                                <input name="TheoryMarks" class="form-control form-control-sm text-center custom-input" min="0" type="number" value="@item.TheoryMarks" />
+                            </td>
+                            <td>
+                                <input name="LabMarks" class="form-control form-control-sm text-center custom-input" min="0" type="number" value="@item.LabMarks" />
+                            </td>
+                            <td>
+                                <input name="InternalMarks" class="form-control form-control-sm text-center custom-input" min="0" type="number" value="@item.InternalMarks" />
+                            </td>
 
-                        <td class="text-center">
-                            <div class="d-inline-block px-3 py-1 rounded-pill fw-bold" style="background-color: #f0fff4; color: #38a169; border: 1px solid #c6f6d5;">
-                                @item.TotalMark(item.TheoryMarks, item.LabMarks, item.InternalMarks)
-                            </div>
-                        </td>
+                            <td class="text-center">
+                                <div class="d-inline-block px-3 py-1 rounded-pill fw-bold" style="background-color: #f0fff4; color: #38a169; border: 1px solid #c6f6d5;">
+                                    @item.TotalMark(item.TheoryMarks, item.LabMarks, item.InternalMarks)
+                                </div>
+                            </td>
 
-                        <td class="pe-4 text-center">
-                            <button type="submit" class="btn btn-sm btn-dark rounded-3 px-3 py-1 fw-bold shadow-sm save-btn" )">
-                                <i class="bi bi-check2-circle me-1"></i> Save
-                            </button>
-                        </td>
-                        </form>
+                            <td class="pe-4 text-center">
+                                <button type="submit" class="btn btn-sm btn-dark rounded-3 px-3 py-1 fw-bold shadow-sm save-btn">
+                                    <i class="bi bi-check2-circle me-1"></i> Save
+                                </button>
+                            </td>
+                        }
                     </tr>
                 }
             </tbody>
@@ -100,41 +100,43 @@
     </div>
 
     <div class="card-footer bg-white border-0 py-4 text-center">
-        
+
         @if (firstStudent != null)
         {
-            @if (UpdateStudentViewModel.markcount == UpdateStudentViewModel.studcount)
+            if (UpdateStudentViewModel.markcount == UpdateStudentViewModel.studcount)
             {
-                <form asp-action="CompleteTask" method="post">
-                    <input type="hidden" name="taskId" value="@firstStudent.TaskId" />
-                <button type="submit" class="btn btn-lg btn-success rounded-pill px-5 fw-bold shadow-sm transition-all hover-lift" >
-                    <i class="bi bi-check-all me-2"></i> Finalize & Mark Task as Completed
-                </button>
-            </form>
-            }
-        @* else 
-             {
-                <form asp-action="CompleteTask" method="post">
-                    <input type="hidden" name="taskId" value="@firstStudent.TaskId" />
-                    <button type="submit" class="btn btn-lg btn-success rounded-pill px-5 fw-bold shadow-sm transition-all hover-lift" >
-                        <i class="bi bi-check-all me-2"></i> Finalize & Mark Task as Completed
+                using (Html.BeginForm("CompleteTask", null, FormMethod.Post))
+                {
+                    @Html.Hidden("taskId", firstStudent.TaskId)
+                    <button type="submit" class="btn btn-lg btn-success rounded-pill px-5 fw-bold shadow-sm transition-all hover-lift">
+                        <i class="bi bi-check-all me-2"></i> Finalize &amp; Mark Task as Completed
                     </button>
-                </form>
-              } *@
-     }
+                }
+            }
+            @* else 
+            {
+                using (Html.BeginForm("CompleteTask", null, FormMethod.Post))
+                {
+                    @Html.Hidden("taskId", firstStudent.TaskId)
+                    <button type="submit" class="btn btn-lg btn-success rounded-pill px-5 fw-bold shadow-sm transition-all hover-lift">
+                        <i class="bi bi-check-all me-2"></i> Finalize &amp; Mark Task as Completed
+                    </button>
+                }
+            } *@
+        }
     </div>
 </div>
- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        var errorMsg = '@TempData["Error"]';
+        var errorMsg = '@(TempData["Error"] != null ? TempData["Error"].ToString() : "")';
         if (errorMsg) {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
                 text: errorMsg,
-                confirmButtonColor: '#2d3748', 
+                confirmButtonColor: '#2d3748',
                 customClass: {
                     popup: 'rounded-4'
                 }
