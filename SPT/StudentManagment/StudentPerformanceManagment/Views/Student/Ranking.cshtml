@@ -1,17 +1,10 @@
-﻿@model List<StudentPerformanceManagment.Models.Mark>
+﻿@model StudentPerformanceManagment.Models.ViewModel.IndividualRankViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Student Ranking - SPMS</title>
     <style>
-        body {
-            font-family: "Times New Roman", serif;
-            background: #ffffff;
-            padding: 40px;
-            color: #000;
-        }
-
         h1 {
             text-align: center;
             margin-bottom: 10px;
@@ -79,7 +72,15 @@
                 <th>Status</th>
             </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+            <td>@Model.Rank</td>
+            <td>@Model.Name</td>
+            <td>@Model.Mark.TheoryMarks</td>
+            <td>@Model.Mark.LabMarks</td>
+            <td>@Model.Mark.InternalMarks</td>
+            <td>@Model.Mark.TotalObtained</td>
+            <td>@Model.Mark.ResultStatus</td>
+        </tbody>
     </table>
 
     <footer>
@@ -132,116 +133,3 @@
 </body>
 </html>
 
-
-@* <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Student Ranking - SPMS</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-            padding: 30px;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 80%;
-            margin: auto;
-            border-collapse: collapse;
-            background: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-
-        th {
-            background: #2c3e50;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background: #f2f2f2;
-        }
-
-        .topper {
-            background: #d4edda !important;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-
-    <h1>Student Ranking</h1>
-
-    <table id="rankingTable">
-        <thead>
-            <tr>
-                <th>Rank</th>
-                <th>Name</th>
-                <th>Theory</th>
-                <th>Lab</th>
-                <th>Internal</th>
-                <th>Total</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <script>
-        const students = [
-            { name: "Amit", theory: 35, lab: 38, internal: 18 },
-            { name: "Sneha", theory: 40, lab: 39, internal: 20 },
-            { name: "Rahul", theory: 30, lab: 28, internal: 15 },
-            { name: "Priya", theory: 40, lab: 39, internal: 20 },
-            { name: "Kiran", theory: 25, lab: 35, internal: 18 }
-        ];
-
-        function calculateStatus(s) {
-            if (s.theory >= 16 && s.lab >= 16 && s.internal >= 8) return "Pass";
-            return "Fail";
-        }
-
-        students.forEach(s => {
-            s.total = s.theory + s.lab + s.internal;
-            s.status = calculateStatus(s);
-        });
-
-        students.sort((a, b) => {
-            if (b.total !== a.total) return b.total - a.total;
-            return a.name.localeCompare(b.name);
-        });
-
-        const tbody = document.querySelector("#rankingTable tbody");
-
-        students.forEach((s, index) => {
-            const row = document.createElement("tr");
-            if (index === 0) row.classList.add("topper");
-
-            row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${s.name}</td>
-                <td>${s.theory}</td>
-                <td>${s.lab}</td>
-                <td>${s.internal}</td>
-                <td>${s.total}</td>
-                <td>${s.status}</td>
-            `;
-            tbody.appendChild(row);
-        });
-    </script>
-
-</body>
-</html>
-
- *@
