@@ -92,8 +92,8 @@
 
                         <tr>
                             <td class="ps-4">
-                                <div class="fw-bold text-dark">@task.SubjectName</div>
-                                <div class="small text-muted">@task.CourseName • <span class="fw-semibold">@task.GroupName</span></div>
+                                <div class="fw-bold text-dark">@task.Subject.SubjectName</div>
+                                <div class="small text-muted">@task.Course.CourseName • <span class="fw-semibold">@task.CourseGroup.GroupName</span></div>
                             </td>
                             <td>
                                 @switch (task.Status)

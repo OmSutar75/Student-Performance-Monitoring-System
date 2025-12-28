@@ -1,27 +1,67 @@
-﻿<h2>Enroll Student</h2>
+﻿@model StudentPerformanceManagement.ViewModel.StudentEnrollmentViewModel
 
-<form method="post">
-    <label>Name</label><br />
-    <input type="text" name="name" required /><br /><br />
 
-    <label>Email</label><br />
-    <input type="email" name="email" required /><br /><br />
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
 
-    <label>Mobile Number :</label><br />
-    <input type="name" name="mobile" required /><br /><br />
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 fw-semibold">Enroll Student</h5>
+                </div>
 
-    <label>Course Id</label><br />
-    <input type="number" name="course" required /><br /><br />
+                <div class="card-body">
+                    <form method="post">
 
-    <label>Group Id </label><br />
-    <input type="number" name="groupid" required /><br /><br />
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <input type="text" name="name" class="form-control" required />
+                        </div>
 
-    <p>Default Password: <b>Student@123</b></p>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
 
-    <button type="submit">Enroll</button>
-</form>
+                        <div class="mb-3">
+                            <label class="form-label">Mobile Number</label>
+                            <input type="text" name="mobileno" class="form-control" required />
+                        </div>
 
-@foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-{
-    <p style="color:red">@error.ErrorMessage</p>
-}
+                        <div class="mb-3">
+                            <label class="form-label">Course</label>
+                            <select asp-for="CourseId" asp-items="Model.Courses" class="form-select">
+                                <option value="">-- Select Course --</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Course Group</label>
+                            <select asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-select">
+                                <option value="">-- Select Course Group --</option>
+                            </select>
+                        </div>
+
+
+                        <div class="alert alert-secondary small">
+                            Default Password: <strong>Student@123</strong>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-person-plus"></i> Enroll
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Validation Errors -->
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <div class="text-danger small mt-2">@error.ErrorMessage</div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
