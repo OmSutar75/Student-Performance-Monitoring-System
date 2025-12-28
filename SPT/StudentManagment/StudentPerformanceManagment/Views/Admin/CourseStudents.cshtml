@@ -1,0 +1,68 @@
+﻿@model StudentPerformanceManagment.Models.ViewModel.CourseStudentsVM
+
+@{
+    ViewData["Title"] = "Enrolled Students";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid">
+
+    <!-- PAGE HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-semibold">
+            Students Enrolled in <span class="text-primary">@Model.CourseName</span>
+        </h4>
+
+        <a asp-action="Courses" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back To Courses
+        </a>
+    </div>
+
+    <!-- STUDENTS TABLE -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>PRN</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Course Group</th>
+                        <th>Mobile No</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{
+                        int sr = 1;
+                    }
+
+                    @foreach (var s in Model.Students)
+                    {
+                        <tr>
+                            <td>@sr</td>
+                            <td>@s.PRN</td>
+                            <td>@s.Name</td>
+                            <td>@s.Email</td>
+                            <td>@s.CourseGroupName</td>
+                            <td>@s.MobileNo</td>
+                        </tr>
+                        sr++;
+                    }
+
+                    @if (!Model.Students.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No students enrolled in this course.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
