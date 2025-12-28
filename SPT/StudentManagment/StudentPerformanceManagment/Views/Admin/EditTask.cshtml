@@ -1,0 +1,54 @@
+﻿@model StudentPerformanceManagment.Models.ViewModel.TasksViewModel
+
+@{
+    ViewData["Title"] = "Edit Task";
+}
+
+<h3>Edit Task</h3>
+
+<form asp-action="EditTask" method="post">
+
+    <input type="hidden" asp-for="TasksId" />
+
+    <div class="form-group">
+        <label>Task Title</label>
+        <input asp-for="TasksTitle" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <textarea asp-for="TasksDescription" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>Course</label>
+        <select asp-for="CourseId" asp-items="Model.Courses" class="form-control"></select>
+    </div>
+
+    <div class="form-group">
+        <label>Course Group</label>
+        <select asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-control"></select>
+    </div>
+
+    <div class="form-group">
+        <label>Subject</label>
+        <select asp-for="SubjectId" asp-items="Model.Subjects" class="form-control"></select>
+    </div>
+
+    <div class="form-group">
+        <label>Staff</label>
+        <select asp-for="StaffId" asp-items="Model.Staffs" class="form-control"></select>
+    </div>
+
+    <div class="form-group">
+        <label>Valid From</label>
+        <input asp-for="ValidFrom" type="date" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Valid To</label>
+        <input asp-for="ValidTo" type="date" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">Update Task</button>
+</form>
