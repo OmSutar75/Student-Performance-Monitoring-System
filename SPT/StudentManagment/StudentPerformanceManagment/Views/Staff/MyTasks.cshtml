@@ -1,6 +1,7 @@
 ﻿@using StudentPerformanceManagment.Models.ViewModel
 @model StaffDashViewModel
 
+
 <div class="container-fluid py-4">
     <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -28,12 +29,12 @@
                     {
                         <tr>
                             <td class="ps-4">
-                                <div class="fw-bold text-primary">@item.Course.CourseName</div>
-                                <div class="small text-muted">@item.Subject.SubjectName</div>
+                                <div class="fw-bold text-primary">@item.CourseName</div>
+                                <div class="small text-muted">@item.SubjectName</div>
                             </td>
                             <td>
                                 <span class="badge bg-light text-dark border px-3">
-                                    @item.CourseGroup.GroupName
+                                    @item.GroupName
                                 </span>
                             </td>
                             <td>

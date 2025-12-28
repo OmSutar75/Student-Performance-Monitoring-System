@@ -23,7 +23,7 @@ namespace StudentPerformanceManagment.Models
         public ICollection<Mark> Mark { get; set; } = new List<Mark>();
 
 
-        
+
 
     }
 }

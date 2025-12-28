@@ -1,0 +1,88 @@
+﻿@model StudentPerformanceManagment.Models.Course
+
+@{
+    ViewData["Title"] = "Add Course";
+    Layout = "_Layout";
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            alert('@TempData["Error"]');
+        </script>
+    }
+}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-semibold text-primary">
+            <i class="bi bi-journal-plus"></i> Add Course
+        </h4>
+
+        <a asp-action="Courses" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <!-- Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+
+                    <form asp-action="AddCourse" method="post">
+                        
+
+                        <!-- Course Name -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Course Name</label>
+                            <input asp-for="CourseName" class="form-control" required />
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Description</label>
+                            <textarea asp-for="Description"
+                                      class="form-control"
+                                      rows="3"></textarea>
+                        </div>
+
+                        <!-- Duration -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Duration</label>
+                            <input asp-for="Duration"
+                                   class="form-control"
+                                   placeholder="e.g. 120 Hours / 4 Years" />
+                        </div>
+
+                        <!-- Fees -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Fees</label>
+                            <input asp-for="Fees" class="form-control" />
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-save"></i> Save
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Validation Errors -->
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <div class="alert alert-danger py-1 px-2 mt-2 small">
+                            @error.ErrorMessage
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
