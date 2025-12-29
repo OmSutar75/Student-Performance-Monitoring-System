@@ -1,0 +1,77 @@
+﻿@model StudentPerformanceManagment.Models.ViewModel.CourseWiseReportVM
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-semibold text-primary">
+            <i class="bi bi-trophy-fill me-2"></i>Course Wise Student Report
+        </h4>
+    </div>
+
+    <!-- Result Table -->
+    @if (Model.RankingRows != null && Model.RankingRows.Any())
+    {
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-body">
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Rank</th>
+                                <th>PRN</th>
+                                <th>Name</th>
+
+                                @foreach (var sub in Model.SubjectNames)
+                                {
+                                    <th>@sub<br /><small class="text-muted">T / L / I</small></th>
+                                }
+
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.RankingRows)
+                            {
+                                <tr class="@(item.ResultStatus == "FAIL" ? "table-danger" : "")">
+                                    <td class="fw-bold">@item.Rank</td>
+                                    <td>@item.PRN</td>
+                                    <td>@item.StudentName</td>
+
+                                    @foreach (var sub in Model.SubjectNames)
+                                    {
+                                        var sm = item.SubjectMarks.FirstOrDefault(x => x.SubjectName == sub);
+                                        if (sm != null)
+                                        {
+                                            <td>
+                                                @sm.Theory / @sm.Lab / @sm.Internal
+                                                @if (!string.IsNullOrEmpty(sm.FailedIn))
+                                                {
+                                                    <span class="badge bg-danger ms-1">@sm.FailedIn</span>
+                                                }
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td class="text-muted">–</td>
+                                        }
+                                    }
+
+                                    <td class="fw-semibold">@item.TotalMarks</td>
+                                    <td>
+                                        <span class="badge @(item.ResultStatus == "PASS" ? "bg-success" : "bg-danger") px-3 py-2">
+                                            @item.ResultStatus
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    }
+</div>

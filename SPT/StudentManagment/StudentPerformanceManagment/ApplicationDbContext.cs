@@ -63,11 +63,13 @@ namespace StudentPerformanceManagment
                 .HasForeignKey(t => t.StaffId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+
             builder.Entity<Mark>()
-                .HasOne(m=>m.Tasks)
+                .HasOne(m => m.Tasks)
                 .WithMany()
-                .HasForeignKey(m=>m.TasksId)
+                .HasForeignKey(m => m.TasksId)
                 .OnDelete(DeleteBehavior.Restrict);
+
 
             builder.Entity<Mark>()
                 .HasIndex(t => t.SubjectId)
