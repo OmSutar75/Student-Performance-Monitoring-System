@@ -1,159 +1,234 @@
-﻿
-
-<div class="content">
-
-    <h4 class="fw-bold">ADMIN DASHBOARD</h4>
-    <p>Welcome, @User.Identity.Name!</p>
-
-
+﻿<div class="content">
+    <header class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold mb-0">Admin Dashboard</h4>
+            <p class="text-muted">Welcome back, <span class="text-primary fw-semibold">@User.Identity.Name</span>!</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="/Admin/EnrollStudent" class="btn btn-primary btn-sm px-3">＋ Add Student</a>
+            <a href="/Admin/AddStaff" class="btn btn-outline-primary btn-sm px-3">＋ Add Staff</a>
+        </div>
+    </header>
 
     <!-- TOP STAT CARDS -->
-    <div class="row mb-4">
-
+    <div class="row g-4 mb-4">
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="stat-icon">📘</div>
-                <div>
+                <div class="stat-icon icon-blue">📘</div>
+                <div class="stat-details">
                     <small>Courses</small>
-                    <h5 class="fw-bold">12</h5>
+                    <h5>12</h5>
                 </div>
             </div>
         </div>
-
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="stat-icon">📗</div>
-                <div>
+                <div class="stat-icon icon-green">📗</div>
+                <div class="stat-details">
                     <small>Subjects</small>
-                    <h5 class="fw-bold">42</h5>
+                    <h5>42</h5>
                 </div>
             </div>
         </div>
-
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="stat-icon">🎓</div>
-                <div>
+                <div class="stat-icon icon-purple">🎓</div>
+                <div class="stat-details">
                     <small>Students</small>
-                    <h5 class="fw-bold">380</h5>
+                    <h5>380</h5>
                 </div>
             </div>
         </div>
-
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="stat-icon">👨‍🏫</div>
-                <div>
+                <div class="stat-icon icon-orange">👨‍🏫</div>
+                <div class="stat-details">
                     <small>Staff</small>
-                    <h5 class="fw-bold">25</h5>
+                    <h5>25</h5>
                 </div>
             </div>
         </div>
-
     </div>
 
-    <!-- TASK STATS -->
-    <div class="row mb-4">
-
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-icon">📝</div>
-                <div>
-                    <small>Total Tasks</small>
-                    <h5 class="fw-bold">18</h5>
+    <div class="row g-4">
+        <!-- RECENT ACTIVITIES -->
+        <div class="col-lg-8">
+            <div class="glass-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold mb-0">RECENT ACTIVITIES</h6>
+                    <span class="badge bg-light text-dark">View All</span>
                 </div>
+                <ul class="activity-list">
+                    <li>
+                        <div class="activity-dot"></div>
+                        <p>Staff <b>STF001</b> submitted marks for MCA Sem-1 <span class="time">2h ago</span></p>
+                    </li>
+                    <li>
+                        <div class="activity-dot"></div>
+                        <p>New student enrolled: <b>PRN 202500010001</b> <span class="time">5h ago</span></p>
+                    </li>
+                    <li>
+                        <div class="activity-dot"></div>
+                        <p>Task deadline extended for Subject: <b>DBMS</b> <span class="time">Yesterday</span></p>
+                    </li>
+                    <li>
+                        <div class="activity-dot"></div>
+                        <p>Batch <b>MCA-2025</b> created successfully <span class="time">2 days ago</span></p>
+                    </li>
+                </ul>
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-icon">⏳</div>
-                <div>
-                    <small>Pending</small>
-                    <h5 class="fw-bold">6</h5>
+        <!-- TASK STATS -->
+        <div class="col-lg-4">
+            <div class="glass-card h-100">
+                <h6 class="fw-bold mb-3">TASK SUMMARY</h6>
+                <div class="task-mini-stat">
+                    <span>Total Tasks</span>
+                    <span class="fw-bold">18</span>
                 </div>
+                <div class="task-mini-stat">
+                    <span class="text-warning">● Pending</span>
+                    <span class="fw-bold">6</span>
+                </div>
+                <div class="task-mini-stat mb-3">
+                    <span class="text-success">● Completed</span>
+                    <span class="fw-bold">12</span>
+                </div>
+                <a href="/Tasks/Assign" class="btn btn-dark w-100 btn-sm">Assign New Task</a>
             </div>
         </div>
-
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-icon">✔</div>
-                <div>
-                    <small>Completed</small>
-                    <h5 class="fw-bold">12</h5>
-                </div>
-            </div>
-        </div>
-
     </div>
-
-    <!-- RECENT ACTIVITIES -->
-    <h6 class="fw-bold mt-4">RECENT ACTIVITIES</h6>
-
-    <div class="task-card mb-4">
-        <ul>
-            <li>Staff STF001 submitted marks for MCA Sem-1</li>
-            <li>New student enrolled: PRN 202500010001</li>
-            <li>Task deadline extended for Subject: DBMS</li>
-            <li>Batch MCA-2025 created successfully</li>
-        </ul>
-    </div>
-
-    <!-- QUICK ACTIONS -->
-    <h6 class="fw-bold mt-3">QUICK ACTIONS</h6>
-
-    <div class="d-flex gap-3 mt-2">
-        <a href="/Admin/EnrollStudent" class="btn btn-outline-dark btn-sm">＋ Add Student</a>
-        <a href="/Admin/AddStaff" class="btn btn-outline-dark btn-sm">＋ Add Staff</a>
-        <a href="/Tasks/Assign" class="btn btn-outline-dark btn-sm">＋ Assign Task</a>
-    </div>
-
 </div>
 
 <style>
-    body {
-        background-color: #f7f7f7;
-        font-family: "Segoe UI", sans-serif;
+    :root {
+        --primary-color: #4361ee;
+        --bg-body: #f8f9fa;
+        --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
-    /* MAIN CONTENT */
+   
     .content {
-        margin-left: 220px;
-        padding: 20px;
+        margin-left:auto; /* Adjust based on your sidebar width */
+        padding: 30px;
     }
 
+    /* STAT CARDS */
     .stat-card {
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        padding: 15px;
-        background: #f0f0f0;
+        background: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 20px;
         display: flex;
         align-items: center;
         gap: 15px;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.2s ease;
     }
 
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
     .stat-icon {
-        width: 45px;
-        height: 45px;
-        border: 1px solid #000;
-        border-radius: 8px;
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
+        font-size: 22px;
     }
 
-    .task-card {
-        border: 1px solid #000;
-        border-radius: 12px;
-        padding: 15px;
+    /* Icon Variations */
+    .icon-blue {
+        background: #e7f0ff;
+    }
+
+    .icon-green {
+        background: #e2f7ed;
+    }
+
+    .icon-purple {
+        background: #f3e8ff;
+    }
+
+    .icon-orange {
+        background: #fff4e5;
+    }
+
+    .stat-details small {
+        color: #6c757d;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+    }
+
+    .stat-details h5 {
+        margin: 0;
+        font-weight: 700;
+        color: #2d3436;
+    }
+
+    /* ACTIVITY LIST */
+    .glass-card {
         background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+        border: 1px solid rgba(0,0,0,0.02);
     }
 
-    .overdue {
-        background: #f8c9c9;
-        border: 1px solid #cc0000;
-        padding: 15px;
-        border-radius: 10px;
+    .activity-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .activity-list li {
+            display: flex;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+            .activity-list li:last-child {
+                border-bottom: none;
+            }
+
+    .activity-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        margin-top: 7px;
+    }
+
+    .activity-list p {
+        margin: 0;
+        font-size: 14px;
+        color: #4a4a4a;
+    }
+
+    .time {
+        display: block;
+        font-size: 12px;
+        color: #adb5bd;
+    }
+
+    /* TASK MINI STATS */
+    .task-mini-stat {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        font-size: 14px;
+        border-bottom: 1px dashed #eee;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
     }
 </style>
