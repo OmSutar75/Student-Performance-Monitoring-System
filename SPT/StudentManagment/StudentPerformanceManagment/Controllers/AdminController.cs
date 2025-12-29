@@ -84,57 +84,6 @@ namespace IdentityDemo.Controllers
             return View();
         }
 
-        //// ENROLL STUDENT (GET)
-        //[HttpGet]
-        //public IActionResult EnrollStudent()
-        //{
-        //    return View();
-        //}
-
-        //// ENROLL STUDENT (POST)
-        //[HttpPost]
-        //public async Task<IActionResult> EnrollStudent(string name, string email, string mobile, int course, int groupid)
-        //{
-        //    string defaultPassword = "Student@123";
-
-        //    var user = new AppUser
-        //    {
-        //        UserName = email,
-        //        Email = email,
-        //        FullName = name,
-        //        EmailConfirmed = true
-        //    };
-
-        //    var result = await _userManager.CreateAsync(user, defaultPassword);
-
-        //    if (result.Succeeded)
-        //    {
-        //        await _userManager.AddToRoleAsync(user, "Student");
-
-        //        var student = new Student
-        //        {
-        //            Name = name,
-        //            Email = email,
-        //            AppUserId = user.Id,
-        //            MobileNo = mobile,
-        //            CourseId = course,
-        //            CourseGroupId = groupid
-
-        //        };
-
-        //        _context.Students.Add(student);
-        //        await _context.SaveChangesAsync();
-
-        //        return RedirectToAction("Dashboard", "Account");
-        //    }
-
-        //    foreach (var error in result.Errors)
-        //        ModelState.AddModelError("", error.Description);
-
-        //    return View();
-        //}
-
-
 
         #region Student
 
@@ -222,7 +171,7 @@ namespace IdentityDemo.Controllers
         public string GeneratePRN()
         {
             //int year = DateTime.Now.Year;
-            int year = 2026;
+            int year = DateTime.Now.Year;
             string basePart = year + "1000";
 
             var lastPRN = _context.Students
@@ -325,78 +274,7 @@ namespace IdentityDemo.Controllers
             return View(model);
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> EnrollStudent(StudentEnrollmentViewModel model, StudentEnrollmentViewModel1 model1)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        // Ensure all courses and groups are populated in the model if validation fails
-        //        model.Courses = _context.Courses.Select(c => new SelectListItem
-        //        {
-        //            Text = c.CourseName,
-        //            Value = c.CourseId.ToString()
-        //        }).ToList();
-
-        //        model.CourseGroups = _context.CourseGroups.Select(g => new SelectListItem
-        //        {
-        //            Text = g.GroupName,
-        //            Value = g.CourseGroupId.ToString()
-        //        }).ToList();
-
-        //        return View(model);
-        //    }
-
-        //    // Log to see model1 values
-        //    Debug.WriteLine($"Name: {model1.Name}, Email: {model1.Email}, Mobile: {model1.MobileNo}");
-
-        //    string defaultPassword = "Student@123";
-
-        //    var user = new AppUser
-        //    {
-        //        UserName = model1.Email,
-        //        Email = model1.Email,
-        //        FullName = model1.Name,
-        //        EmailConfirmed = true
-        //    };
-
-        //    var result = await _userManager.CreateAsync(user, defaultPassword);
-        //    if (!result.Succeeded)
-        //    {
-        //        // Log errors if user creation fails
-        //        foreach (var error in result.Errors)
-        //            ModelState.AddModelError("", error.Description);
-        //        return View(model);
-        //    }
-
-        //    await _userManager.AddToRoleAsync(user, "Student");
-
-        //    var student = new Student
-        //    {
-        //        PRN = GeneratePRN(),  // Ensure PRN generation is correct
-        //        Name = model1.Name,
-        //        Email = model1.Email,
-        //        AppUserId = user.Id,
-        //        MobileNo = model1.MobileNo,
-        //        CourseId = model.CourseId,
-        //        CourseGroupId = model.CourseGroupId,
-        //        ProfileImagePath = model1.ProfileImagePath
-        //    };
-
-        //    _context.Students.Add(student);
-
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();  // Ensure changes are committed to DB
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Log or handle exceptions during SaveChangesAsync
-        //        Debug.WriteLine("Error saving student: " + ex.Message);
-        //    }
-
-        //    return RedirectToAction("Dashboard", "Account");
-        //}
-
+        
 
 
         #endregion
