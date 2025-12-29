@@ -1,0 +1,62 @@
+﻿@model StudentPerformanceManagment.Models.CourseGroup
+
+@{
+    ViewData["Title"] = "Edit Course Group";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-semibold text-primary">
+            <i class="bi bi-pencil-square"></i> Edit Course Group
+        </h4>
+
+        <a asp-action="CourseGroups" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <!-- Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+
+                    <form asp-action="EditCourseGroup" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" asp-for="CourseGroupId" />
+
+                        <!-- Group Name -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Group Name</label>
+                            <input asp-for="GroupName" class="form-control" />
+                        </div>
+
+                        <!-- Course -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Course</label>
+                            <select asp-for="CourseId"
+                                    asp-items="ViewBag.Courses"
+                                    class="form-select">
+                                <option value="">-- Select Course --</option>
+                            </select>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-save"></i> Update
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

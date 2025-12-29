@@ -44,46 +44,53 @@
     </div>
     
 
-    <!-- STATS CARDS -->
-    <div class="row g-4 mb-4">
-        <!-- Added g-4 for consistent gutter spacing -->
-        <div class="col-md-4">
-            <div class="stat-card">
-                <div class="stat-icon-wrapper">
-                    <i class="bi bi-book"></i> <!-- Using Bootstrap Icons for a cleaner look -->
-                    <span>📚</span>
-                </div>
-                <div>
-                    <p class="stat-label">Subjects</p>
-                    <h5 class="stat-value fw-bold">@Model.SubjectCount</h5>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="stat-card">
-                <div class="stat-icon-wrapper">
-                    <span>🏆</span>
-                </div>
-                <div>
-                    <p class="stat-label">Group Name</p>
-                    <h5 class="stat-value fw-bold">@Model.CourseGroupName</h5>
+    <div class="row g-3 mb-4">
+        <!-- Subjects -->
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm p-3 bg-white rounded-3">
+                <div class="d-flex align-items-center">
+                    <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-circle me-3">
+                        <i class="bi bi-journal-text fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Total Subjects</small>
+                        <h5 class="fw-bold mb-0">@Model.SubjectCount</h5>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="stat-card">
-                <div class="stat-icon-wrapper">
-                    <span>📈</span>
+        <!-- Group Name -->
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm p-3 bg-white rounded-3">
+                <div class="d-flex align-items-center">
+                    <div class="p-3 bg-success bg-opacity-10 text-success rounded-circle me-3">
+                        <i class="bi bi-people fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Batch Group</small>
+                        <h5 class="fw-bold mb-0">@Model.CourseGroupName</h5>
+                    </div>
                 </div>
-                <div>
-                    <p class="stat-label">Course Rank</p>
-                    <h5 class="stat-value fw-bold">102</h5>
+            </div>
+        </div>
+
+        <!-- Performance -->
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm p-3 bg-white rounded-3">
+                <div class="d-flex align-items-center">
+                    <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-circle me-3">
+                        <i class="bi bi-graph-up fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Overall Rank</small>
+                        <h5 class="fw-bold mb-0">53</h5>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- PERFORMANCE CARD -->
     <a href="/Student/Performance" class="text-decoration-none">
@@ -133,17 +140,24 @@
         height: 100%;
     }
 
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    .card {
+        transition: transform 0.2s;
+        border: 1px solid #f0f0f0 !important;
+    }
+
+        .card:hover {
+            transform: translateY(-3px);
         }
 
-    .stat-icon-wrapper {
-        width: 56px;
-        height: 56px;
-        background-color: var(--light-blue);
-        color: var(--primary-blue);
-        border-radius: 12px;
+    .bg-opacity-10 {
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
+
+    .stat-icon {
+        width: 45px;
+        height: 45px;
+        border: 1px solid #000;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;

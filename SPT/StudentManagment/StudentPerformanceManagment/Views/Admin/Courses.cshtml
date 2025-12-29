@@ -1,0 +1,104 @@
+﻿@model IEnumerable<StudentPerformanceManagment.Models.Course>
+
+@{
+    ViewData["Title"] = "Courses";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-semibold">Courses</h4>
+
+        <a asp-action="AddCourses" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add Course
+        </a>
+    </div>
+
+    <!-- Courses Table -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Course Name</th>
+                        <th>Description</th>
+                        <th>Duration</th>
+                        <th>Fees</th>
+                        <th class="text-center">Students Enrolled</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{
+                        int sr = 1;
+                    }
+
+                    @foreach (var course in Model)
+                    {
+                        <tr>
+                            <td>@sr</td>
+                            <td>@course.CourseName</td>
+                            <td>@course.Description</td>
+                            <td>@course.Duration</td>
+                            <td>₹@course.Fees</td>
+
+                            <td class="text-center">
+                                <a asp-controller="Admin"
+                                   asp-action="CourseStudents"
+                                   asp-route-id="@course.CourseId"
+                                   class="btn btn-sm btn-outline-info">
+                                    <i class="bi bi-people"></i> View
+                                </a>
+                            </td>
+
+                            <td class="text-center">
+
+                                <!-- EDIT -->
+                                <a asp-controller="Admin"
+                                   asp-action="EditCourse"
+                                   asp-route-id="@course.CourseId"
+                                   class="btn btn-sm btn-outline-warning me-1">
+                                    Edit
+                                </a>
+                                <!-- DElETE -->
+                                @* <form asp-controller="Admin"
+                                      asp-action="DeleteCourse"
+                                      asp-route-id="@course.CourseId"
+                                      method="post"
+                                      class="d-inline">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Are you sure you want to delete this course?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form> *@
+
+
+                            </td>
+                        </tr>
+
+                        sr++;
+                    }
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No courses available.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>

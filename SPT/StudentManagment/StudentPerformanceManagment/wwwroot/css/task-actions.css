@@ -1,0 +1,21 @@
+﻿namespace StudentPerformanceManagment.wwwroot.css {
+    public class task_actions {
+        /* Applies ONLY to task action buttons */
+        .task-action-cell {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+            .task-action-cell .task-action-btn {
+                width: 36px;
+                height: 36px;
+                padding: 0;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 8px;
+                font-size: 15px;
+            }
+    }
+}
