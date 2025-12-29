@@ -9,7 +9,7 @@ using StudentPerformanceManagement.Models;
 using StudentPerformanceManagment;
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace IdentityDemo.Controllers
 {
@@ -210,17 +210,9 @@ namespace IdentityDemo.Controllers
                     Text = c.CourseName
                 }).ToList(),
 
-                CourseGroups = _context.CourseGroups.Select(g => new SelectListItem
-                {
-                    Value = g.CourseGroupId.ToString(),
-                    Text = g.GroupName
-                }).ToList(),
-
-                Subjects = _context.Subjects.Select(s => new SelectListItem
-                {
-                    Value = s.SubjectId.ToString(),
-                    Text = s.SubjectName
-                }).ToList(),
+                // Empty initially - populated via AJAX
+                CourseGroups = new List<SelectListItem>(),
+                Subjects = new List<SelectListItem>(),
 
                 Staffs = _context.Staffs.Select(st => new SelectListItem
                 {
@@ -297,6 +289,7 @@ namespace IdentityDemo.Controllers
             return Json(subjects);
         }
 
+        [HttpGet]
         public IActionResult EditTask(int id)
         {
             var t = _context.Tasks.FirstOrDefault(x => x.TasksId == id);
@@ -313,16 +306,25 @@ namespace IdentityDemo.Controllers
                 StaffId = t.StaffId,
                 ValidFrom = t.ValidFrom,
                 ValidTo = t.ValidTo,
+                Status = t.Status,
 
+                // All courses
                 Courses = _context.Courses.Select(c =>
                     new SelectListItem(c.CourseName, c.CourseId.ToString())).ToList(),
 
-                CourseGroups = _context.CourseGroups.Select(g =>
-                    new SelectListItem(g.GroupName, g.CourseGroupId.ToString())).ToList(),
+                // Filter CourseGroups by task's CourseId
+                CourseGroups = _context.CourseGroups
+                    .Where(g => g.CourseId == t.CourseId)
+                    .Select(g => new SelectListItem(g.GroupName, g.CourseGroupId.ToString()))
+                    .ToList(),
 
-                Subjects = _context.Subjects.Select(s =>
-                    new SelectListItem(s.SubjectName, s.SubjectId.ToString())).ToList(),
+                // Filter Subjects by task's CourseId
+                Subjects = _context.Subjects
+                    .Where(s => s.CourseId == t.CourseId)
+                    .Select(s => new SelectListItem(s.SubjectName, s.SubjectId.ToString()))
+                    .ToList(),
 
+                // All staff
                 Staffs = _context.Staffs.Select(s =>
                     new SelectListItem(s.Name, s.StaffId.ToString())).ToList()
             };
@@ -330,13 +332,10 @@ namespace IdentityDemo.Controllers
             return View(vm);
         }
 
-
-
-
         [HttpPost]
         public async Task<IActionResult> EditTask(TasksViewModel vm)
         {
-            var task = _context.Tasks.FirstOrDefault(t => t.TasksId == vm.TasksId);
+            var task = await _context.Tasks.FindAsync(vm.TasksId);
             if (task == null) return NotFound();
 
             task.TasksTitle = vm.TasksTitle;
@@ -347,8 +346,11 @@ namespace IdentityDemo.Controllers
             task.StaffId = vm.StaffId;
             task.ValidFrom = vm.ValidFrom;
             task.ValidTo = vm.ValidTo;
+            task.Status = vm.Status;
 
+            _context.Tasks.Update(task);
             await _context.SaveChangesAsync();
+
             return RedirectToAction("Tasks");
         }
 
