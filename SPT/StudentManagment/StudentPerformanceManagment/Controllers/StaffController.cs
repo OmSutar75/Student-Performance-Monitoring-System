@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -26,9 +26,8 @@ namespace StudentPerformanceManagment.Controllers
         }
         public async Task<IActionResult> Dashboard()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userManager.FindByIdAsync(userId);
 
             var myTasks = await _context.Tasks
@@ -40,37 +39,15 @@ namespace StudentPerformanceManagment.Controllers
 
             var vm = new StaffDashViewModel
             {
-                // ✅ Identity user id goes here
-                AppUserId = userId!,
 
-                StaffName = user?.UserName ?? "",
-
-                TotalTasks = myTasks.Count,
-                PendingTasks = myTasks.Count(t => t.Status == Status.Pending),
-                CompletedTasks = myTasks.Count(t => t.Status == Status.Completed),
-
-                Tasks = myTasks.Select(t => new TasksViewModel
-                {
-                    TasksId = t.TasksId,
-                    TasksTitle = t.TasksTitle,
-                    TasksDescription = t.TasksDescription,
-
-                    CourseName = t.Course.CourseName,
-                    SubjectName = t.Subject.SubjectName,
-                    GroupName = t.CourseGroup.GroupName,
-
-                    ValidFrom = t.ValidFrom,
-                    ValidTo = t.ValidTo,
-
-                    // ✅ enum → string
-                    Status = t.Status
-                }).ToList()
+                // StaffDashViewModel properties
+                StaffId = userId,
+                StaffName = user?.UserName,
+                TaskCount = myTasks.Count,
+                Tasks = myTasks
             };
-
-
-            return View(vm);
+            return View("Dashboard", vm);   // YAHAN StaffDashViewModel hi return karo
         }
-
 
 
 
@@ -186,8 +163,6 @@ namespace StudentPerformanceManagment.Controllers
         public async Task<IActionResult> MyTasks()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
-
             var user = await _userManager.FindByIdAsync(userId);
 
             var myTasks = await _context.Tasks
@@ -199,37 +174,16 @@ namespace StudentPerformanceManagment.Controllers
 
             var vm = new StaffDashViewModel
             {
-                // ✅ Identity user id goes here
-                AppUserId = userId!,
 
-                StaffName = user?.UserName ?? "",
-
-                TotalTasks = myTasks.Count,
-                PendingTasks = myTasks.Count(t => t.Status == Status.Pending),
-                CompletedTasks = myTasks.Count(t => t.Status == Status.Completed),
-
-                Tasks = myTasks.Select(t => new TasksViewModel
-                {
-                    TasksId = t.TasksId,
-                    TasksTitle = t.TasksTitle,
-                    TasksDescription = t.TasksDescription,
-
-                    CourseName = t.Course.CourseName,
-                    SubjectName = t.Subject.SubjectName,
-                    GroupName = t.CourseGroup.GroupName,
-
-                    ValidFrom = t.ValidFrom,
-                    ValidTo = t.ValidTo,
-
-                    // ✅ enum → string
-                    Status = t.Status
-                }).ToList()
+                // StaffDashViewModel properties
+                StaffId = userId,
+                StaffName = user?.UserName,
+                TaskCount = myTasks.Count,
+                Tasks = myTasks
             };
 
-
-            return View(vm); // MyTasks.cshtml
+            return View("MyTasks", vm);  // ya sirf return View(vm);
         }
-
 
     }
 }
