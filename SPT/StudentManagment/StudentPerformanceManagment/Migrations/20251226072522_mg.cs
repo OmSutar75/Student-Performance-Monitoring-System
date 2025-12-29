@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace StudentPerformanceManagment.Migrations
 {
     /// <inheritdoc />
-    public partial class Updatetable : Migration
+    public partial class mg : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -284,6 +284,9 @@ namespace StudentPerformanceManagment.Migrations
                 {
                     TasksId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    TasksTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TasksDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     StaffId = table.Column<int>(type: "int", nullable: false),
                     CourseId = table.Column<int>(type: "int", nullable: false),
                     SubjectId = table.Column<int>(type: "int", nullable: false),
@@ -327,6 +330,7 @@ namespace StudentPerformanceManagment.Migrations
                     MarkId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StudentId = table.Column<int>(type: "int", nullable: false),
+                    TasksId = table.Column<int>(type: "int", nullable: false),
                     SubjectId = table.Column<int>(type: "int", nullable: false),
                     TheoryMarks = table.Column<int>(type: "int", nullable: false),
                     LabMarks = table.Column<int>(type: "int", nullable: false),
@@ -347,6 +351,12 @@ namespace StudentPerformanceManagment.Migrations
                         principalTable: "Subjects",
                         principalColumn: "SubjectId",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Marks_Tasks_TasksId",
+                        column: x => x.TasksId,
+                        principalTable: "Tasks",
+                        principalColumn: "TasksId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -401,8 +411,18 @@ namespace StudentPerformanceManagment.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Marks_SubjectId",
                 table: "Marks",
-                column: "SubjectId",
+                column: "SubjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Marks_SubjectId_StudentId",
+                table: "Marks",
+                columns: new[] { "SubjectId", "StudentId" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Marks_TasksId",
+                table: "Marks",
+                column: "TasksId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Staffs_AppUserId",
@@ -472,22 +492,22 @@ namespace StudentPerformanceManagment.Migrations
                 name: "Marks");
 
             migrationBuilder.DropTable(
-                name: "Tasks");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Students");
 
             migrationBuilder.DropTable(
+                name: "Tasks");
+
+            migrationBuilder.DropTable(
+                name: "CourseGroups");
+
+            migrationBuilder.DropTable(
                 name: "Staffs");
 
             migrationBuilder.DropTable(
                 name: "Subjects");
-
-            migrationBuilder.DropTable(
-                name: "CourseGroups");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
