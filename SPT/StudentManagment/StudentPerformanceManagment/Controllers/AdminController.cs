@@ -397,6 +397,8 @@ namespace IdentityDemo.Controllers
         {
             string defaultPassword = "Student@123";
 
+            string defaultprofileimage = "/uploads/StudProfile.jpg";
+
             var user = new AppUser
             {
                 UserName = email,
@@ -418,7 +420,8 @@ namespace IdentityDemo.Controllers
                     AppUserId = user.Id,
                     MobileNo = mobile,
                     CourseId = course,
-                    CourseGroupId = groupid
+                    CourseGroupId = groupid,
+                    ProfileImagePath= defaultprofileimage
 
                 };
 

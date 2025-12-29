@@ -61,7 +61,8 @@ namespace StudentPerformanceManagement.Controllers
                 CourseName = student.Course?.CourseName ?? "N/A",
                 SubjectCount = subjectCount,
                 CourseGroupName = student.CourseGroup?.GroupName ?? "N/A",
-                MobileNo = student.MobileNo
+                MobileNo = student.MobileNo,
+                ProfileImage=student.ProfileImagePath
             };
 
             return stud;
@@ -106,13 +107,70 @@ namespace StudentPerformanceManagement.Controllers
             return RedirectToAction("Dashboard");
         }
 
+        private async Task<string> SaveProfileImageAsync(IFormFile? profileImage)
+        {
+            if (profileImage == null || profileImage.Length == 0)
+                return string.Empty;
 
-     
+            // Generate unique file name
+            var fileName = $"{Guid.NewGuid()}_{profileImage.FileName}";
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", fileName);
+
+            // Ensure uploads folder exists
+            Directory.CreateDirectory(Path.GetDirectoryName(uploadPath)!);
+
+            // Save file
+            using (var stream = new FileStream(uploadPath, FileMode.Create))
+            {
+                await profileImage.CopyToAsync(stream);
+            }
+
+            // Return relative path to store in DB
+            return $"/uploads/{fileName}";
+
+        }
+
+        public async Task<IActionResult> ProfileImage()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeProfileImage(IFormFile profileImage)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+   
+            if (profileImage != null && profileImage.Length > 0)
+            {
+
+                string imagePath = await SaveProfileImageAsync(profileImage);
+
+                var student = await _context.Students.FirstOrDefaultAsync(s => s.Email == user.Email);
+                if (student != null)
+                {
+                    student.ProfileImagePath = imagePath;
+                    _context.Update(student);
+                    await _context.SaveChangesAsync();
+
+                    TempData["Success"] = "Profile image updated successfully!";
+                    return RedirectToAction("Dashboard");
+                }
+            }
+
+            ModelState.AddModelError("", "Please select a valid image file.");
+            return View();
+        }
+
+
+    
         public IActionResult ChangePassword()
         {
             
             return View(new PasswordViewModel());
         }
+
 
     
         [HttpPost]

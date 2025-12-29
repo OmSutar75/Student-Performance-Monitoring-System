@@ -1,0 +1,16 @@
+﻿@model StudentPerformanceManagment.Models.ViewModel.StudentViewModel
+
+<form asp-action="ChangeProfileImage" method="post" enctype="multipart/form-data">
+    <div class="glass-card p-4">
+        <h5 class="mb-4">Change Profile Picture</h5>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Upload New Image</label>
+            <input name="profileImage" type="file" class="form-control" accept="image/*" />
+            <small class="text-muted">Recommended size: 200x200px (JPG, PNG)</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update Image</button>
+        <a asp-action="Dashboard" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
