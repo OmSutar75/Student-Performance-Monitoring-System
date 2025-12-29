@@ -1,0 +1,100 @@
+﻿
+@model StudentPerformanceManagment.Models.ViewModel.SubjectViewModel;
+
+@{
+    ViewData["Title"] = "Edit Subject ";
+    Layout = "_layout";
+}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-semibold text-primary">
+            <i class="bi bi-pencil-square"></i> Edit Subject
+        </h4>
+
+        <a asp-action="Subjects" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <!-- Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+
+                    <form asp-action="EditSubject" method="post">
+                        
+
+                        <!-- Hidden Id -->
+                        <input type="hidden" asp-for="SubjectId" />
+
+                        <!-- Course Name -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Course</label>
+                            <select asp-for="CourseId"
+                                    asp-items="Model.Courses"
+                                    class="form-select">
+                                <option value="">-- Select Course --</option>
+                            </select>
+                            <span asp-validation-for="CourseId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Subject Name</label>
+                            <input asp-for="SubjectName" class="form-control" required />
+                        </div>
+
+                        <!-- Subject Max Marks -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Max Theory Marks</label>
+                            <input asp-for="MaxTheoryMarks" class="form-control" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Max Lab Marks</label>
+                            <input asp-for="MaxLabMarks" class="form-control" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Max Internal Marks</label>
+                            <input asp-for="MaxInternalMarks" class="form-control" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Total Passing Percentage Required </label>
+                            <input asp-for="PassingPercentTotal" class="form-control" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Passing Percentage for each Component</label>
+                            <input asp-for="PassingPercentEachComponent" class="form-control" required />
+                        </div>
+
+                        
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-save"></i> Update
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Validation Errors -->
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <div class="alert alert-danger py-1 px-2 mt-2 small">
+                            @error.ErrorMessage
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

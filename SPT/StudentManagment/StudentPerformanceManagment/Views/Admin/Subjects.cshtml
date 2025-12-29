@@ -1,0 +1,87 @@
+﻿@model IEnumerable<StudentPerformanceManagment.Models.Subject>
+
+@{
+    ViewData["Title"] = "Student";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-semibold">Subject</h4>
+
+        <a asp-action="AddSubjects" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add Subject
+        </a>
+    </div>
+
+    <!-- Courses Table -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Subject Name </th>
+                        <th>Max Theory Marks</th>
+                        <th>Max Lab Marks</th>
+                        <th>Max Internal Marks</th>
+                        <th>Course</th>
+                        <th>Action</th>
+                        
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{
+                        int sr = 1;
+                    }
+
+                    @foreach (var subject in Model)
+                    {
+                        <tr>
+                            <td>@sr</td>
+                            <td>@subject.SubjectName</td>
+                            <td>@subject.MaxTheoryMarks</td>
+                            <td>@subject.MaxLabMarks</td>
+                            <td>@subject.MaxInternalMarks</td>
+                            <td>@subject.Course.CourseName</td>
+
+
+                            
+                           
+
+                            <td class="text-center">
+
+                                <!-- EDIT -->
+                                <a asp-controller="Admin"
+                                   asp-action="EditSubject"
+                                   asp-route-id="@subject.SubjectId"
+                                   class="btn btn-sm btn-outline-warning me-1">
+                                    Edit
+                                </a>
+                                
+
+
+                            </td>
+                        </tr>
+
+                        sr++;
+                    }
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No Subject available.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>

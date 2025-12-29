@@ -447,7 +447,7 @@ namespace IdentityDemo.Controllers
                 _context.Courses.Add(course);
                 _context.SaveChanges();
                 TempData["Success"] = "Course Add Successfully";
-                return RedirectToAction("Dashboard");
+                return RedirectToAction("Courses");
             }
             TempData["Error"] = "Can't Add Course , Course Already Present ";
             return RedirectToAction("AddCourses");
@@ -590,6 +590,119 @@ namespace IdentityDemo.Controllers
 
             return RedirectToAction("CourseGroups");
         }
+
+
+
+
+
+
+
+        public IActionResult Subjects()
+        {
+            var subject = _context.Subjects.Include(s=>s.Course).ToList();
+            return View(subject);
+        }
+        public IActionResult AddSubjects()
+        {
+            SubjectViewModel mv = new SubjectViewModel()
+            {
+                Courses = _context.Courses.Select(
+                    c => new SelectListItem()
+                    {
+                        Text = c.CourseName,
+                        Value = c.CourseId.ToString()
+                    }).ToList()
+
+
+            };
+            return View(mv);
+        }
+
+
+        // ADD COURSE (POST)
+        [HttpPost]
+
+        public IActionResult AddSubjects(Subject subject)
+        {
+            
+
+            Subject sub= _context.Subjects.Where(s => s.SubjectName == subject.SubjectName ).FirstOrDefault();
+
+            
+            if (sub == null)
+            {
+                subject.Course = _context.Courses.Find(subject.CourseId);
+                _context.Subjects.Add(subject);
+                _context.SaveChanges();
+                TempData["Success"] = "Subject Add Successfully";
+                return RedirectToAction("Subjects");
+            }
+            TempData["Error"] = "Can't Add Course , Course Already Present ";
+            return RedirectToAction("AddSubjects");
+        }
+
+        [HttpGet]
+        public IActionResult EditSubject(int id)
+        {
+            
+            var subjects = _context.Subjects.Include(c=>c.Course).Where(s => s.SubjectId == id)
+                .Select(s => new SubjectViewModel
+                {
+
+                    SubjectId = s.SubjectId,
+                    SubjectName = s.SubjectName,
+                    CourseId = s.CourseId,
+                    Courses = _context.Courses.Select(
+                    c => new SelectListItem()
+                    {
+                        Text = c.CourseName,
+                        Value = c.CourseId.ToString()
+                    }).ToList(),
+
+                    MaxTheoryMarks = s.MaxTheoryMarks,
+                    MaxLabMarks = s.MaxLabMarks,
+                    MaxInternalMarks = s.MaxInternalMarks,
+                    PassingPercentEachComponent = s.PassingPercentEachComponent,
+                    PassingPercentTotal = s.PassingPercentTotal
+
+
+                }).FirstOrDefault();
+
+
+
+            if (subjects == null)
+                return NotFound();
+
+            return View(subjects);
+        }
+
+        [HttpPost]
+
+        public IActionResult EditSubject(SubjectViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var subject = _context.Subjects.Include(c=>c.Course).FirstOrDefault(s=>s.SubjectId == model.SubjectId);
+
+            if (subject == null)
+                return NotFound();
+
+            subject.SubjectName= model.SubjectName;
+            subject.MaxTheoryMarks = model.MaxTheoryMarks;
+            subject.MaxLabMarks = model.MaxLabMarks;
+            subject.MaxInternalMarks = model.MaxInternalMarks;
+            subject.PassingPercentEachComponent = model.PassingPercentEachComponent;
+            subject.PassingPercentTotal = model.PassingPercentTotal;
+            subject.Course = _context.Courses.Find(model.CourseId);
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Subjects");
+        }
+
+
+
 
         #endregion
 
