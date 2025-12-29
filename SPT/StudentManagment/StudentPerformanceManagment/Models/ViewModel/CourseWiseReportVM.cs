@@ -11,6 +11,7 @@ namespace StudentPerformanceManagment.Models.ViewModel
         public List<string> SubjectNames { get; set; }
         public List<StudentRankingRowVM> RankingRows { get; set; }
         public int StudentId { get; set; }
+       public List<SelectListItem> Courses { get; set; }
 
     }
 

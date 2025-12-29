@@ -1,0 +1,52 @@
+﻿@model StudentPerformanceManagment.Models.ViewModel.CourseWiseReportVM
+
+<form asp-action="CourseWiseReport" method="post" class="row g-3">
+    <div class="col-md-4">
+        <select asp-for="CourseId" asp-items="Model.Courses" class="form-select" required>
+            <option value="">-- Select Course --</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Show Ranking</button>
+    </div>
+</form>
+
+@if (Model.RankingRows != null && Model.RankingRows.Any())
+{
+    <div class="alert alert-info fw-semibold">
+        Max Marks Per Subject: Theory 40 | Lab 40 | Internal 20
+        <br />
+        Passing Criteria: 40% in each component
+    </div>
+
+    <table class="table table-bordered mt-3">
+        <thead class="table-light">
+            <tr>
+                <th>Rank</th>
+                <th>PRN</th>
+                <th>Name</th>
+                <th>Total Marks</th>
+                <th>Percentage</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.RankingRows)
+            {
+                <tr class="@(item.ResultStatus == "FAIL" ? "table-danger" : "")">
+                    <td>@item.Rank</td>
+                    <td>@item.PRN</td>
+                    <td>@item.StudentName</td>
+                    <td>@item.TotalMarks</td>
+                    <td>@item.Percentage %</td>
+                    <td>
+                        <span class="badge @(item.ResultStatus == "PASS" ? "bg-success" : "bg-danger")">
+                            @item.ResultStatus
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
