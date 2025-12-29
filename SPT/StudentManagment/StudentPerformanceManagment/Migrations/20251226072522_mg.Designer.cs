@@ -12,8 +12,8 @@ using StudentPerformanceManagment;
 namespace StudentPerformanceManagment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251224032214_removedUniqueIndexofmarkandsubjectId")]
-    partial class removedUniqueIndexofmarkandsubjectId
+    [Migration("20251226072522_mg")]
+    partial class mg
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -380,6 +380,9 @@ namespace StudentPerformanceManagment.Migrations
                     b.Property<int>("SubjectId")
                         .HasColumnType("int");
 
+                    b.Property<int>("TasksId")
+                        .HasColumnType("int");
+
                     b.Property<int>("TheoryMarks")
                         .HasColumnType("int");
 
@@ -388,6 +391,11 @@ namespace StudentPerformanceManagment.Migrations
                     b.HasIndex("StudentId");
 
                     b.HasIndex("SubjectId");
+
+                    b.HasIndex("TasksId");
+
+                    b.HasIndex("SubjectId", "StudentId")
+                        .IsUnique();
 
                     b.ToTable("Marks");
                 });
@@ -447,8 +455,19 @@ namespace StudentPerformanceManagment.Migrations
                     b.Property<int>("StaffId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<int>("SubjectId")
                         .HasColumnType("int");
+
+                    b.Property<string>("TasksDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TasksTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ValidFrom")
                         .HasColumnType("datetime2");
@@ -578,14 +597,22 @@ namespace StudentPerformanceManagment.Migrations
                         .IsRequired();
 
                     b.HasOne("StudentPerformanceManagment.Models.Subject", "Subject")
-                        .WithOne("Mark")
-                        .HasForeignKey("StudentPerformanceManagment.Models.Mark", "SubjectId")
+                        .WithMany("Mark")
+                        .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StudentPerformanceManagment.Models.Tasks", "Tasks")
+                        .WithMany()
+                        .HasForeignKey("TasksId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Student");
 
                     b.Navigation("Subject");
+
+                    b.Navigation("Tasks");
                 });
 
             modelBuilder.Entity("StudentPerformanceManagment.Models.Subject", b =>
@@ -660,8 +687,7 @@ namespace StudentPerformanceManagment.Migrations
 
             modelBuilder.Entity("StudentPerformanceManagment.Models.Subject", b =>
                 {
-                    b.Navigation("Mark")
-                        .IsRequired();
+                    b.Navigation("Mark");
                 });
 #pragma warning restore 612, 618
         }

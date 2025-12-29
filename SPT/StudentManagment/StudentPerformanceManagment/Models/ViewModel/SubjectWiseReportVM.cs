@@ -22,8 +22,12 @@ namespace StudentPerformanceManagment.Models.ViewModel
         public int LabMarks { get; set; }
         public int InternalMarks { get; set; }
 
-        public int TotalMarks { get; set; }      // = 300
-        public int ObtainedMarks { get; set; }   // Theory+Lab+Internal
-        public string ResultStatus { get; set; } // Pass / Fail
+        public int TotalMarks { get; set; }
+        public int ObtainedMarks { get; set; }
+
+        public string FailedIn { get; set; }
+
+        public string ResultStatus { get; set; }
+        public int Rank { get; set; }
     }
 }

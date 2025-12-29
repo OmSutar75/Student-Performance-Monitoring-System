@@ -8,7 +8,7 @@ using StudentPerformanceManagement.ViewModel;
 using StudentPerformanceManagment;
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
-using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityDemo.Controllers
 {
