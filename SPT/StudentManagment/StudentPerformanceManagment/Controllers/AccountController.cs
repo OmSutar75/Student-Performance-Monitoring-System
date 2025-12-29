@@ -50,12 +50,18 @@ namespace IdentityDemo.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             if (await _userManager.IsInRoleAsync(user, "Admin"))
+<<<<<<< HEAD
                 return RedirectToAction("Dashboard", "Admin"); 
+=======
+
+                return RedirectToAction("Dashboard", "Admin"); ;
+>>>>>>> d76ab170f51a2d1ffd356b57cdc2dfaab74a1799
 
             if (await _userManager.IsInRoleAsync(user, "Staff"))
                 return RedirectToAction("Dashboard", "Staff");
 
-            return RedirectToAction("Dashboard", "Student");
+               return RedirectToAction("Dashboard", "Student"); 
+
 
 
         }
@@ -66,8 +72,12 @@ namespace IdentityDemo.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
         }
+
     }
 }
 
 
+
+
+    
 
