@@ -16,6 +16,7 @@ namespace StudentPerformanceManagment.Models.ViewModel
         public string CourseGroupName { get; set; }
 
         public string ProfileImage { get; set; }
+        public int Rank { get; set; }
 
     }
 }
