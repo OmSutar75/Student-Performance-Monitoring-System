@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="../../../../GitUpdate/IIT-08-C-DotNet/Project/EmailService/EmailService.csproj" />
+  <Project Path="EmailService/EmailService.csproj" Id="66393d31-f6a2-4382-b016-0ace6b112cf8" />
   <Project Path="StudentPerformanceManagment/StudentPerformanceManagment.csproj" Id="7c236cfc-2498-4449-a8d6-a812c956eccb" />
 </Solution>
