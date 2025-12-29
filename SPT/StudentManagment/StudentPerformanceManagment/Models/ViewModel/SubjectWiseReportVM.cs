@@ -8,8 +8,6 @@ namespace StudentPerformanceManagment.Models.ViewModel
         public int SubjectId { get; set; }
 
         public List<SelectListItem> Courses { get; set; }
-        public List<SelectListItem> Subjects { get; set; }
-
         public List<StudentMarksRowVM> ReportRows { get; set; }
     }
 

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StudentPerformanceManagment.Models;
+using EmailService;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace StudentPerformanceManagment
 {
@@ -19,6 +21,11 @@ namespace StudentPerformanceManagment
 
             builder.Services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("smtp"));
+
+            builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
+
 
             var app = builder.Build();
 

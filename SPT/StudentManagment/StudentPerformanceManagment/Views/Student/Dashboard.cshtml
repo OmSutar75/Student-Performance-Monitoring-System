@@ -21,11 +21,11 @@
         <div class="card-body">
             <div class="row align-items-center">
 
-                <div class="col-md-3 text-center">
-                    <img src="https://via.placeholder.com/120"
-                         class="rounded-circle border mb-3"
-                         alt="Profile Photo">
-                </div>
+                <img src="@(string.IsNullOrEmpty(@Model.ProfileImage) ? "/images/default-avatar.png" : @Model.ProfileImage)"
+                     class="rounded-circle img-thumbnail"
+                     style="width: 100px; height: 100px; object-fit: cover;"
+                     alt="Profile Image">
+
 
                 <div class="col-md-9">
                     <h5 class="mb-2">@Model.Name</h5>
