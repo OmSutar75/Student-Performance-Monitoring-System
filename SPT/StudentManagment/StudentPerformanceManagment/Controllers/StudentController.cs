@@ -394,19 +394,20 @@ namespace StudentPerformanceManagement.Controllers
             .ToList();
 
             // 6. Assign ranks with ties
-            int rank = 1, prev = -1, skip = 0;
+            int rank = 0, prev = -1; //skip = 0;
             foreach (var item in rankingList)
             {
                 if (item.TotalMarks == prev)
                 {
                     item.Rank = rank;
-                    skip++;
+                    //skip++;
                 }
                 else
                 {
-                    rank += skip;
+                    //rank += skip;
+                    rank++;
                     item.Rank = rank;
-                    skip = 1;
+                    //skip = 1;
                     prev = item.TotalMarks;
                 }
             }
