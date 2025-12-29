@@ -579,21 +579,22 @@ namespace IdentityDemo.Controllers
 
 
         }
-            [HttpPost]
-            public IActionResult AddCourseGroup(AddCourseGroupMV mv)
+        [HttpPost]
+        public IActionResult AddCourseGroup(AddCourseGroupMV mv)
+        {
+            for (int i = 0; i < mv.GroupCount; i++)
             {
+                var groups = new CourseGroup()
+                {
+                    CourseId = mv.CourseId,
+                    GroupName = mv.GroupPrefix+ (i+1).ToString()
+                };
 
-            var groups = new CourseGroup()
-            {
-                CourseId = mv.CourseId,
-                GroupName = mv.CourseGroupName
-            };
-
-            _context.CourseGroups.Add(groups);
-            _context.SaveChanges();
-            return RedirectToAction("CourseGroups");
+                _context.CourseGroups.Add(groups);
             }
-
+                _context.SaveChanges();
+                return RedirectToAction("CourseGroups");
+        }
 
         [HttpGet]
         public IActionResult EditCourseGroup(int id)

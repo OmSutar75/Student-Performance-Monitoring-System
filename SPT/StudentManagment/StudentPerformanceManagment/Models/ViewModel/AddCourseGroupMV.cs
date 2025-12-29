@@ -13,6 +13,9 @@ namespace StudentPerformanceManagment.Models.ViewModel
             [Required]
             public int CourseId { get; set; }
 
+            public int GroupCount { get; set; }
+            public string GroupPrefix {  get; set; }
+
             public List<SelectListItem> Courses { get; set; }
         
     }
