@@ -214,7 +214,7 @@ namespace StudentPerformanceManagement.Controllers
                     Internal = m.InternalMarks,
                     Total = m.TotalObtained,
                     Status = m.ResultStatus == "Pass" ? true : false,
-                    MaxMarks = m.Subject.MaxLabMarks + m.Subject.MaxLabMarks + m.Subject.MaxLabMarks,
+                    MaxMarks = m.Subject.MaxLabMarks + m.Subject.MaxLabMarks + m.Subject.MaxInternalMarks,
                     // FailedIn = m.FailedIn(),
                 }).ToList()
             };
@@ -320,7 +320,7 @@ namespace StudentPerformanceManagement.Controllers
 
         #endregion
 
-        #region Student Course-Wise Ranking Report (Identity Based)
+        #region Student Course-Wise Ranking Report 
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> CourseWiseReport()
         {
