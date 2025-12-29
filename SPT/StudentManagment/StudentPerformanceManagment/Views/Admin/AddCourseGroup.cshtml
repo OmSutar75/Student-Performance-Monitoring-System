@@ -26,14 +26,6 @@
 
                     <form asp-action="AddCourseGroup" method="post">
                        
-
-                        <!-- Group Name -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Group Name</label>
-                            <input asp-for="CourseGroupName" class="form-control" />
-                            <span asp-validation-for="CourseGroupName" class="text-danger"></span>
-                        </div>
-
                         <!-- Course -->
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Course</label>
@@ -44,6 +36,14 @@
                             </select>
                             <span asp-validation-for="CourseId" class="text-danger"></span>
                         </div>
+
+                        <!-- Group Name -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Group Name</label>
+                            <input asp-for="CourseGroupName" class="form-control" />
+                            <span asp-validation-for="CourseGroupName" class="text-danger"></span>
+                        </div>
+
 
                         <!-- Buttons -->
                         <div class="d-flex justify-content-end">
