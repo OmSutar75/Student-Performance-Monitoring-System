@@ -9,7 +9,7 @@ namespace StudentPerformanceManagement.Models
 
         [Required]
         [MaxLength(12)]
-        public string PRN { get; set; } 
+        public string PRN { get; set; } = "11111111";
         public string Name { get; set; }
         [EmailAddress(ErrorMessage ="Invalid Email!")]
         public string Email { get; set; }

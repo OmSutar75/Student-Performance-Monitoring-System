@@ -1,18 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StudentPerformanceManagement.Models;
-using StudentPerformanceManagement.ViewModel;
 using StudentPerformanceManagment;
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
-
+using EmailService;
 
 namespace IdentityDemo.Controllers
 {
-
 
 
     [Authorize(Roles = "Admin")]
@@ -20,22 +19,52 @@ namespace IdentityDemo.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly IEmailSender _emailSender;
 
         public AdminController(UserManager<AppUser> userManager,
-                               ApplicationDbContext context)
+                               ApplicationDbContext context,IEmailSender emailSender)
         {
             _userManager = userManager;
             _context = context;
+            _emailSender = emailSender;
+
         }
+
+        private async Task<AllModelCount> GetAllModelsCount()
+        {
+            var model = new AllModelCount
+            {
+                CourseCount = await _context.Courses.CountAsync(),
+                StudentCount = await _context.Students.CountAsync(),
+                SubjectCount = await _context.Subjects.CountAsync(),
+                StaffCount = await _context.Staffs.CountAsync(),
+                TotalTasks = await _context.Tasks.CountAsync(),
+                PendingTasks = await _context.Tasks.CountAsync(t => t.Status == Status.Pending),
+                CompletedTasks = await _context.Tasks.CountAsync(t => t.Status == Status.Completed)
+            };
+            return model; 
+        }
+
+
+
         public async Task<IActionResult> Dashboard()
         {
             var user = await _userManager.GetUserAsync(User);
-
- 
-
-            return View();
+            var stats=await GetAllModelsCount();
+            return View(stats);
 
         }
+
+
+
+        #region //Staff all operations
+        //List of staff
+        public IActionResult Staff()
+        {
+            var staffs = _context.Staffs.ToList();
+            return View(staffs);
+        }
+
 
         // ADD STAFF (GET)
         [HttpGet]
@@ -46,8 +75,11 @@ namespace IdentityDemo.Controllers
 
         // ADD STAFF (POST)
         [HttpPost]
-        public async Task<IActionResult> AddStaff(string name, string email, string password, string mobile)
+        public async Task<IActionResult> AddStaff(string name, string email, string mobile)
         {
+            var tempPassword = "Temp@123";
+
+
             var user = new AppUser
             {
                 UserName = email,
@@ -58,7 +90,7 @@ namespace IdentityDemo.Controllers
 
             };
 
-            var result = await _userManager.CreateAsync(user, password);
+            var result = await _userManager.CreateAsync(user, tempPassword);
 
             if (result.Succeeded)
             {
@@ -75,6 +107,15 @@ namespace IdentityDemo.Controllers
                 _context.Staffs.Add(staff);
                 await _context.SaveChangesAsync();
 
+
+                string finalPassword = $"{staff.StaffId}@Sunbeam";
+
+
+                await _userManager.RemovePasswordAsync(user);
+                await _userManager.AddPasswordAsync(user, finalPassword);
+
+                TempData["Success"] = $"Staff added. Default Password: {finalPassword}";
+
                 return RedirectToAction("Dashboard", "Account");
             }
 
@@ -85,24 +126,36 @@ namespace IdentityDemo.Controllers
         }
 
 
-        #region Student
-
-        public IActionResult Students()
+     
+        #endregion
+        public IActionResult Tasks()
         {
-            var students = _context.Students
-                .Include(s => s.Course)
-                .Include(s => s.CourseGroup)
+            var tasks = _context.Tasks
+                .Include(t => t.Course)
+                .Include(t => t.CourseGroup)
+                .Include(t => t.Subject)
+                .Include(t => t.Staff)
+                .Select(t => new TasksViewModel
+                {
+                    TasksId = t.TasksId,
+                    TasksTitle = t.TasksTitle,
+                    TasksDescription = t.TasksDescription,
+                    CourseName = t.Course.CourseName,
+                    GroupName = t.CourseGroup.GroupName,
+                    SubjectName = t.Subject.SubjectName,
+                    StaffName = t.Staff.Name,
+                    ValidFrom = t.ValidFrom,
+                    ValidTo = t.ValidTo,
+                    Status = t.Status
+                })
                 .ToList();
 
-            return View(students);
+            return View(tasks);
         }
 
-
-
         [HttpGet]
-        public IActionResult EditStudent(int id)
+        public IActionResult AddTask()
         {
-
             var vm = new TasksViewModel
             {
                 Courses = _context.Courses.Select(c => new SelectListItem
@@ -122,50 +175,72 @@ namespace IdentityDemo.Controllers
                 }).ToList()
             };
 
-            var student = _context.Students.FirstOrDefault(s => s.StudentId == id);
-
-            if (student == null)
-                return NotFound();
-
-
-            return View(student);
+            return View(vm);
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> EditStudent(Student model)
+        public async Task<IActionResult> AddTask(TasksViewModel vm)
         {
-            var student = _context.Students.FirstOrDefault(s => s.StudentId == model.StudentId);
-
-            if (student == null)
-                return NotFound();
-
-
-            student.Name = model.Name;
-            student.Email = model.Email;
-            student.MobileNo = model.MobileNo;
-            student.CourseId = model.CourseId;
-            student.CourseGroupId = model.CourseGroupId;
-
-
-            var user = await _userManager.FindByIdAsync(student.AppUserId);
-            if (user != null)
+            var task = new Tasks
             {
-                user.Email = model.Email;
-                user.UserName = model.Email;
-                await _userManager.UpdateAsync(user);
-            }
+                TasksTitle = vm.TasksTitle,
+                TasksDescription = vm.TasksDescription,
+                CourseId = vm.CourseId,
+                CourseGroupId = vm.CourseGroupId,
+                SubjectId = vm.SubjectId,
+                StaffId = vm.StaffId,
+                ValidFrom = vm.ValidFrom,
+                ValidTo = vm.ValidTo,
+                Status = Status.Pending
+            };
 
-            _context.Students.Update(student);
+            _context.Tasks.Add(task);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Students");
+            return RedirectToAction("Tasks");
         }
 
+        public IActionResult GetSubjectsByCourse(int courseId)
+        {
+            var subjects = _context.Subjects
+        .Where(s => s.CourseId == courseId)
+        .Select(s => new
+        {
+            subjectId = s.SubjectId,
+            subjectName = s.SubjectName
+        })
+        .ToList();
 
-        // DELETE STUDENT (POST)
-        [HttpPost]
+            return Json(subjects);
+        }
 
+        public IActionResult GetGroupsByCourse(int courseId)
+        {
+            var subjects = _context.CourseGroups
+        .Where(s => s.CourseId == courseId)
+        .Select(s => new
+        {
+            courseGroupId = s.CourseGroupId,
+            groupName = s.GroupName
+        })
+        .ToList();
+
+            return Json(subjects);
+        }
+
+        [HttpGet]
+        public JsonResult GetSubjectsByCourses(int courseId)
+        {
+            var subjects = _context.Subjects
+                .Where(s => s.CourseId == courseId)
+                .Select(s => new
+                {
+                    s.SubjectId,
+                    s.SubjectName
+                }).ToList();
+
+            return Json(subjects);
+        }
 
         [HttpGet]
         public IActionResult EditTask(int id)
@@ -207,14 +282,8 @@ namespace IdentityDemo.Controllers
                     new SelectListItem(s.Name, s.StaffId.ToString())).ToList()
             };
 
-        public async Task<IActionResult> DeleteStudent(int id)
-        {
-
-
-            var student = _context.Students.FirstOrDefault(s => s.StudentId == id);
-            if (student == null)
-                return NotFound();
-
+            return View(vm);
+        }
 
         [HttpPost]
         public async Task<IActionResult> EditTask(TasksViewModel vm)
@@ -236,100 +305,67 @@ namespace IdentityDemo.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Tasks");
-
-
-            var user = await _userManager.FindByIdAsync(student.AppUserId);
-
-            _context.Students.Remove(student);
-            await _context.SaveChangesAsync();
-
-            if (user != null)
-                await _userManager.DeleteAsync(user);
-
-            return RedirectToAction("Students");
-
         }
 
 
 
 
+        public IActionResult DeleteTask(int id)
+        {
+            var t = _context.Tasks.FirstOrDefault(x => x.TasksId == id);
+            if (t == null) return NotFound();
+
+            _context.Tasks.Remove(t);
+            _context.SaveChanges();
+
+            return RedirectToAction("Tasks");
+        }
+
 
         public string GeneratePRN()
         {
-            //int year = DateTime.Now.Year;
             int year = DateTime.Now.Year;
             string basePart = year + "1000";
 
             var lastPRN = _context.Students
-                            .OrderByDescending(s => s.PRN)
-                            .Select(s => s.PRN)
-                            .FirstOrDefault();
+                .Where(s => s.PRN.StartsWith(basePart)) // ✅ filter current year
+                .OrderByDescending(s => s.PRN)
+                .Select(s => s.PRN)
+                .FirstOrDefault();
 
             if (lastPRN == null)
             {
                 return basePart + "0001";
             }
-            else
-            {
-                string last = lastPRN.Substring(basePart.Length);
-                int next = int.Parse(last) + 1;
 
-                return basePart + next.ToString("D4");
-            }
+            string last = lastPRN.Substring(basePart.Length);
+            int next = int.Parse(last) + 1;
+
+            return basePart + next.ToString("D4");
         }
 
+
+
+        // ENROLL STUDENT (GET)
         [HttpGet]
         public IActionResult EnrollStudent()
         {
-            var model = new StudentEnrollmentViewModel
-            {
-                Courses = _context.Courses
-                    .Select(c => new SelectListItem
-                    {
-                        Text = c.CourseName.ToString(),
-                        Value = c.CourseId.ToString(),
-                    }).ToList(),
-
-                CourseGroups = _context.CourseGroups
-                    .Select(g => new SelectListItem
-                    {
-                        Text = g.GroupName.ToString(),
-                        Value = g.CourseGroupId.ToString()
-                    }).ToList()
-            };
-
-            return View(model);
+            return View();
         }
 
-
+        // ENROLL STUDENT (POST)
         [HttpPost]
-        public async Task<IActionResult> EnrollStudent(StudentEnrollmentViewModel model,
-                                                 StudentEnrollmentViewModel1 model1)
+        public async Task<IActionResult> EnrollStudent(string name, string email, string mobile, int course, int groupid)
         {
-            if (!ModelState.IsValid)
-            {
-                model.Courses = _context.Courses.Select(c => new SelectListItem
-                {
-                    Text = c.CourseName,
-                    Value = c.CourseId.ToString()
-                }).ToList();
-
-                model.CourseGroups = _context.CourseGroups.Select(g => new SelectListItem
-                {
-                    Text = g.GroupName,
-                    Value = g.CourseGroupId.ToString()
-                }).ToList();
-
-                return View(model);
-            }
-
             string defaultPassword = "Student@123";
+
+            string defaultprofileimage = "/uploads/StudProfile.jpg";
 
             var user = new AppUser
             {
-                UserName = model1.Email,
-                Email = model1.Email,
-                FullName = model1.Name,
+                UserName = email,
+                Email = email,
+                FullName = name,
                 EmailConfirmed = true
             };
 
@@ -341,171 +377,231 @@ namespace IdentityDemo.Controllers
 
                 var student = new Student
                 {
-                    PRN = GeneratePRN(),
-                    Name = model1.Name,
-                    Email = model1.Email,
+                    Name = name,
+                    Email = email,
                     AppUserId = user.Id,
-                    MobileNo = model1.MobileNo,
-                    CourseId = model.CourseId,
-                    CourseGroupId = model.CourseGroupId,
-                    ProfileImagePath = model1.ProfileImagePath
+                    MobileNo = mobile,
+                    CourseId = course,
+                    CourseGroupId = groupid,
+                    ProfileImagePath= defaultprofileimage
+
                 };
 
                 _context.Students.Add(student);
                 await _context.SaveChangesAsync();
 
+                var subject = "Welcome! Your Student Enrollment is Complete";
+
+                var body = $@"
+                <div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;'>
+                    <h2 style='color: #2c3e50;'>Welcome to the Portal, {student.Name}!</h2>
+                    <p>Congratulations, your enrollment has been processed successfully. You can now access your student dashboard using the credentials below:</p>
+    
+                    <div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff; margin: 20px 0;'>
+                        <p style='margin: 5px 0;'><strong>Username (PRN):</strong> {student.PRN}</p>
+                        <p style='margin: 5px 0;'><strong>Temporary Password:</strong> <code style='background: #eee; padding: 2px 5px;'>{defaultPassword}</code></p>
+                    </div>
+
+                    <p style='color: #e67e22;'><strong>Note:</strong> For security reasons, please change your password immediately after your first login.</p>
+
+                    <div style='text-align: center; margin-top: 30px;'>
+                        <a href='yourportal.com' style='background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;'>Login to Dashboard</a>
+                    </div>
+
+                    <hr style='border: 0; border-top: 1px solid #eee; margin: 30px 0;' />
+                    <p style='font-size: 0.8em; color: #777;'>
+                        Regards,<br/>
+                        <strong>Admin Team</strong><br/>
+                        Student Performance Management System
+                    </p>
+              </div>";
+
+
+                await _emailSender.SendEmailAsync(student.Email, subject, body);
                 return RedirectToAction("Dashboard", "Account");
             }
 
-            return View(model);
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
+
+            return View();
         }
 
+
+
+        #region Om 
+
+
+        public IActionResult Courses()
+        {
+            var courses = _context.Courses.ToList();
+            return View(courses);
+        }
+        public IActionResult AddCourses()
+        {
+            
+            return View();
+        }
+
+
+        // ADD COURSE (POST)
+        [HttpPost]
+      
+        public IActionResult AddCourse(Course course)
+        {
+            if (!ModelState.IsValid)
+                return View(course);
+
+            Course course1 = _context.Courses.Where(c=>c.CourseName == course.CourseName).FirstOrDefault();
+            if (course1 == null)
+            {
+                _context.Courses.Add(course);
+                _context.SaveChanges();
+                TempData["Success"] = "Course Add Successfully";
+                return RedirectToAction("Dashboard");
+            }
+            TempData["Error"] = "Can't Add Course , Course Already Present ";
+            return RedirectToAction("AddCourses");
+        }
+
+        [HttpGet]
+        public IActionResult EditCourse(int id)
+        {
+            var course = _context.Courses.FirstOrDefault(c => c.CourseId == id);
+
+            if (course == null)
+                return NotFound();
+
+            return View(course);
+        }
+
+        [HttpPost]
         
-
-
-        #endregion
-
-        #region
-
-
-        [HttpGet]
-        public IActionResult SubjectWiseReport()
+        public IActionResult EditCourse(Course model)
         {
-            var model = new SubjectWiseReportVM
-            {
-                Courses = _context.Courses.Select(c => new SelectListItem
-                {
-                    Text = c.CourseName,
-                    Value = c.CourseId.ToString()
-                }).ToList(),
+            if (!ModelState.IsValid)
+                return View(model);
 
-                Subjects = new List<SelectListItem>()
-            };
+            var course = _context.Courses.FirstOrDefault(c => c.CourseId == model.CourseId);
 
-            return View(model);
-        }
+            if (course == null)
+                return NotFound();
 
-        [HttpGet]
-        public IActionResult GetSubjectsByCourse(int courseId)
-        {
-            var subjects = _context.Subjects
-                .Where(s => s.CourseId == courseId)
-                .Select(s => new
-                {
-                    subjectId = s.SubjectId,      
-                    subjectName = s.SubjectName   
-                })
-                .ToList();
+            course.CourseName = model.CourseName;
+            course.Description = model.Description;
+            course.Duration = model.Duration;
+            course.Fees = model.Fees;
 
-            return Json(subjects);
+            _context.SaveChanges();
+
+            return RedirectToAction("Courses");
         }
 
 
 
 
-        [HttpPost]
-        public IActionResult SubjectWiseReport(SubjectWiseReportVM model)
+        public IActionResult CourseStudents(int id)
         {
-            model.Courses = _context.Courses.Select(c => new SelectListItem
+            var course = _context.Courses
+                .FirstOrDefault(c => c.CourseId == id);
+
+            if (course == null)
+                return NotFound();
+
+            var vm = new CourseStudentsVM
             {
-                Text = c.CourseName,
-                Value = c.CourseId.ToString()
-            }).ToList();
-
-            model.ReportRows = _context.Marks
-                .Include(m => m.Student)
-                .Where(m => m.SubjectId == model.SubjectId)
-                .Select(m => new StudentMarksRowVM
-                {
-                    PRN = m.Student.PRN,
-                    StudentName = m.Student.Name,
-                    TheoryMarks = m.TheoryMarks,
-                    LabMarks = m.LabMarks,
-                    InternalMarks = m.InternalMarks,
-                    TotalMarks = 100,
-                    ObtainedMarks = m.TheoryMarks + m.LabMarks + m.InternalMarks,
-                    ResultStatus = (m.TheoryMarks + m.LabMarks + m.InternalMarks) >= 40 ? "Pass" : "Fail"
-                }).ToList();
-
-            return View(model);
-        }
-
-
-
-
-        [HttpGet]
-        public IActionResult CourseWiseReport()
-        {
-            var model = new CourseWiseReportVM
-            {
-                Courses = _context.Courses.Select(c => new SelectListItem
-                {
-                    Text = c.CourseName,
-                    Value = c.CourseId.ToString()
-                }).ToList()
-            };
-
-            return View(model);
-        }
-
-
-        [HttpPost]
-        public IActionResult CourseWiseReport(CourseWiseReportVM model)
-        {
-
-            model.Courses = _context.Courses.Select(c => new SelectListItem
-            {
-                Text = c.CourseName,
-                Value = c.CourseId.ToString()
-            }).ToList();
-
-            int subjectCount = _context.Subjects.Count(s => s.CourseId == model.CourseId);
-            int maxMarks = subjectCount * 100;
-
-            var students = _context.Students
-                .Where(s => s.CourseId == model.CourseId)
-                .Select(s => new
-                {
-                    s.PRN,
-                    s.Name,
-                    Marks = s.Marks.Select(m => new
+                CourseId = course.CourseId,
+                CourseName = course.CourseName,
+                Students = _context.Students
+                    .Where(s => s.CourseId == id)
+                    .Select(s => new CourseStudentItemVM
                     {
-                        m.TheoryMarks,
-                        m.LabMarks,
-                        m.InternalMarks
+                        PRN = s.PRN,
+                        Name = s.Name,
+                        Email = s.Email,
+                        MobileNo = s.MobileNo,
+                        CourseGroupName = s.CourseGroup.GroupName
+                    })
+                    .ToList()
+            };
+
+            return View(vm);
+        }
+
+
+        public IActionResult CourseGroups()
+        {
+            var groups = _context.CourseGroups.Include(c => c.Course).ToList();
+
+            return View(groups);
+        }
+        public IActionResult AddCourseGroup()
+        {
+            AddCourseGroupMV mv = new AddCourseGroupMV()
+            {
+                Courses = _context.Courses.Select(
+                    c => new SelectListItem()
+                    {
+                        Text = c.CourseName,
+                        Value = c.CourseId.ToString()
                     }).ToList()
-                }).ToList();
 
-            var resultList = students.Select(s =>
+
+            };
+            return View(mv);
+
+
+        }
+            [HttpPost]
+            public IActionResult AddCourseGroup(AddCourseGroupMV mv)
             {
-                int total = s.Marks.Sum(m => m.TheoryMarks + m.LabMarks + m.InternalMarks);
 
-                bool isPass = s.Marks.All(m =>
-                    m.TheoryMarks >= 16 &&
-                    m.LabMarks >= 16 &&
-                    m.InternalMarks >= 8);
-
-                return new StudentRankingRowVM
-                {
-                    PRN = s.PRN,
-                    StudentName = s.Name,
-                    TotalMarks = total,
-                    Percentage = Math.Round((double)total / maxMarks * 100, 2),
-                    ResultStatus = isPass ? "PASS" : "FAIL"
-                };
-            })
-            .OrderByDescending(x => x.TotalMarks)
-            .ToList();
-
-            int rank = 1;
-            foreach (var item in resultList)
+            var groups = new CourseGroup()
             {
-                item.Rank = rank++;
+                CourseId = mv.CourseId,
+                GroupName = mv.CourseGroupName
+            };
+
+            _context.CourseGroups.Add(groups);
+            _context.SaveChanges();
+            return RedirectToAction("CourseGroups");
             }
 
-            model.RankingRows = resultList;
-            return View(model);
+
+        [HttpGet]
+        public IActionResult EditCourseGroup(int id)
+        {
+            var group = _context.CourseGroups.Find(id);
+            if (group == null)
+                return NotFound();
+
+            ViewBag.Courses = _context.Courses
+                .Select(c => new SelectListItem
+                {
+                    Value = c.CourseId.ToString(),
+                    Text = c.CourseName
+                }).ToList();
+
+            return View(group);
         }
+
+        // EDIT (POST)
+        [HttpPost]
+        public IActionResult EditCourseGroup(CourseGroup model)
+        {
+
+            var group = _context.CourseGroups.Find(model.CourseGroupId);
+            if (group == null)
+                return NotFound();
+
+            group.GroupName = model.GroupName;
+            group.CourseId = model.CourseId;
+
+            _context.SaveChanges();
+
+            return RedirectToAction("CourseGroups");
+        }
+
         #endregion
 
     }

@@ -61,7 +61,8 @@ namespace StudentPerformanceManagement.Controllers
                 CourseName = student.Course?.CourseName ?? "N/A",
                 SubjectCount = subjectCount,
                 CourseGroupName = student.CourseGroup?.GroupName ?? "N/A",
-                MobileNo = student.MobileNo
+                MobileNo = student.MobileNo,
+                ProfileImage=student.ProfileImagePath
             };
 
             return stud;
@@ -106,13 +107,70 @@ namespace StudentPerformanceManagement.Controllers
             return RedirectToAction("Dashboard");
         }
 
+        private async Task<string> SaveProfileImageAsync(IFormFile? profileImage)
+        {
+            if (profileImage == null || profileImage.Length == 0)
+                return string.Empty;
 
-     
+            // Generate unique file name
+            var fileName = $"{Guid.NewGuid()}_{profileImage.FileName}";
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", fileName);
+
+            // Ensure uploads folder exists
+            Directory.CreateDirectory(Path.GetDirectoryName(uploadPath)!);
+
+            // Save file
+            using (var stream = new FileStream(uploadPath, FileMode.Create))
+            {
+                await profileImage.CopyToAsync(stream);
+            }
+
+            // Return relative path to store in DB
+            return $"/uploads/{fileName}";
+
+        }
+
+        public async Task<IActionResult> ProfileImage()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeProfileImage(IFormFile profileImage)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+   
+            if (profileImage != null && profileImage.Length > 0)
+            {
+
+                string imagePath = await SaveProfileImageAsync(profileImage);
+
+                var student = await _context.Students.FirstOrDefaultAsync(s => s.Email == user.Email);
+                if (student != null)
+                {
+                    student.ProfileImagePath = imagePath;
+                    _context.Update(student);
+                    await _context.SaveChangesAsync();
+
+                    TempData["Success"] = "Profile image updated successfully!";
+                    return RedirectToAction("Dashboard");
+                }
+            }
+
+            ModelState.AddModelError("", "Please select a valid image file.");
+            return View();
+        }
+
+
+    
         public IActionResult ChangePassword()
         {
             
             return View(new PasswordViewModel());
         }
+
 
     
         [HttpPost]
@@ -151,278 +209,9 @@ namespace StudentPerformanceManagement.Controllers
         }
 
 
-
-        #region Performance Card
-
-        public int GetStudentRank(int studentId, int courseId)
-        {
-            var students = _context.Students.Where(s => s.CourseId == courseId).Include(s => s.Marks).ToList();
-            var markList = students.Select(s => new StudentMarks
-            {
-                StudentId = s.StudentId,
-                TotalMarks = s.Marks.Sum(m => m.TotalObtained)
-            }
-            ).OrderByDescending(sm => sm.TotalMarks);
-
-            int rank = 0;
-            int prevMarks = -1;
-
-            foreach (var item in markList)
-            {
-                if (item.TotalMarks != prevMarks)
-                {
-                    rank++;
-                    prevMarks = item.TotalMarks;
-                }
-
-                if (item.StudentId == studentId)
-                    return rank;
-            }
-            return 0;// student not found
-        }
-
-        public IActionResult PerformanceCard()
-        {
-
-            var std = _context.Students
-                          .FirstOrDefault(s => s.Email ==_userManager.GetUserName(User));
-
-            var student = _context.Students
-                .Include(s => s.Course)
-                .Include(s => s.CourseGroup)
-                .Include(s => s.Marks)
-                .ThenInclude(m => m.Subject)
-                .FirstOrDefault(s => s.StudentId == std.StudentId);
-            /*var subjects = _db.Students
-                .Include(s => s.Marks)
-                    .ThenInclude(m => m.Subject).ToList();*/
-            int rank = GetStudentRank(std.StudentId, student.CourseId);
-            if (student == null)
-                return NotFound();
-
-            var vm = new PerformanceCard
-            {
-                Rank = rank,
-                StudentPRN = student.PRN,
-                StudentName = student.Name,
-                CourseName = student.Course.CourseName,
-                Subjects = student.Marks.Select(m => new SubjectMarksViewModel
-                {
-                    SubjectName = m.Subject.SubjectName,
-                    Theory = m.TheoryMarks,
-                    Lab = m.LabMarks,
-                    Internal = m.InternalMarks,
-                    Total = m.TotalObtained,
-                    Status = m.ResultStatus == "Pass" ? true : false,
-                    MaxMarks = m.Subject.MaxLabMarks + m.Subject.MaxLabMarks + m.Subject.MaxInternalMarks,
-                    // FailedIn = m.FailedIn(),
-                }).ToList()
-            };
-
-            return View(vm);
-        }
-
-        #endregion
-
-        #region report
-        [HttpGet]
-        public JsonResult GetSubjectByCourse(int courseId)
-        {
-            var subjects = _context.Subjects
-                .Where(s => s.CourseId == courseId)
-                .Select(s => new
-                {
-                    s.SubjectId,
-                    s.SubjectName
-                }).ToList();
-
-            return Json(subjects);
-        }
-
-        [HttpGet]
-        public IActionResult SubjectWiseReport()
-        {
-            var model = new SubjectWiseReportVM
-            {
-                Courses = _context.Courses.Include(c => c.Subjects).Select(c => new SelectListItem
-                {
-                    Text = c.CourseName,
-                    Value = c.CourseId.ToString()
-                }).ToList()
-            };
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public IActionResult SubjectWiseReport(SubjectWiseReportVM model)
-        {
-            model.Courses = _context.Courses.Select(c => new SelectListItem
-            {
-                Text = c.CourseName,
-                Value = c.CourseId.ToString()
-            }).ToList();
-
-            var list = _context.Marks
-                .Include(m => m.Student)
-                .Where(m => m.SubjectId == model.SubjectId)
-                .ToList()
-                .Select(m =>
-                {
-                    string failed = "";
-
-                    if (m.TheoryMarks < (m.Subject.MaxTheoryMarks * 0.4)) failed += "T";
-                    if (m.LabMarks < (m.Subject.MaxLabMarks * 0.4)) failed += "L";
-                    if (m.InternalMarks < (m.Subject.MaxInternalMarks * 0.4)) failed += "I";
-
-                    bool isPass = failed == "";
-
-                    return new StudentMarksRowVM
-                    {
-                        PRN = m.Student.PRN,
-                        StudentName = m.Student.Name,
-                        TheoryMarks = m.TheoryMarks,
-                        LabMarks = m.LabMarks,
-                        InternalMarks = m.InternalMarks,
-                        TotalMarks = 100,
-                        ObtainedMarks = m.TheoryMarks + m.LabMarks + m.InternalMarks,
-                        FailedIn = failed,
-                        ResultStatus = isPass ? "Pass" : "Fail"
-                    };
-                })
-                .OrderByDescending(x => x.ObtainedMarks)
-                .ToList();
+       
 
 
-            int rank = 1;
-            int prevMarks = -1;
-            int skip = 0;
-
-            foreach (var item in list)
-            {
-                if (item.ObtainedMarks == prevMarks)
-                {
-                    item.Rank = rank;
-                    skip++;
-                }
-                else
-                {
-                    rank += skip;
-                    item.Rank = rank;
-                    skip = 1;
-                    prevMarks = item.ObtainedMarks;
-                }
-            }
-
-            model.ReportRows = list;
-            return View(model);
-        }
-
-        #endregion
-
-        #region Student Course-Wise Ranking Report 
-        [Authorize(Roles = "Student")]
-        public async Task<IActionResult> CourseWiseReport()
-        {
-            // 1. Get logged-in user
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Unauthorized();
-
-            // 2. Get logged-in student's record
-            var currentStudent = await _context.Students
-                .Include(s => s.Course)
-                .FirstOrDefaultAsync(s => s.AppUserId == user.Id);
-
-            if (currentStudent == null)
-                return Unauthorized();
-
-            // 3. Get all students from the same course with marks
-            var students = await _context.Students
-                .Include(s => s.Marks)
-                    .ThenInclude(m => m.Subject)
-                .Where(s => s.CourseId == currentStudent.CourseId)
-                .ToListAsync();
-
-            // 4. Get subject names
-            var subjectNames = await _context.Subjects
-                .Where(s => s.CourseId == currentStudent.CourseId)
-                .Select(s => s.SubjectName)
-                .ToListAsync();
-
-            // 5. Build ranking rows
-            var rankingList = students.Select(s =>
-            {
-                int total = 0;
-                bool courseFail = false;
-                var marksList = new List<SubjectMarksVM>();
-
-                foreach (var m in s.Marks)
-                {
-                    string failed = "";
-                    if (m.TheoryMarks < 16) failed += "T";
-                    if (m.LabMarks < 16) failed += "L";
-                    if (m.InternalMarks < 8) failed += "I";
-
-                    if (!string.IsNullOrEmpty(failed))
-                        courseFail = true;
-
-                    marksList.Add(new SubjectMarksVM
-                    {
-                        SubjectName = m.Subject.SubjectName,
-                        Theory = m.TheoryMarks,
-                        Lab = m.LabMarks,
-                        Internal = m.InternalMarks,
-                        FailedIn = failed
-                    });
-
-                    total += m.TheoryMarks + m.LabMarks + m.InternalMarks;
-                }
-
-                return new StudentRankingRowVM
-                {
-                    PRN = s.PRN,
-                    StudentName = s.Name,
-                    SubjectMarks = marksList,
-                    TotalMarks = total,
-                    Percentage = Math.Round((double)total / (subjectNames.Count * 100) * 100, 2),
-                    ResultStatus = courseFail ? "FAIL" : "PASS"
-                };
-            })
-            .OrderByDescending(x => x.TotalMarks)
-            .ThenBy(x => x.StudentName)
-            .ToList();
-
-            // 6. Assign ranks with ties
-            int rank = 0, prev = -1; //skip = 0;
-            foreach (var item in rankingList)
-            {
-                if (item.TotalMarks == prev)
-                {
-                    item.Rank = rank;
-                    //skip++;
-                }
-                else
-                {
-                    //rank += skip;
-                    rank++;
-                    item.Rank = rank;
-                    //skip = 1;
-                    prev = item.TotalMarks;
-                }
-            }
-
-            // 7. Build ViewModel
-            var model = new CourseWiseReportVM
-            {
-                SubjectNames = subjectNames,
-                RankingRows = rankingList,
-            };
-
-            return View(model);
-        }
-
-        #endregion
 
     }
 }
