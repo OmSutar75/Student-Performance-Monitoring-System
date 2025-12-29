@@ -1,0 +1,110 @@
+﻿@model StudentPerformanceManagment.Models.ViewModel.SubjectWiseReportVM
+
+<div class="container-fluid">
+
+    <h4 class="fw-semibold text-primary mb-4">
+        <i class="bi bi-bar-chart"></i> Subject Wise Student Marks Report
+    </h4>
+
+    <form asp-action="SubjectWiseReport" method="post" class="row g-3 mb-4">
+
+        <select asp-for="CourseId" asp-items="Model.Courses" class="form-select" id="CourseId">
+            <option value="">-- Select Course --</option>
+        </select>
+
+        <select id="SubjectId" name="SubjectId" class="form-select" required>
+            <option value="">-- Select Subject --</option>
+        </select>
+
+
+
+        <div class="col-md-2 align-self-end">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-search"></i> Show Report
+            </button>
+        </div>
+
+    </form>
+
+
+    @if (Model.ReportRows != null && Model.ReportRows.Any())
+    {
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h6 class="text-danger">Selected SubjectId: @TempData["sid"]</h6>
+
+                <table class="table table-bordered table-hover text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>PRN</th>
+                            <th>Student Name</th>
+                            <th>Theory</th>
+                            <th>Lab</th>
+                            <th>Internal</th>
+                            <th>Total Marks</th>
+                            <th>Obtained</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ReportRows)
+                        {
+                            <tr>
+                                <td>@item.PRN</td>
+                                <td>@item.StudentName</td>
+                                <td>@item.TheoryMarks</td>
+                                <td>@item.LabMarks</td>
+                                <td>@item.InternalMarks</td>
+                                <td>@item.TotalMarks</td>
+                                <td>@item.ObtainedMarks</td>
+                                <td>
+                                    @if (item.ResultStatus == "Pass")
+                                    {
+                                        <span class="badge bg-success">Pass</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Fail</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+
+</div>
+
+@section Scripts {
+    <script>
+            $("#CourseId").change(function () {
+
+            var courseId = $(this).val();
+
+            $("#SubjectId").empty().append('<option value="">-- Select Subject --</option>');
+
+            if (courseId !== "") {
+                $.ajax({
+                    url: "/Admin/GetSubjectsByCourse",
+                    type: "GET",
+                    data: { courseId: courseId },
+                    success: function (data) {
+                        $.each(data, function (i, v) {
+                            $("#SubjectId").append('<option value="' + v.subjectId + '">' + v.subjectName + '</option>');
+                        });
+                    },
+                    error: function () {
+                        alert("Subject loading failed – controller route incorrect.");
+                    }
+                });
+            }
+        });
+
+
+
+    </script>
+}
+

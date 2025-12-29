@@ -25,7 +25,7 @@ namespace StudentPerformanceManagment.Models.ViewModel
 
         // KEEP STRING (VERY IMPORTANT)
         /*public string Status { get; set; } = "";*/
-        public Status Status { get; set; }= Status.Pending;
+        public Status Status { get; set; } = Status.Pending;
 
         // Dropdowns
         public List<SelectListItem> Courses { get; set; } = new();

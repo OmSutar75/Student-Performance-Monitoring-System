@@ -15,5 +15,7 @@ namespace StudentPerformanceManagment.Models.ViewModel
         public int SubjectCount { get; set; }
         public string CourseGroupName { get; set; }
 
+        public string ProfileImage { get; set; }
+
     }
 }

@@ -22,22 +22,39 @@
 
     <div class="form-group">
         <label>Course</label>
-        <select asp-for="CourseId" asp-items="Model.Courses" class="form-control"></select>
+        <select asp-for="CourseId"
+                asp-items="Model.Courses"
+                class="form-control"
+                id="CourseId">
+            <option value="">-- Select Course --</option>
+        </select>
     </div>
 
     <div class="form-group">
         <label>Course Group</label>
-        <select asp-for="CourseGroupId" asp-items="Model.CourseGroups" class="form-control"></select>
+        <select asp-for="CourseGroupId"
+                asp-items="Model.CourseGroups"
+                class="form-control"
+                id="CourseGroupId">
+            <option value="">-- Select Course Group --</option>
+        </select>
     </div>
 
     <div class="form-group">
         <label>Subject</label>
-        <select asp-for="SubjectId" asp-items="Model.Subjects" class="form-control"></select>
+        <select asp-for="SubjectId"
+                asp-items="Model.Subjects"
+                class="form-control"
+                id="SubjectId">
+            <option value="">-- Select Subject --</option>
+        </select>
     </div>
 
     <div class="form-group">
         <label>Staff</label>
-        <select asp-for="StaffId" asp-items="Model.Staffs" class="form-control"></select>
+        <select asp-for="StaffId" asp-items="Model.Staffs" class="form-control">
+            <option value="">-- Select Staff --</option>
+        </select>
     </div>
 
     <div class="form-group">
@@ -52,3 +69,47 @@
 
     <button type="submit" class="btn btn-success mt-3">Update Task</button>
 </form>
+
+<div class="mt-3">
+    <a asp-action="Tasks" class="btn btn-secondary">Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Store current selected values for pre-selection after course change
+            var currentGroupId = '@Model.CourseGroupId';
+            var currentSubjectId = '@Model.SubjectId';
+
+            $('#CourseId').change(function () {
+                var courseId = $(this).val();
+
+                // Clear dropdowns
+                $('#CourseGroupId').empty().append('<option value="">-- Select Course Group --</option>');
+                $('#SubjectId').empty().append('<option value="">-- Select Subject --</option>');
+
+                if (courseId) {
+                    // Load Course Groups
+                    $.getJSON('@Url.Action("GetGroupsByCourse")', { courseId: courseId }, function (data) {
+                        $.each(data, function (i, item) {
+                            var selected = (item.courseGroupId == currentGroupId) ? 'selected' : '';
+                            $('#CourseGroupId').append('<option value="' + item.courseGroupId + '" ' + selected + '>' + item.groupName + '</option>');
+                        });
+                        // Reset after first use
+                        currentGroupId = null;
+                    });
+
+                    // Load Subjects
+                    $.getJSON('@Url.Action("GetSubjectsByCourse")', { courseId: courseId }, function (data) {
+                        $.each(data, function (i, item) {
+                            var selected = (item.subjectId == currentSubjectId) ? 'selected' : '';
+                            $('#SubjectId').append('<option value="' + item.subjectId + '" ' + selected + '>' + item.subjectName + '</option>');
+                        });
+                        // Reset after first use
+                        currentSubjectId = null;
+                    });
+                }
+            });
+        });
+    </script>
+}

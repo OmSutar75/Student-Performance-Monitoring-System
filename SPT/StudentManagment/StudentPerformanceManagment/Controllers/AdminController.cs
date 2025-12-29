@@ -1,19 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using NuGet.Versioning;
 using StudentPerformanceManagement.Models;
 using StudentPerformanceManagment;
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
-using Microsoft.EntityFrameworkCore;
+using EmailService;
 
 namespace IdentityDemo.Controllers
 {
-
 
 
     [Authorize(Roles = "Admin")]
@@ -21,26 +19,52 @@ namespace IdentityDemo.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly IEmailSender _emailSender;
 
         public AdminController(UserManager<AppUser> userManager,
-                               ApplicationDbContext context)
+                               ApplicationDbContext context,IEmailSender emailSender)
         {
             _userManager = userManager;
             _context = context;
+            _emailSender = emailSender;
+
         }
+
+        private async Task<AllModelCount> GetAllModelsCount()
+        {
+            var model = new AllModelCount
+            {
+                CourseCount = await _context.Courses.CountAsync(),
+                StudentCount = await _context.Students.CountAsync(),
+                SubjectCount = await _context.Subjects.CountAsync(),
+                StaffCount = await _context.Staffs.CountAsync(),
+                TotalTasks = await _context.Tasks.CountAsync(),
+                PendingTasks = await _context.Tasks.CountAsync(t => t.Status == Status.Pending),
+                CompletedTasks = await _context.Tasks.CountAsync(t => t.Status == Status.Completed)
+            };
+            return model; 
+        }
+
+
+
         public async Task<IActionResult> Dashboard()
         {
             var user = await _userManager.GetUserAsync(User);
-            return View();
+            var stats=await GetAllModelsCount();
+            return View(stats);
 
         }
-      #region //Staff all operations
+
+
+
+        #region //Staff all operations
         //List of staff
         public IActionResult Staff()
         {
             var staffs = _context.Staffs.ToList();
             return View(staffs);
         }
+
 
         // ADD STAFF (GET)
         [HttpGet]
@@ -51,7 +75,7 @@ namespace IdentityDemo.Controllers
 
         // ADD STAFF (POST)
         [HttpPost]
-        public async Task<IActionResult> AddStaff(string name, string email,  string mobile)
+        public async Task<IActionResult> AddStaff(string name, string email, string mobile)
         {
             var tempPassword = "Temp@123";
 
@@ -101,76 +125,8 @@ namespace IdentityDemo.Controllers
             return View();
         }
 
-        [HttpGet]
-        public IActionResult EditStaff(int id)
-        {
-            var staff = _context.Staffs
-                .Include(s => s.Tasks)
-                .FirstOrDefault(s => s.StaffId == id);
 
-            if (staff == null)
-                return NotFound();
-
-            return View(staff);
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult EditStaff(Staff model)
-        {
-            var staff = _context.Staffs
-                .Include(s => s.Tasks)
-                .FirstOrDefault(s => s.StaffId == model.StaffId);
-
-            if (staff == null)
-                return NotFound();
-
-            staff.Name = model.Name;
-            staff.Mobile = model.Mobile;
-
-            _context.SaveChanges();
-
-            return RedirectToAction("Staff");
-        }
-
-        public IActionResult ViewStaffTasks(int id)
-        {
-            var staff = _context.Staffs
-                .Include(s => s.Tasks)
-                    .ThenInclude(t => t.Course)
-                .Include(s => s.Tasks)
-                    .ThenInclude(t => t.CourseGroup)
-                .Include(s => s.Tasks)
-                    .ThenInclude(t => t.Subject)
-                .FirstOrDefault(s => s.StaffId == id);
-
-            if (staff == null) return NotFound();
-
-            var vm = new StaffDashViewModel
-            {
-                StaffId = staff.StaffId,
-                StaffName = staff.Name,
-                TotalTasks = staff.Tasks.Count,
-                PendingTasks = staff.Tasks.Count(t => t.Status == Status.Pending),
-                CompletedTasks = staff.Tasks.Count(t => t.Status == Status.Completed)
-            };
-
-            vm.Tasks = staff.Tasks.Select(t => new TasksViewModel
-            {
-                TasksTitle = t.TasksTitle,
-                TasksDescription = t.TasksDescription,
-                CourseName = t.Course.CourseName,
-                GroupName = t.CourseGroup.GroupName,
-                SubjectName = t.Subject.SubjectName,
-                ValidFrom = t.ValidFrom,
-                ValidTo = t.ValidTo,
-                Status = t.Status
-            }).ToList();
-
-            return View(vm);
-        }
-
+     
         #endregion
         public IActionResult Tasks()
         {
@@ -197,8 +153,6 @@ namespace IdentityDemo.Controllers
             return View(tasks);
         }
 
-
-
         [HttpGet]
         public IActionResult AddTask()
         {
@@ -210,17 +164,9 @@ namespace IdentityDemo.Controllers
                     Text = c.CourseName
                 }).ToList(),
 
-                CourseGroups = _context.CourseGroups.Select(g => new SelectListItem
-                {
-                    Value = g.CourseGroupId.ToString(),
-                    Text = g.GroupName
-                }).ToList(),
-
-                Subjects = _context.Subjects.Select(s => new SelectListItem
-                {
-                    Value = s.SubjectId.ToString(),
-                    Text = s.SubjectName
-                }).ToList(),
+                // Empty initially - populated via AJAX
+                CourseGroups = new List<SelectListItem>(),
+                Subjects = new List<SelectListItem>(),
 
                 Staffs = _context.Staffs.Select(st => new SelectListItem
                 {
@@ -231,7 +177,6 @@ namespace IdentityDemo.Controllers
 
             return View(vm);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> AddTask(TasksViewModel vm)
@@ -297,6 +242,7 @@ namespace IdentityDemo.Controllers
             return Json(subjects);
         }
 
+        [HttpGet]
         public IActionResult EditTask(int id)
         {
             var t = _context.Tasks.FirstOrDefault(x => x.TasksId == id);
@@ -313,16 +259,25 @@ namespace IdentityDemo.Controllers
                 StaffId = t.StaffId,
                 ValidFrom = t.ValidFrom,
                 ValidTo = t.ValidTo,
+                Status = t.Status,
 
+                // All courses
                 Courses = _context.Courses.Select(c =>
                     new SelectListItem(c.CourseName, c.CourseId.ToString())).ToList(),
 
-                CourseGroups = _context.CourseGroups.Select(g =>
-                    new SelectListItem(g.GroupName, g.CourseGroupId.ToString())).ToList(),
+                // Filter CourseGroups by task's CourseId
+                CourseGroups = _context.CourseGroups
+                    .Where(g => g.CourseId == t.CourseId)
+                    .Select(g => new SelectListItem(g.GroupName, g.CourseGroupId.ToString()))
+                    .ToList(),
 
-                Subjects = _context.Subjects.Select(s =>
-                    new SelectListItem(s.SubjectName, s.SubjectId.ToString())).ToList(),
+                // Filter Subjects by task's CourseId
+                Subjects = _context.Subjects
+                    .Where(s => s.CourseId == t.CourseId)
+                    .Select(s => new SelectListItem(s.SubjectName, s.SubjectId.ToString()))
+                    .ToList(),
 
+                // All staff
                 Staffs = _context.Staffs.Select(s =>
                     new SelectListItem(s.Name, s.StaffId.ToString())).ToList()
             };
@@ -330,13 +285,10 @@ namespace IdentityDemo.Controllers
             return View(vm);
         }
 
-
-
-
         [HttpPost]
         public async Task<IActionResult> EditTask(TasksViewModel vm)
         {
-            var task = _context.Tasks.FirstOrDefault(t => t.TasksId == vm.TasksId);
+            var task = await _context.Tasks.FindAsync(vm.TasksId);
             if (task == null) return NotFound();
 
             task.TasksTitle = vm.TasksTitle;
@@ -347,10 +299,14 @@ namespace IdentityDemo.Controllers
             task.StaffId = vm.StaffId;
             task.ValidFrom = vm.ValidFrom;
             task.ValidTo = vm.ValidTo;
+            task.Status = vm.Status;
 
+            _context.Tasks.Update(task);
             await _context.SaveChangesAsync();
+
             return RedirectToAction("Tasks");
         }
+
 
 
 
@@ -366,6 +322,30 @@ namespace IdentityDemo.Controllers
         }
 
 
+        public string GeneratePRN()
+        {
+            int year = DateTime.Now.Year;
+            string basePart = year + "1000";
+
+            var lastPRN = _context.Students
+                .Where(s => s.PRN.StartsWith(basePart)) // ✅ filter current year
+                .OrderByDescending(s => s.PRN)
+                .Select(s => s.PRN)
+                .FirstOrDefault();
+
+            if (lastPRN == null)
+            {
+                return basePart + "0001";
+            }
+
+            string last = lastPRN.Substring(basePart.Length);
+            int next = int.Parse(last) + 1;
+
+            return basePart + next.ToString("D4");
+        }
+
+
+
         // ENROLL STUDENT (GET)
         [HttpGet]
         public IActionResult EnrollStudent()
@@ -378,6 +358,8 @@ namespace IdentityDemo.Controllers
         public async Task<IActionResult> EnrollStudent(string name, string email, string mobile, int course, int groupid)
         {
             string defaultPassword = "Student@123";
+
+            string defaultprofileimage = "/uploads/StudProfile.jpg";
 
             var user = new AppUser
             {
@@ -400,13 +382,42 @@ namespace IdentityDemo.Controllers
                     AppUserId = user.Id,
                     MobileNo = mobile,
                     CourseId = course,
-                    CourseGroupId = groupid
+                    CourseGroupId = groupid,
+                    ProfileImagePath= defaultprofileimage
 
                 };
 
                 _context.Students.Add(student);
                 await _context.SaveChangesAsync();
 
+                var subject = "Welcome! Your Student Enrollment is Complete";
+
+                var body = $@"
+                <div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;'>
+                    <h2 style='color: #2c3e50;'>Welcome to the Portal, {student.Name}!</h2>
+                    <p>Congratulations, your enrollment has been processed successfully. You can now access your student dashboard using the credentials below:</p>
+    
+                    <div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff; margin: 20px 0;'>
+                        <p style='margin: 5px 0;'><strong>Username (PRN):</strong> {student.PRN}</p>
+                        <p style='margin: 5px 0;'><strong>Temporary Password:</strong> <code style='background: #eee; padding: 2px 5px;'>{defaultPassword}</code></p>
+                    </div>
+
+                    <p style='color: #e67e22;'><strong>Note:</strong> For security reasons, please change your password immediately after your first login.</p>
+
+                    <div style='text-align: center; margin-top: 30px;'>
+                        <a href='yourportal.com' style='background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;'>Login to Dashboard</a>
+                    </div>
+
+                    <hr style='border: 0; border-top: 1px solid #eee; margin: 30px 0;' />
+                    <p style='font-size: 0.8em; color: #777;'>
+                        Regards,<br/>
+                        <strong>Admin Team</strong><br/>
+                        Student Performance Management System
+                    </p>
+              </div>";
+
+
+                await _emailSender.SendEmailAsync(student.Email, subject, body);
                 return RedirectToAction("Dashboard", "Account");
             }
 
