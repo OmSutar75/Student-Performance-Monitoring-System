@@ -3,17 +3,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using NuGet.Versioning;
 using StudentPerformanceManagement.Models;
 using StudentPerformanceManagment;
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
-using Microsoft.EntityFrameworkCore;
 
 namespace IdentityDemo.Controllers
 {
-
 
 
     [Authorize(Roles = "Admin")]
@@ -28,12 +24,34 @@ namespace IdentityDemo.Controllers
             _userManager = userManager;
             _context = context;
         }
+
+        private async Task<AllModelCount> GetAllModelsCount()
+        {
+            var model = new AllModelCount
+            {
+                CourseCount = await _context.Courses.CountAsync(),
+                StudentCount = await _context.Students.CountAsync(),
+                SubjectCount = await _context.Subjects.CountAsync(),
+                StaffCount = await _context.Staffs.CountAsync(),
+                TotalTasks = await _context.Tasks.CountAsync(),
+                PendingTasks = await _context.Tasks.CountAsync(t => t.Status == Status.Pending),
+                CompletedTasks = await _context.Tasks.CountAsync(t => t.Status == Status.Completed)
+            };
+            return model; 
+        }
+
+
+
         public async Task<IActionResult> Dashboard()
         {
             var user = await _userManager.GetUserAsync(User);
-            return View();
+            var stats=await GetAllModelsCount();
+            return View(stats);
 
         }
+
+
+
       #region //Staff all operations
         //List of staff
         public IActionResult Staff()
