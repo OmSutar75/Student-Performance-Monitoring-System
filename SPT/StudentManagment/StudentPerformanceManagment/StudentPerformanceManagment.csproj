@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EmailService\EmailService.csproj" />
+    <!--<ProjectReference Include="..\..\..\..\..\..\SunBeamGit\IIT-08-C-DotNet\Project\EmailService\EmailService.csproj" />-->
   </ItemGroup>
 
  

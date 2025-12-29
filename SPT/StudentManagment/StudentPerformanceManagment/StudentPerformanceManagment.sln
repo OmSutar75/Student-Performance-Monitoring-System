@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudentPerformanceManagment", "StudentPerformanceManagment.csproj", "{B91B2356-8F8B-4197-A730-29224B95A538}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailService", "..\..\..\..\..\..\SunBeamGit\IIT-08-C-DotNet\Project\EmailService\EmailService.csproj", "{AC926C3D-685C-4023-8978-800602AB28C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B91B2356-8F8B-4197-A730-29224B95A538}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B91B2356-8F8B-4197-A730-29224B95A538}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B91B2356-8F8B-4197-A730-29224B95A538}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC926C3D-685C-4023-8978-800602AB28C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC926C3D-685C-4023-8978-800602AB28C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC926C3D-685C-4023-8978-800602AB28C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC926C3D-685C-4023-8978-800602AB28C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
