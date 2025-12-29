@@ -209,9 +209,5 @@ namespace StudentPerformanceManagement.Controllers
         }
 
 
-       
-
-
-
     }
 }
