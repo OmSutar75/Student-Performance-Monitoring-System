@@ -116,6 +116,33 @@ namespace IdentityDemo.Controllers
 
                 TempData["Success"] = $"Staff added. Default Password: {finalPassword}";
 
+                var subject = "Welcome! Your Staff registraion is Complete";
+
+                var body = $@"
+                <div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;'>
+                    <h2 style='color: #2c3e50;'>Welcome to the Portal, {staff.Name}!</h2>
+                    <p>Congratulations, your registraion has been processed successfully. You can now access your staff dashboard using the credentials below:</p>
+    
+                    <div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff; margin: 20px 0;'>
+                        <p style='margin: 5px 0;'><strong>Username :</strong> {staff.Email}</p>
+                        <p style='margin: 5px 0;'><strong>Temporary Password:</strong> <code style='background: #eee; padding: 2px 5px;'>{finalPassword}</code></p>
+                    </div>
+
+
+                    <div style='text-align: center; margin-top: 30px;'>
+                        <a href='yourportal.com' style='background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;'>Login to Dashboard</a>
+                    </div>
+
+                    <hr style='border: 0; border-top: 1px solid #eee; margin: 30px 0;' />
+                    <p style='font-size: 0.8em; color: #777;'>
+                        Regards,<br/>
+                        <strong>Admin Team</strong><br/>
+                        Student Performance Management System
+                    </p>
+              </div>";
+
+
+                await _emailSender.SendEmailAsync(staff.Email, subject, body);
                 return RedirectToAction("Dashboard", "Account");
             }
 

@@ -30,7 +30,9 @@ namespace StudentPerformanceManagment.Controllers
             if (userId == null) return Unauthorized();
 
             var user = await _userManager.FindByIdAsync(userId);
+            var today = DateTime.Now;
 
+     
             var myTasks = await _context.Tasks
                 .Include(t => t.Course)
                 .Include(t => t.Subject)
@@ -38,13 +40,24 @@ namespace StudentPerformanceManagment.Controllers
                 .Where(t => t.Staff.AppUserId == userId)
                 .ToListAsync();
 
+       
+            var overdueTasks = myTasks.Where(t => t.Status != Status.Completed && t.ValidTo < today).ToList();
+
+            if (overdueTasks.Any())
+            {
+                foreach (var task in overdueTasks)
+                {
+                    task.Status = Status.Overdue; 
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
+       
             var vm = new StaffDashViewModel
             {
-                // ✅ Identity user id goes here
                 AppUserId = userId!,
-
                 StaffName = user?.UserName ?? "",
-
                 TotalTasks = myTasks.Count,
                 PendingTasks = myTasks.Count(t => t.Status == Status.Pending),
                 CompletedTasks = myTasks.Count(t => t.Status == Status.Completed),
@@ -54,19 +67,14 @@ namespace StudentPerformanceManagment.Controllers
                     TasksId = t.TasksId,
                     TasksTitle = t.TasksTitle,
                     TasksDescription = t.TasksDescription,
-
-                    CourseName = t.Course.CourseName,
-                    SubjectName = t.Subject.SubjectName,
-                    GroupName = t.CourseGroup.GroupName,
-
+                    CourseName = t.Course?.CourseName,
+                    SubjectName = t.Subject?.SubjectName,
+                    GroupName = t.CourseGroup?.GroupName,
                     ValidFrom = t.ValidFrom,
                     ValidTo = t.ValidTo,
-
-                    // ✅ enum → string
                     Status = t.Status
                 }).ToList()
             };
-
 
             return View(vm);
         }
@@ -221,7 +229,6 @@ namespace StudentPerformanceManagment.Controllers
                     ValidFrom = t.ValidFrom,
                     ValidTo = t.ValidTo,
 
-                    // ✅ enum → string
                     Status = t.Status
                 }).ToList()
             };

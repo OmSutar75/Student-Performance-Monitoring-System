@@ -63,29 +63,39 @@
                                 }
                             </td>
                             <td class="text-center">
-                                <div class="btn-group gap-2">
-                                    @if (item.Status != Status.Pending)
-                                    {
-                                        <button class="btn btn-sm btn-light rounded-pill px-3 border" disabled>
-                                            <i class="bi bi-lock-fill"></i> Locked
-                                        </button>
-                                        <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
-                                            <i class="bi bi-envelope"></i> Request
-                                        </a>
-
-                                       
-                                    }
-                                    else
-                                    {
-
-                                        <a href="/Staff/AddMark/@item.TasksId" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
-                                            <i class="bi bi-plus-lg"></i> Add Marks
-                                        </a>
-                                   
-                                    }
-                                 
-                                </div>
+                                @if (item.Status == Status.Pending)
+                                {
+                                    @* Task active hai aur pending hai *@
+                                    <a href="/Staff/AddMark/@item.TasksId" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
+                                        <i class="bi bi-plus-lg"></i> Add Marks
+                                    </a>
+                                }
+                                else if (item.Status == Status.Overdue)
+                                {
+                                    @* Task ki date nikal chuki hai *@
+                                    <button class="btn btn-sm btn-danger rounded-pill px-3 border" disabled>
+                                        <i class="bi bi-exclamation-triangle-fill"></i> Overdue
+                                    </button>
+                                    <a href="#" class="btn btn-sm btn-outline-warning rounded-pill px-3">
+                                        <i class="bi bi-clock-history"></i> Request Extension
+                                    </a>
+                                }
+                                else if (item.Status == Status.Completed)
+                                {
+                                    @* Task complete ho chuka hai *@
+                                    <button class="btn btn-sm btn-success rounded-pill px-3 border" disabled>
+                                        <i class="bi bi-check-circle-fill"></i> Completed
+                                    </button>
+                                }
+                                else
+                                {
+                                    @* Kisi bhi aur status ke liye (Locked/Other) *@
+                                    <button class="btn btn-sm btn-light rounded-pill px-3 border" disabled>
+                                        <i class="bi bi-lock-fill"></i> Locked
+                                    </button>
+                                }
                             </td>
+                         
                         </tr>
                     }
                 </tbody>
