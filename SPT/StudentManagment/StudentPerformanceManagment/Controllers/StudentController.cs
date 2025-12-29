@@ -271,9 +271,9 @@ namespace StudentPerformanceManagement.Controllers
                 {
                     string failed = "";
 
-                    if (m.TheoryMarks < 40) failed += "T";
-                    if (m.LabMarks < 20) failed += "L";
-                    if (m.InternalMarks < 20) failed += "I";
+                    if (m.TheoryMarks < (m.Subject.MaxTheoryMarks * 0.4)) failed += "T";
+                    if (m.LabMarks < (m.Subject.MaxLabMarks * 0.4)) failed += "L";
+                    if (m.InternalMarks < (m.Subject.MaxInternalMarks * 0.4)) failed += "I";
 
                     bool isPass = failed == "";
 
@@ -421,110 +421,6 @@ namespace StudentPerformanceManagement.Controllers
             return View(model);
         }
 
-        #endregion
-
-
-        #region Rank
-
-
-        //[HttpGet]
-        //public IActionResult CourseWiseReport()
-        //{
-        //    var model = new CourseWiseReportVM
-        //    {
-        //        Courses = _context.Courses.Select(c => new SelectListItem
-        //        {
-        //            Text = c.CourseName,
-        //            Value = c.CourseId.ToString()
-        //        }).ToList()
-        //    };
-
-        //    return View(model);
-        //}
-
-
-        //[HttpPost]
-        //public IActionResult CourseWiseReport(CourseWiseReportVM model)
-        //{
-        //    model.Courses = _context.Courses.Select(c => new SelectListItem
-        //    {
-        //        Text = c.CourseName,
-        //        Value = c.CourseId.ToString()
-        //    }).ToList();
-
-        //    var subjectNames = _context.Subjects
-        //        .Where(s => s.CourseId == model.CourseId)
-        //        .Select(s => s.SubjectName)
-        //        .ToList();
-
-        //    var students = _context.Students
-        //        .Include(s => s.Marks)
-        //        .ThenInclude(m => m.Subject)
-        //        .Where(s => s.CourseId == model.CourseId)
-        //        .ToList();
-
-        //    var list = students.Select(s =>
-        //    {
-        //        var marksList = new List<SubjectMarksVM>();
-        //        int total = 0;
-        //        bool courseFail = false;
-
-        //        foreach (var m in s.Marks)
-        //        {
-        //            string failed = "";
-        //            if (m.TheoryMarks < 16) failed += "T";
-        //            if (m.LabMarks < 16) failed += "L";
-        //            if (m.InternalMarks < 8) failed += "I";
-
-        //            if (failed != "") courseFail = true;
-
-        //            marksList.Add(new SubjectMarksVM
-        //            {
-        //                SubjectName = m.Subject.SubjectName,
-        //                Theory = m.TheoryMarks,
-        //                Lab = m.LabMarks,
-        //                Internal = m.InternalMarks,
-        //                FailedIn = failed
-        //            });
-
-        //            total += m.TheoryMarks + m.LabMarks + m.InternalMarks;
-        //        }
-
-        //        return new StudentRankingRowVM
-        //        {
-        //            PRN = s.PRN,
-        //            StudentName = s.Name,
-        //            SubjectMarks = marksList,
-        //            TotalMarks = total,
-        //            Percentage = Math.Round((double)total / (subjectNames.Count * 100) * 100, 2),
-        //            ResultStatus = courseFail ? "FAIL" : "PASS"
-        //        };
-        //    })
-        //    .OrderByDescending(x => x.TotalMarks)
-        //    .ToList();
-
-        //    // Rank with ties
-        //    int rank = 1, prev = -1, skip = 0;
-        //    foreach (var item in list)
-        //    {
-        //        if (item.TotalMarks == prev)
-        //        {
-        //            item.Rank = rank;
-        //            skip++;
-        //        }
-        //        else
-        //        {
-        //            rank += skip;
-        //            item.Rank = rank;
-        //            skip = 1;
-        //            prev = item.TotalMarks;
-        //        }
-        //    }
-
-        //    model.SubjectNames = subjectNames;
-        //    model.RankingRows = list;
-        //    return View(model);
-        //}
         #endregion
 
     }
