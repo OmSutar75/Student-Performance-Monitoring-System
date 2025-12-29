@@ -27,7 +27,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\GitUpdate\IIT-08-C-DotNet\Project\EmailService\EmailService.csproj" />
-    <ProjectReference Include="..\..\GitUpdate\IIT-08-C-DotNet\Project\EmailService\EmailService.csproj" />
   </ItemGroup>
+
+ 
 
 </Project>
