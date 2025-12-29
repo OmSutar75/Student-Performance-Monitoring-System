@@ -7,7 +7,6 @@ using Microsoft.Extensions.Options;
 
 namespace EmailService
 {
-    
     public class SmtpEmailSender : IEmailSender
     {
         private readonly SmtpSettings _settings;
