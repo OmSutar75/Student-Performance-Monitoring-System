@@ -4,22 +4,39 @@
     ViewData["Title"] = "Add Task";
 }
 
-<h1>AddTask</h1>
+<div class="d-flex justify-content-between align-items-center mb-4 px-3 py-3 bg-white rounded shadow-sm border">
+    <div class="d-flex align-items-center gap-2">
+        <!-- Using a 'plus' or 'form' icon for Add Task -->
+        <i class="bi bi-file-earmark-plus fs-4 text-primary"></i>
+        <h4 class="fw-semibold mb-0">Add Task</h4>
+    </div>
 
-<h4>Tasks</h4>
+    <a asp-action="Tasks" class="btn btn-primary d-flex align-items-center gap-2 px-4">
+        <!-- Arrow icon for "Back" -->
+        <i class="bi bi-arrow-left"></i>
+        <span>Back to List</span>
+    </a>
+</div>
+
+
+
+
 <hr />
 <div class="row justify-content-center">
-    <div class="col-md-4 ">
+    <div class="col-md-4">
         <form asp-action="AddTask">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="mb-3">
                 <label class="form-label">Title</label>
-                <input type="text" name="Title" class="form-control" required />
+                <input type="text" asp-for="TasksTitle" class="form-control" required />
             </div>
+
             <div class="mb-3">
                 <label class="form-label">Description</label>
-                <input type="text" name="Description" class="form-control" required />
+                <input type="text" asp-for="TasksDescription" class="form-control" required />
             </div>
+
             <div class="mb-3">
                 <label class="form-label">Staff</label>
                 <select asp-for="StaffId"
@@ -28,38 +45,48 @@
                     <option value="">-- Select Staff --</option>
                 </select>
             </div>
+
             <div class="mb-3">
                 <label class="form-label">Course</label>
                 <select asp-for="CourseId"
                         asp-items="Model.Courses"
-                        class="form-control">
+                        class="form-control"
+                        id="CourseId">
                     <option value="">-- Select Course --</option>
                 </select>
             </div>
+
             <div class="mb-3">
                 <label class="form-label">Course Group</label>
                 <select asp-for="CourseGroupId"
-                        asp-items="Model.CourseGroups"
-                        class="form-control">
+                        class="form-control"
+                        id="CourseGroupId">
                     <option value="">-- Select Course Group --</option>
                 </select>
             </div>
+
             <div class="mb-3">
                 <label class="form-label">Subject</label>
                 <select asp-for="SubjectId"
-                        asp-items="Model.Subjects"
-                        class="form-control">
+                        class="form-control"
+                        id="SubjectId">
                     <option value="">-- Select Subject --</option>
                 </select>
             </div>
+
             <div class="mb-3">
                 <label class="form-label">Valid From</label>
-                <input type="date" name="ValidFrom" class="form-control" required />
+                <input type="date" asp-for="ValidFrom" class="form-control"
+                       value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
             </div>
+
             <div class="mb-3">
                 <label class="form-label">Valid To</label>
-                <input type="date" name="ValidTo" class="form-control" required />
+                <input type="date" asp-for="ValidTo" class="form-control"
+                       value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
             </div>
+
+
             <div class="form-group">
                 <input type="submit" value="Add" class="btn btn-primary" />
             </div>
@@ -67,6 +94,34 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Tasks">Back to List</a>
-</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#CourseId').change(function () {
+                var courseId = $(this).val();
+
+                // Clear dropdowns
+                $('#CourseGroupId').empty().append('<option value="">-- Select Course Group --</option>');
+                $('#SubjectId').empty().append('<option value="">-- Select Subject --</option>');
+
+                if (courseId) {
+                    // Load Course Groups
+                    $.getJSON('@Url.Action("GetGroupsByCourse")', { courseId: courseId }, function (data) {
+                        $.each(data, function (i, item) {
+                            $('#CourseGroupId').append('<option value="' + item.courseGroupId + '">' + item.groupName + '</option>');
+                        });
+                    });
+
+                    // Load Subjects
+                    $.getJSON('@Url.Action("GetSubjectsByCourse")', { courseId: courseId }, function (data) {
+                        $.each(data, function (i, item) {
+                            $('#SubjectId').append('<option value="' + item.subjectId + '">' + item.subjectName + '</option>');
+                        });
+                    });
+                }
+            });
+        });
+    </script>
+}
