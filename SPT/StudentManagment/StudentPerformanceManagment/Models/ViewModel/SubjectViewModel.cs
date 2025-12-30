@@ -12,7 +12,7 @@ namespace StudentPerformanceManagment.Models.ViewModel
 
         public int MaxTheoryMarks { get; set; } = 40;
         public int MaxLabMarks { get; set; } = 40;
-        public int MaxInternalMarks { get; set; } = 40;
+        public int MaxInternalMarks { get; set; } = 20;
 
         public int PassingPercentTotal { get; set; } = 40; //out of all subject
         public int PassingPercentEachComponent { get; set; } = 40; //for theory,lab,internal
