@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using EmailService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StudentPerformanceManagement.Models;
+using StudentPerformanceManagement.ViewModel;
 using StudentPerformanceManagment;
 using StudentPerformanceManagment.Models;
 using StudentPerformanceManagment.Models.ViewModel;
-using EmailService;
 
 namespace IdentityDemo.Controllers
 {
@@ -349,6 +350,9 @@ namespace IdentityDemo.Controllers
         }
 
 
+        
+
+        #region Anurag
         public string GeneratePRN()
         {
             int year = DateTime.Now.Year;
@@ -371,28 +375,59 @@ namespace IdentityDemo.Controllers
             return basePart + next.ToString("D4");
         }
 
-
-
         // ENROLL STUDENT (GET)
         [HttpGet]
         public IActionResult EnrollStudent()
         {
-            return View();
+            var model = new StudentEnrollmentViewModel
+            {
+                Courses = _context.Courses
+                    .Select(c => new SelectListItem
+                    {
+                        Text = c.CourseName.ToString(),
+                        Value = c.CourseId.ToString(),
+                    }).ToList(),
+
+                CourseGroups = _context.CourseGroups
+                    .Select(g => new SelectListItem
+                    {
+                        Text = g.GroupName.ToString(),
+                        Value = g.CourseGroupId.ToString()
+                    }).ToList()
+            };
+
+            return View(model);
         }
 
-        // ENROLL STUDENT (POST)
-        [HttpPost]
-        public async Task<IActionResult> EnrollStudent(string name, string email, string mobile, int course, int groupid)
-        {
-            string defaultPassword = "Student@123";
 
-            string defaultprofileimage = "/uploads/StudProfile.jpg";
+
+        [HttpPost]
+        public async Task<IActionResult> EnrollStudent(StudentEnrollmentViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.Courses = _context.Courses.Select(c => new SelectListItem
+                {
+                    Text = c.CourseName,
+                    Value = c.CourseId.ToString()
+                }).ToList();
+
+                model.CourseGroups = _context.CourseGroups.Select(g => new SelectListItem
+                {
+                    Text = g.GroupName,
+                    Value = g.CourseGroupId.ToString()
+                }).ToList();
+
+                return View(model);
+            }
+
+            string defaultPassword = "Student@123";
 
             var user = new AppUser
             {
-                UserName = email,
-                Email = email,
-                FullName = name,
+                UserName = model.Email,
+                Email = model.Email,
+                FullName = model.Name,
                 EmailConfirmed = true
             };
 
@@ -404,57 +439,59 @@ namespace IdentityDemo.Controllers
 
                 var student = new Student
                 {
-                    Name = name,
-                    Email = email,
+                    PRN = GeneratePRN(),
+                    Name = model.Name,
+                    Email = model.Email,
                     AppUserId = user.Id,
-                    MobileNo = mobile,
-                    CourseId = course,
-                    CourseGroupId = groupid,
-                    ProfileImagePath= defaultprofileimage
-
+                    MobileNo = model.MobileNo,
+                    CourseId = model.CourseId,
+                    CourseGroupId = model.CourseGroupId,
+                    ProfileImagePath = model.ProfileImagePath
                 };
 
                 _context.Students.Add(student);
                 await _context.SaveChangesAsync();
 
+                //return RedirectToAction("Dashboard", "Account");
                 var subject = "Welcome! Your Student Enrollment is Complete";
 
                 var body = $@"
-                <div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;'>
-                    <h2 style='color: #2c3e50;'>Welcome to the Portal, {student.Name}!</h2>
-                    <p>Congratulations, your enrollment has been processed successfully. You can now access your student dashboard using the credentials below:</p>
-    
-                    <div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff; margin: 20px 0;'>
-                        <p style='margin: 5px 0;'><strong>Username (PRN):</strong> {student.PRN}</p>
-                        <p style='margin: 5px 0;'><strong>Temporary Password:</strong> <code style='background: #eee; padding: 2px 5px;'>{defaultPassword}</code></p>
-                    </div>
+                        <div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;'>
+                            <h2 style='color: #2c3e50;'>Welcome to the Portal, {student.Name}!</h2>
+                            <p>Congratulations, your enrollment has been processed successfully. You can now access your student dashboard using the credentials below:</p>
 
-                    <p style='color: #e67e22;'><strong>Note:</strong> For security reasons, please change your password immediately after your first login.</p>
+                            <div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff; margin: 20px 0;'>
+                                <p style='margin: 5px 0;'><strong>Username (PRN):</strong> {student.PRN}</p>
+                                <p style='margin: 5px 0;'><strong>Temporary Password:</strong> <code style='background: #eee; padding: 2px 5px;'>{defaultPassword}</code></p>
+                            </div>
 
-                    <div style='text-align: center; margin-top: 30px;'>
-                        <a href='yourportal.com' style='background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;'>Login to Dashboard</a>
-                    </div>
+                            <p style='color: #e67e22;'><strong>Note:</strong> For security reasons, please change your password immediately after your first login.</p>
 
-                    <hr style='border: 0; border-top: 1px solid #eee; margin: 30px 0;' />
-                    <p style='font-size: 0.8em; color: #777;'>
-                        Regards,<br/>
-                        <strong>Admin Team</strong><br/>
-                        Student Performance Management System
-                    </p>
-              </div>";
+                            <div style='text-align: center; margin-top: 30px;'>
+                                <a href='yourportal.com' style='background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;'>Login to Dashboard</a>
+                            </div>
+
+                            <hr style='border: 0; border-top: 1px solid #eee; margin: 30px 0;' />
+                            <p style='font-size: 0.8em; color: #777;'>
+                                Regards,<br/>
+                                <strong>Admin Team</strong><br/>
+                                Student Performance Management System
+                            </p>
+                      </div>";
 
 
                 await _emailSender.SendEmailAsync(student.Email, subject, body);
-                return RedirectToAction("Dashboard", "Account");
             }
 
             foreach (var error in result.Errors)
                 ModelState.AddModelError("", error.Description);
 
-            return View();
+            return RedirectToAction("Dashboard");
+
         }
 
 
+        #endregion
 
         #region Om 
 
@@ -741,6 +778,161 @@ namespace IdentityDemo.Controllers
         }
 
 
+
+
+        #endregion
+
+        #region report
+        [HttpGet]
+        public IActionResult SubjectWiseReport()
+        {
+            var model = new SubjectWiseReportVM
+            {
+                Courses = _context.Courses.Select(c => new SelectListItem
+                {
+                    Text = c.CourseName,
+                    Value = c.CourseId.ToString()
+                }).ToList(),
+
+                Subjects = new List<SelectListItem>()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult SubjectWiseReport(SubjectWiseReportVM model)
+        {
+            model.Courses = _context.Courses.Select(c => new SelectListItem
+            {
+                Text = c.CourseName,
+                Value = c.CourseId.ToString()
+            }).ToList();
+
+            model.ReportRows = _context.Marks
+                .Include(m => m.Student)
+                .Where(m => m.SubjectId == model.SubjectId)
+                .Select(m => new StudentMarksRowVM
+                {
+                    PRN = m.Student.PRN,
+                    StudentName = m.Student.Name,
+                    TheoryMarks = m.TheoryMarks,
+                    LabMarks = m.LabMarks,
+                    InternalMarks = m.InternalMarks,
+                    TotalMarks = 100,
+                    ObtainedMarks = m.TheoryMarks + m.LabMarks + m.InternalMarks,
+                    ResultStatus = (m.TheoryMarks + m.LabMarks + m.InternalMarks) >= 40 ? "Pass" : "Fail"
+                }).ToList();
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult CourseWiseReport()
+        {
+            var model = new CourseWiseReportVM
+            {
+                Courses = _context.Courses.Select(c => new SelectListItem
+                {
+                    Text = c.CourseName,
+                    Value = c.CourseId.ToString()
+                }).ToList()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult CourseWiseReport(CourseWiseReportVM model)
+        {
+            model.Courses = _context.Courses
+                .Select(c => new SelectListItem
+                {
+                    Text = c.CourseName,
+                    Value = c.CourseId.ToString()
+                })
+                .ToList();
+
+            if (model.CourseId == 0)
+            {
+                model.RankingRows = new List<StudentRankingRowVM>();
+                return View(model);
+            }
+
+            const int MAX_SUBJECT_MARKS = 100;
+
+            var students = _context.Students
+                .Where(s => s.CourseId == model.CourseId)
+                .Select(s => new
+                {
+                    s.PRN,
+                    s.Name,
+                    Marks = s.Marks.Select(m => new
+                    {
+                        m.TheoryMarks,
+                        m.LabMarks,
+                        m.InternalMarks
+                    }).ToList()
+                })
+                .ToList();
+
+            var resultList = students.Select(s =>
+            {
+                // ❗ If no marks entered → FAIL
+                if (!s.Marks.Any())
+                {
+                    return new StudentRankingRowVM
+                    {
+                        PRN = s.PRN,
+                        StudentName = s.Name,
+                        TotalMarks = 0,
+                        Percentage = 0,
+                        ResultStatus = "FAIL",
+                        Rank = 0
+                    };
+                }
+
+                int totalMarks = s.Marks.Sum(m =>
+                    m.TheoryMarks + m.LabMarks + m.InternalMarks);
+
+                bool isPass = s.Marks.All(m =>
+                {
+                    return m.TheoryMarks >= 16
+                        && m.LabMarks >= 16
+                        && m.InternalMarks >= 8;
+                });
+
+                return new StudentRankingRowVM
+                {
+                    PRN = s.PRN,
+                    StudentName = s.Name,
+                    TotalMarks = totalMarks,
+
+                    // ✅ CORRECT PERCENTAGE
+                    Percentage = Math.Round(
+                        (double)totalMarks / (s.Marks.Count * MAX_SUBJECT_MARKS) * 100, 2),
+
+                    ResultStatus = isPass ? "PASS" : "FAIL"
+                };
+            })
+            .OrderByDescending(x => x.TotalMarks)
+            .ToList();
+
+            // Rank only PASS students
+            int rank = 1;
+            foreach (var item in resultList.Where(r => r.ResultStatus == "PASS"))
+            {
+                item.Rank = rank++;
+            }
+
+            foreach (var item in resultList.Where(r => r.ResultStatus == "FAIL"))
+            {
+                item.Rank = 0;
+            }
+
+            model.RankingRows = resultList;
+            return View(model);
+        }
 
 
         #endregion
