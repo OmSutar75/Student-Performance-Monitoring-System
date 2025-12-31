@@ -57,8 +57,15 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <a class="navbar-brand fw-bold text-primary" asp-controller="Home" asp-action="Index">SPMS Portal</a>
+                @if (TempData["UserController"] != null)
+                {
+                    <a class="navbar-brand fw-bold text-primary" asp-controller="@TempData["UserController"]" asp-action="Dashboard">SPMS Portal</a>
+                }
+                else
+                {
+                    <a class="navbar-brand fw-bold text-primary" asp-controller="Account" asp-action="Login">SPMS Portal</a>
 
+                }
                 <div class="ms-auto d-none d-md-block">
                     <small class="text-muted">Academic Session 2025</small>
                 </div>
