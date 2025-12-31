@@ -35,6 +35,7 @@
                         <tbody>
                             @foreach (var item in Model.RankingRows)
                             {
+                                
                                 <tr class="@(item.ResultStatus == "FAIL" ? "table-danger" : "")">
                                     <td class="fw-bold">@item.Rank</td>
                                     <td>@item.PRN</td>

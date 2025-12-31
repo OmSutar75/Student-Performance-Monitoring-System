@@ -73,6 +73,27 @@ namespace StudentPerformanceManagment.Models
             }
         }
 
+        public string FailedIn()
+        {
+            int mt = Subject.MaxTheoryMarks;
+            int mi = Subject.MaxInternalMarks;
+            int ml = Subject.MaxLabMarks;
+            int passingPercent = Subject.PassingPercentEachComponent;
+            /*(current / maximum) * 100*/
+
+            double theoryPercent = (TheoryMarks / (Double)mt) * 100;
+            double labPercent = (LabMarks / (Double)ml) * 100;
+            double internalPercent = (InternalMarks / (Double)mi) * 100;
+
+            if (theoryPercent < passingPercent && labPercent < passingPercent && internalPercent < passingPercent) return "TLI";
+            else if (theoryPercent < passingPercent && labPercent < passingPercent) return "TL";
+            else if (theoryPercent < passingPercent && internalPercent < passingPercent) return "TI";
+            else if (internalPercent < passingPercent && labPercent < passingPercent) return "IL";
+            else if (internalPercent < passingPercent) return "I";
+            else if (theoryPercent < passingPercent) return "T";
+            else if (labPercent < passingPercent) return "L";
+            return "P";
+        }
 
 
     }

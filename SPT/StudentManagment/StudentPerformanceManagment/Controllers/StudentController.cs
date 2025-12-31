@@ -287,7 +287,7 @@ namespace StudentPerformanceManagement.Controllers
                     Total = m.TotalObtained,
                     Status = m.ResultStatus == "Pass" ? true : false,
                     MaxMarks = m.Subject.MaxLabMarks + m.Subject.MaxLabMarks + m.Subject.MaxInternalMarks,
-                    // FailedIn = m.FailedIn(),
+                    FailedIn = m.FailedIn(),
                 }).ToList()
             };
 
@@ -337,17 +337,29 @@ namespace StudentPerformanceManagement.Controllers
 
             var list = _context.Marks
                 .Include(m => m.Student)
+                .Include(m => m.Subject)
                 .Where(m => m.SubjectId == model.SubjectId)
                 .ToList()
                 .Select(m =>
                 {
+                    bool isPass = false;
                     string failed = "";
 
-                    if (m.TheoryMarks < (m.Subject.MaxTheoryMarks * 0.4)) failed += "T";
-                    if (m.LabMarks < (m.Subject.MaxLabMarks * 0.4)) failed += "L";
-                    if (m.InternalMarks < (m.Subject.MaxInternalMarks * 0.4)) failed += "I";
+                    bool marksEntered = !(m.TheoryMarks == 0 && m.LabMarks == 0 && m.InternalMarks == 0);
 
-                    bool isPass = failed == "";
+                    if (marksEntered)
+                    {
+                        if (m.TheoryMarks < (m.Subject.MaxTheoryMarks * 0.4)) failed += "T";
+                        if (m.LabMarks < (m.Subject.MaxLabMarks * 0.4)) failed += "L";
+                        if (m.InternalMarks < (m.Subject.MaxInternalMarks * 0.4)) failed += "I";
+
+                        isPass = failed.Length < 2;
+                    }
+                    else
+                    {
+                        failed = "NA";
+                        isPass = false;
+                    }
 
                     return new StudentMarksRowVM
                     {
@@ -359,11 +371,13 @@ namespace StudentPerformanceManagement.Controllers
                         TotalMarks = 100,
                         ObtainedMarks = m.TheoryMarks + m.LabMarks + m.InternalMarks,
                         FailedIn = failed,
-                        ResultStatus = isPass ? "Pass" : "Fail"
+                        ResultStatus = marksEntered ? (isPass ? "Pass" : "Fail") : "Not Entered"
                     };
                 })
                 .OrderByDescending(x => x.ObtainedMarks)
                 .ToList();
+
+
 
 
             int rank = 1;
@@ -394,14 +408,13 @@ namespace StudentPerformanceManagement.Controllers
 
         #region Student Course-Wise Ranking Report 
         [Authorize(Roles = "Student")]
+
         public async Task<IActionResult> CourseWiseReport()
         {
-            // 1. Get logged-in user
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return Unauthorized();
 
-            // 2. Get logged-in student's record
             var currentStudent = await _context.Students
                 .Include(s => s.Course)
                 .FirstOrDefaultAsync(s => s.AppUserId == user.Id);
@@ -409,34 +422,78 @@ namespace StudentPerformanceManagement.Controllers
             if (currentStudent == null)
                 return Unauthorized();
 
-            // 3. Get all students from the same course with marks
             var students = await _context.Students
                 .Include(s => s.Marks)
                     .ThenInclude(m => m.Subject)
                 .Where(s => s.CourseId == currentStudent.CourseId)
                 .ToListAsync();
 
-            // 4. Get subject names
             var subjectNames = await _context.Subjects
                 .Where(s => s.CourseId == currentStudent.CourseId)
                 .Select(s => s.SubjectName)
                 .ToListAsync();
 
-            // 5. Build ranking rows
             var rankingList = students.Select(s =>
             {
                 int total = 0;
                 bool courseFail = false;
                 var marksList = new List<SubjectMarksVM>();
 
-                foreach (var m in s.Marks)
+                foreach (var subjectName in subjectNames)
                 {
-                    string failed = "";
-                    if (m.TheoryMarks < 16) failed += "T";
-                    if (m.LabMarks < 16) failed += "L";
-                    if (m.InternalMarks < 8) failed += "I";
+                    var m = s.Marks.FirstOrDefault(x => x.Subject.SubjectName == subjectName);
 
-                    if (!string.IsNullOrEmpty(failed))
+                    // No subject record
+                    if (m == null)
+                    {
+                        courseFail = true;
+
+                        marksList.Add(new SubjectMarksVM
+                        {
+                            SubjectName = subjectName,
+                            Theory = 0,
+                            Lab = 0,
+                            Internal = 0,
+                            FailedIn = "N"
+                        });
+
+                        continue;
+                    }
+
+                    string failed = "";
+
+                    bool notEntered = m.TheoryMarks == 0 && m.LabMarks == 0 && m.InternalMarks == 0;
+
+                    if (notEntered)
+                    {
+                        courseFail = true;
+
+                        marksList.Add(new SubjectMarksVM
+                        {
+                            SubjectName = m.Subject.SubjectName,
+                            Theory = m.TheoryMarks,
+                            Lab = m.LabMarks,
+                            Internal = m.InternalMarks,
+                            FailedIn = "N"
+                        });
+
+                        continue;
+                    }
+
+                    bool isTheoryPass = m.TheoryMarks >= 16;
+                    bool isLabPass = m.LabMarks >= 16;
+                    bool isInternalPass = m.InternalMarks >= 8;
+
+                    int passCount = 0;
+                    if (isTheoryPass) passCount++;
+                    if (isLabPass) passCount++;
+                    if (isInternalPass) passCount++;
+
+                    if (!isTheoryPass) failed += "T";
+                    if (!isLabPass) failed += "L";
+                    if (!isInternalPass) failed += "I";
+
+                    if (passCount < 2)
                         courseFail = true;
 
                     marksList.Add(new SubjectMarksVM
@@ -457,7 +514,8 @@ namespace StudentPerformanceManagement.Controllers
                     StudentName = s.Name,
                     SubjectMarks = marksList,
                     TotalMarks = total,
-                    Percentage = Math.Round((double)total / (subjectNames.Count * 100) * 100, 2),
+                    Percentage = subjectNames.Count == 0 ? 0 :
+                        Math.Round((double)total / (subjectNames.Count * 100) * 100, 2),
                     ResultStatus = courseFail ? "FAIL" : "PASS"
                 };
             })
@@ -465,14 +523,11 @@ namespace StudentPerformanceManagement.Controllers
             .ThenBy(x => x.StudentName)
             .ToList();
 
-            // 6. Assign ranks with ties
             int rank = 0, prev = -1;
             foreach (var item in rankingList)
             {
                 if (item.TotalMarks == prev)
-                {
                     item.Rank = rank;
-                }
                 else
                 {
                     rank++;
@@ -481,7 +536,6 @@ namespace StudentPerformanceManagement.Controllers
                 }
             }
 
-            // 7. Build ViewModel
             var model = new CourseWiseReportVM
             {
                 SubjectNames = subjectNames,
@@ -490,6 +544,120 @@ namespace StudentPerformanceManagement.Controllers
 
             return View(model);
         }
+
+
+
+
+
+
+
+        //public async Task<IActionResult> CourseWiseReport()
+        //{
+        //    // 1. Get logged-in user
+        //    var user = await _userManager.GetUserAsync(User);
+        //    if (user == null)
+        //        return Unauthorized();
+
+        //    // 2. Get logged-in student's record
+        //    var currentStudent = await _context.Students
+        //        .Include(s => s.Course)
+        //        .FirstOrDefaultAsync(s => s.AppUserId == user.Id);
+
+        //    if (currentStudent == null)
+        //        return Unauthorized();
+
+        //    // 3. Get all students from the same course with marks
+        //    var students = await _context.Students
+        //        .Include(s => s.Marks)
+        //            .ThenInclude(m => m.Subject)
+        //        .Where(s => s.CourseId == currentStudent.CourseId)
+        //        .ToListAsync();
+
+        //    // 4. Get subject names
+        //    var subjectNames = await _context.Subjects
+        //        .Where(s => s.CourseId == currentStudent.CourseId)
+        //        .Select(s => s.SubjectName)
+        //        .ToListAsync();
+
+        //    // 5. Build ranking rows
+        //    var rankingList = students.Select(s =>
+        //    {
+        //        int total = 0;
+        //        bool courseFail = false;
+        //        var marksList = new List<SubjectMarksVM>();
+
+        //        foreach (var m in s.Marks)
+        //        {
+        //            string failed = "";
+
+        //            bool isTheoryPass = m.TheoryMarks >= 16;
+        //            bool isLabPass = m.LabMarks >= 16;
+        //            bool isInternalPass = m.InternalMarks >= 8;
+
+        //            int passCount = 0;
+        //            if (isTheoryPass) passCount++;
+        //            if (isLabPass) passCount++;
+        //            if (isInternalPass) passCount++;
+
+        //            if (!isTheoryPass) failed += "T";
+        //            if (!isLabPass) failed += "L";
+        //            if (!isInternalPass) failed += "I";
+
+        //            // Subject fails only if less than 2 sections pass
+        //            if (passCount < 2)
+        //                courseFail = true;
+
+        //            marksList.Add(new SubjectMarksVM
+        //            {
+        //                SubjectName = m.Subject.SubjectName,
+        //                Theory = m.TheoryMarks,
+        //                Lab = m.LabMarks,
+        //                Internal = m.InternalMarks,
+        //                FailedIn = failed
+        //            });
+
+        //            total += m.TheoryMarks + m.LabMarks + m.InternalMarks;
+        //        }
+
+        //        return new StudentRankingRowVM
+        //        {
+        //            PRN = s.PRN,
+        //            StudentName = s.Name,
+        //            SubjectMarks = marksList,
+        //            TotalMarks = total,
+        //            Percentage = Math.Round((double)total / (subjectNames.Count * 100) * 100, 2),
+        //            ResultStatus = courseFail ? "FAIL" : "PASS"
+        //        };
+        //    })
+        //    .OrderByDescending(x => x.TotalMarks)
+        //    .ThenBy(x => x.StudentName)
+        //    .ToList();
+
+        //    // 6. Assign ranks with ties
+        //    int rank = 0, prev = -1;
+        //    foreach (var item in rankingList)
+        //    {
+        //        if (item.TotalMarks == prev)
+        //        {
+        //            item.Rank = rank;
+        //        }
+        //        else
+        //        {
+        //            rank++;
+        //            item.Rank = rank;
+        //            prev = item.TotalMarks;
+        //        }
+        //    }
+
+        //    // 7. Build ViewModel
+        //    var model = new CourseWiseReportVM
+        //    {
+        //        SubjectNames = subjectNames,
+        //        RankingRows = rankingList,
+        //    };
+
+        //    return View(model);
+        //}
 
         #endregion
 
