@@ -237,6 +237,10 @@ namespace StudentPerformanceManagment.Controllers
             return View(vm); // MyTasks.cshtml
         }
 
+        public IActionResult LateRequests()
+        {
+            return View();
+        }
 
     }
 }
