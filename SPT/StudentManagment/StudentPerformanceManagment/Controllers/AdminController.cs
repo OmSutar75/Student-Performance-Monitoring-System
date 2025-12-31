@@ -422,6 +422,7 @@ namespace IdentityDemo.Controllers
             }
 
             string defaultPassword = "Student@123";
+            string profileimage = "/uploads/StudProfile.jpg";
 
             var user = new AppUser
             {
@@ -446,7 +447,7 @@ namespace IdentityDemo.Controllers
                     MobileNo = model.MobileNo,
                     CourseId = model.CourseId,
                     CourseGroupId = model.CourseGroupId,
-                    ProfileImagePath = model.ProfileImagePath
+                    ProfileImagePath = profileimage
                 };
 
                 _context.Students.Add(student);
