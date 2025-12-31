@@ -2,6 +2,12 @@
 
 @{
     ViewData["Title"] = "Add Task";
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            alert('@TempData["Error"]');
+        </script>
+    }
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4 px-3 py-3 bg-white rounded shadow-sm border">

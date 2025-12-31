@@ -1,14 +1,12 @@
 ﻿@model List<StudentPerformanceManagment.Models.ViewModel.TasksViewModel>
 
 @{
-    ViewData["Title"] = "All Tasks";
+ViewData["Title"] = "All Tasks";
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/task-actions.css" />
-    
+<link rel="stylesheet" href="~/css/task-actions.css" />
 }
-
 
 <div class="container-fluid">
 
@@ -25,72 +23,92 @@
         </a>
     </div>
 
+    <!-- Status Filter Form -->
+    <div class="mb-4 col-md-3">
+        <form method="get" asp-action="Tasks">
+            <select name="taskStatus" class="form-select" onchange="this.form.submit()">
+                <option value="">-- All Tasks --</option>
+                <!option value="0" @(ViewBag.SelectedStatus?.ToString() == "0" ? "selected" : "")>Pending</!option>
+                <!option value="1" @(ViewBag.SelectedStatus?.ToString() == "1" ? "selected" : "")>Completed</!option>
+                <!option value="2" @(ViewBag.SelectedStatus?.ToString() == "2" ? "selected" : "")>Overdue</!option>
+            </select>
+        </form>
+    </div>
 
     <!-- task Table -->
     <div class="card shadow-sm">
         <div class="card-body p-0">
             <table class="table table-hover mb-0 align-middle">
                 <thead class="table-light">
-
                     <tr>
                         <th hidden>Id</th>
                         <th>Title</th>
-                        @* <th>Description</th> *@
                         <th>Assigned To</th>
                         <th>Course</th>
                         <th>Group</th>
                         <th>Subject</th>
-                        @* <th>Status</th *@
+                        <th>Status</th> <!-- Added Status Column -->
                         <th>Valid Till</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
 
                 <tbody>
+                    @if (Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td hidden>@item.TasksId</td>
+                                <td>@item.TasksTitle</td>
+                                <td>@item.StaffName</td>
+                                <td>@item.CourseName</td>
+                                <td>@item.GroupName</td>
+                                <td>@item.SubjectName</td>
+                                <td>
+                                    @* Display status as a badge *@
+                                    @if ((int)item.Status == 0)
+                                    {
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    }
+                                    else if ((int)item.Status == 1)
+                                    {
 
-                    @foreach (var item in Model)
+                                        <span class="badge bg-success">Completed</span>
+                                    }
+                                    else
+                                    {
+
+                                        <span class="badge bg-danger">Overdue</span>
+                                    }
+                                </td>
+                                <td>@item.ValidTo.ToString("yyyy-MM-dd")</td>
+
+                                <td class="text-center">
+                                    <div class="task-action-cell">
+                                        <a asp-action="EditTask" asp-route-id="@item.TasksId" class="btn btn-outline-warning btn-sm task-action-btn" title="Edit">
+                                            Edit
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+
+                                        <a asp-action="DeleteTask" asp-route-id="@item.TasksId" class="btn btn-outline-danger btn-sm task-action-btn" title="Delete"
+                                           onclick="return confirm('Are you sure you want to delete this task?');">
+                                            Delete
+                                            <i class="bi bi-trash-fill"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
                     {
                         <tr>
-                            <td hidden>@item.TasksId</td>
-                            <td>@item.TasksTitle</td>
-                            @* <td>@item.Description</td> *@
-                            <td>@item.StaffName</td>
-                            <td>@item.CourseName</td>
-                            <td>@item.GroupName</td>
-                            <td>@item.SubjectName</td>
-                            @* <td>@item.Status</td> *@
-                            <td>@item.ValidTo.Date</td>
-                            
-                            <td class="text-center">
-                                
-                                <div class="task-action-cell">
-
-                                    <a asp-action="EditTask"
-                                       asp-route-id="@item.TasksId"
-                                       class="btn btn-outline-warning task-action-btn"
-                                       title="Edit" >Edit
-                                        <i class="bi bi-pencil-fill"></i>
-                                    </a>
-
-                                    <a asp-action="DeleteTask"
-                                       asp-route-id="@item.TasksId"
-                                       class="btn btn-outline-danger task-action-btn"
-                                       title="Delete"
-                                       onclick="return confirm('Are you sure you want to delete this task?');">Delete
-                                        <i class="bi bi-trash-fill"></i>
-                                    </a>
-
-                                </div>
-                            </td>
-
-
+                            <td colspan="8" class="text-center py-4 text-muted">No tasks found for this status.</td>
                         </tr>
                     }
-
                 </tbody>
-
             </table>
         </div>
     </div>
-
 </div>

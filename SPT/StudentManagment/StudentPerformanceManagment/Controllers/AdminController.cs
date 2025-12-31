@@ -154,32 +154,45 @@ namespace IdentityDemo.Controllers
         }
 
 
-     
+
         #endregion
-        public IActionResult Tasks()
+        public IActionResult Tasks(int? taskStatus)
         {
-            var tasks = _context.Tasks
-                .Include(t => t.Course)
-                .Include(t => t.CourseGroup)
-                .Include(t => t.Subject)
-                .Include(t => t.Staff)
-                .Select(t => new TasksViewModel
-                {
-                    TasksId = t.TasksId,
-                    TasksTitle = t.TasksTitle,
-                    TasksDescription = t.TasksDescription,
-                    CourseName = t.Course.CourseName,
-                    GroupName = t.CourseGroup.GroupName,
-                    SubjectName = t.Subject.SubjectName,
-                    StaffName = t.Staff.Name,
-                    ValidFrom = t.ValidFrom,
-                    ValidTo = t.ValidTo,
-                    Status = t.Status
-                })
-                .ToList();
+            var query = _context.Tasks
+            .Include(t => t.Course)
+            .Include(t => t.CourseGroup)
+            .Include(t => t.Subject)
+            .Include(t => t.Staff)
+            .AsQueryable();
+
+            // Filtering Logic
+            if (taskStatus.HasValue)
+            {
+                // Assuming your Status enum matches: 0=Pending, 1=Completed, 2=Overdue
+                query = query.Where(t => (int)t.Status == taskStatus.Value);
+            }
+
+            var tasks = query.Select(t => new TasksViewModel
+            {
+                TasksId = t.TasksId,
+                TasksTitle = t.TasksTitle,
+                TasksDescription = t.TasksDescription,
+                CourseName = t.Course.CourseName,
+                GroupName = t.CourseGroup.GroupName,
+                SubjectName = t.Subject.SubjectName,
+                StaffName = t.Staff.Name,
+                ValidFrom = t.ValidFrom,
+                ValidTo = t.ValidTo,
+                Status = t.Status
+            })
+            .ToList();
+
+            // Pass the selected status back to the view to keep the dropdown selection
+            ViewBag.SelectedStatus = taskStatus;
 
             return View(tasks);
-        }
+
+            }
 
         [HttpGet]
         public IActionResult AddTask()
@@ -209,6 +222,13 @@ namespace IdentityDemo.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTask(TasksViewModel vm)
         {
+
+            Tasks tasks = _context.Tasks.Where(t => t.SubjectId == vm.SubjectId && t.CourseGroupId == vm.CourseGroupId).FirstOrDefault();
+            if (tasks != null)
+            {
+                TempData["Error"] = "Task Is already Assign to some staff ";
+                return RedirectToAction("AddTask");
+            }
             var task = new Tasks
             {
                 TasksTitle = vm.TasksTitle,
@@ -273,6 +293,7 @@ namespace IdentityDemo.Controllers
         [HttpGet]
         public IActionResult EditTask(int id)
         {
+
             var t = _context.Tasks.FirstOrDefault(x => x.TasksId == id);
             if (t == null) return NotFound();
 
@@ -316,6 +337,12 @@ namespace IdentityDemo.Controllers
         [HttpPost]
         public async Task<IActionResult> EditTask(TasksViewModel vm)
         {
+            Tasks tasks = _context.Tasks.Where(t => t.SubjectId == vm.SubjectId && t.CourseGroupId == vm.CourseGroupId).FirstOrDefault();
+            if (tasks != null)
+            {
+                TempData["Error"] = "Task Is already Assign to some staff ";
+                return RedirectToAction("AddTask");
+            }
             var task = await _context.Tasks.FindAsync(vm.TasksId);
             if (task == null) return NotFound();
 
@@ -795,10 +822,14 @@ namespace IdentityDemo.Controllers
                     Value = c.CourseId.ToString()
                 }).ToList(),
 
+
                 Subjects = new List<SelectListItem>()
             };
 
             return View(model);
+
+
+
         }
 
         [HttpPost]
@@ -810,6 +841,7 @@ namespace IdentityDemo.Controllers
                 Value = c.CourseId.ToString()
             }).ToList();
 
+
             model.ReportRows = _context.Marks
                 .Include(m => m.Student)
                 .Where(m => m.SubjectId == model.SubjectId)
@@ -817,13 +849,19 @@ namespace IdentityDemo.Controllers
                 {
                     PRN = m.Student.PRN,
                     StudentName = m.Student.Name,
+
                     TheoryMarks = m.TheoryMarks,
                     LabMarks = m.LabMarks,
                     InternalMarks = m.InternalMarks,
+
                     TotalMarks = 100,
                     ObtainedMarks = m.TheoryMarks + m.LabMarks + m.InternalMarks,
-                    ResultStatus = (m.TheoryMarks + m.LabMarks + m.InternalMarks) >= 40 ? "Pass" : "Fail"
-                }).ToList();
+
+                    ResultStatus =
+                        (
+                (m.TheoryMarks > 16 ? 1 : 0) + (m.LabMarks > 16 ? 1 : 0) + (m.InternalMarks > 8 ? 1 : 0)) >= 2 ? "PASS" : "FAIL"
+                })
+                .ToList();
 
             return View(model);
         }
